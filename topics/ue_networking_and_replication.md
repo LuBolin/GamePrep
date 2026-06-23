@@ -1047,3 +1047,4 @@ Evidence required:
 - Lag compensation/history-buffer design in this section is synthesis from UE networking authority/RPC principles plus standard data-structure/performance reasoning. It is not presented as a one-size-fits-all Epic subsystem.
 - Full rollback networking is specialist architecture beyond baseline UE generic replication. Label any project-specific Network Prediction plugin or custom rollback implementation separately before making implementation claims.
 - For plugin-specific rollback proof, use [NetworkPrediction plugin and full rollback proof](ue_network_prediction_rollback_proof.md) plus the workbook in `practice/ue_network_prediction_rollback_workbook.md`.
+- For a branch-pinned proof packet that ties saved moves, subobjects, Fast Array, RepGraph, Iris and NetworkPrediction together, use [Networking target-branch implementation proof](ue_networking_target_branch_proof.md) and `practice/ue_networking_target_branch_proof_workbook.md`.

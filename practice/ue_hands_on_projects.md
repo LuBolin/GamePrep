@@ -288,6 +288,25 @@ Add a UE visual playground that draws vector/dot-cone/projection/reflection/cros
 **Interview Questions Unlocked:** what full rollback means, what NetworkPrediction proves/does not prove, input/sync/aux/cue state boundaries, cue replay safety, aux-state versioning, reconcile debugging, rollback rejection criteria.  
 **Version / Plugin Caveats:** The maintained Epic API page is used as public vocabulary evidence only; target UE5.3-UE5.6 source must prove exact plugin support and signatures before implementation. [SRC-NET-020] [SRC-NET-001] [SRC-NET-003] [SRC-NET-006] [SRC-NET-009] [SRC-NET-010]
 
+### Project 3 Unified Networking Target-Proof Extension
+
+**Goal:** Produce one branch-pinned networking evidence packet covering saved moves, dynamic subobjects, Fast Array, RepGraph adoption/rejection, Iris status and NetworkPrediction compile proof or rejection.  
+**Minimum Features:** source/config audit; saved-move sprint and dash; dynamic replicated subobject lifecycle; simple array versus Fast Array comparison; RepGraph scale profile; Iris enabled/disabled proof; NetworkPrediction toy/dash compile proof or rejection memo; packet-condition matrix.
+
+**Implementation Steps:**
+
+1. Create `networking_source_audit.md` with target file paths/signatures for every copied API and plugin/config status for RepGraph, Iris and NetworkPrediction.
+2. Run predicted sprint and dash saved-move labs with broken-before/fixed-after correction evidence.
+3. Create, replicate, map, remove and GC-test a dynamic UObject subobject; include null-before-mapped client behaviour.
+4. Compare simple replicated array and Fast Array for 10/100/1000 item cases, including add/change/remove/reorder/reused-ID failures.
+5. Profile generic replication first; adopt RepGraph only if relevant Actor/list-construction cost is proven. Otherwise write a rejection memo.
+6. Prove Iris status. If disabled, stop at status proof; if enabled, test registered subobjects and any target-required UObject fragment registration.
+7. Compile and run a NetworkPrediction toy/dash proof or write a target-source rejection memo.
+8. Run all implemented paths under a shared 0 ms, 100 ms jitter and 200 ms/loss packet matrix with join-in-progress.
+
+**Acceptance Criteria:** every implemented feature has source proof, a failing injected case, a fixed run, dedicated-server evidence and a profiler/log artefact. Any unsupported feature is labelled as rejected/not available with target-branch evidence rather than omitted silently.  
+**Version / Plugin Caveats:** This extension is source-sensitive and should be run only in a real target branch. The curriculum provides proof structure, not target-engine signatures. [SRC-NET-009] [SRC-NET-012] [SRC-NET-013] [SRC-NET-014] [SRC-NET-015] [SRC-NET-020]
+
 ## Project 2: AI Combat Sandbox
 
 **Goal:** Build an authoritative combat AI whose sensing, memory, decisions, spatial queries, navigation, and local avoidance can each be inspected and deliberately broken.  
@@ -799,6 +818,56 @@ Plugins/GamePrepTools/
 **Performance Checks:** loaded cell count, always-loaded Actor count, Actor/Component count per region, cell activation time, fast-travel time-to-ready, package/I/O bytes, peak memory, primitive/draw/material-section count, HLOD proxy memory, transition hitch P95/P99 and worst-frame trace.  
 **Interview Questions Unlocked:** open-world pipeline design, World Partition versus Level Streaming, Data Layer progression, OFPA source control, Level Instance versus Packed Level Blueprint, HLOD adoption, fast-travel streaming readiness, packaged large-world validation.  
 **Version / Plugin Caveats:** World Partition, Data Layer APIs, Level Instance modes, HLOD builder commandlets, PCG generation and packaged runtime behavior are target-branch sensitive. Verify UE5.3-UE5.6 docs/source and run packaged proof before making production claims. [SRC-ASSET-010] [SRC-WORLD-001] [SRC-WORLD-002] [SRC-WORLD-003] [SRC-WORLD-004] [SRC-PCG-001] [SRC-BUILD-016] [SRC-BUILD-017]
+
+### Project 4/6 Unified Target-Proof Packet Extension
+
+**Goal:** Combine packaged performance gates, BuildGraph/RunUAT release identity, World Partition/HLOD builder output, packaged traversal, symbols and crash proof into one evidence packet another engineer can reproduce.
+
+**Minimum Features:** release manifest; target automation audit; clean packaged build; BuildGraph or documented RunUAT flow; staged/cooked manifest evidence; active Device Profile/CVar proof; three-run CSV scenario; one causal trace; HLOD builder output or explicit rejection; packaged traversal/readiness logs; forced packaged crash with matching symbols; injected failure report.
+
+**Implementation Steps:**
+
+1. Fill a `manifest.yaml` with engine/project revision, branch, target, config, platform, build ID, archive root, map list, scenario IDs, symbol location and crash route.
+2. Capture target branch help/output for RunUAT or the studio wrapper, BuildGraph if used, World Partition builder commandlets, CSV commands and trace/memory options.
+3. Package from a clean workspace or clean agent. Archive command line, UBT/cook/package logs, package path, symbols and cooked/staged manifests where available.
+4. Run a packaged smoke scenario outside the editor. Prove active Device Profile, scalability and important CVars from runtime logs.
+5. Define one deterministic performance scenario with warm-up, readiness marker and sample window. Run three CSV captures and summarise P50/P95/P99, hitch count, Game/Draw/GPU if available and memory/LLM if available.
+6. Capture one short causal trace for the worst frame or an injected regression. Classify CPU, Draw/RHI, GPU, memory, I/O, shader/PSO, streaming or HLOD handoff.
+7. Run the World Partition/HLOD builder for the target map or document branch/project rejection. Archive builder command, log and output freshness evidence.
+8. Run packaged traversal and fast-travel readiness. Log cell/layer/readiness/HLOD state and record memory, loaded-cell count and transition hitches.
+9. Force a packaged crash and prove the callstack symbolicates against the exact archived symbols/build ID.
+10. Inject failures: missing cook/stage asset, wrong Device Profile, stale/missing HLOD output or CSV not flushed. Prove the gate catches each with owner and recurrence guard.
+11. Produce a final report with artifact links, pass/fail table, unsupported features, residual risks and one five-minute interview answer.
+
+**Debugging Exercises:** BuildGraph green but package path stale; RunUAT wrapper hides first cook error; editor capture passes but packaged CSV fails; wrong profile masks GPU cost; HLOD builder runs for wrong map; stale HLOD hides map changes; teleport commits before streaming readiness; crash symbols from adjacent build; noisy CSV threshold blocks unrelated changes.  
+**Performance Checks:** P50/P95/P99 frame time, hitch count, Game/Draw/GPU, first-interactive time, active profile/CVars, memory/LLM checkpoints, loaded World Partition cells, HLOD transition hitch, package size, cook/package duration, artifact completeness and crash symbolication status.  
+**Interview Questions Unlocked:** target proof design, packaged performance gate, BuildGraph versus RunUAT, release artifact manifest, World Partition/HLOD builder proof, signal versus causal capture, crash/symbol proof, noisy gate triage.  
+**Version / Plugin Caveats:** command flags, BuildGraph tasks, CSV categories, trace channels, LLM coverage, World Partition builder names, HLOD generation requirements and crash pipelines are branch/platform/project sensitive. Verify target help/source and document unsupported features rather than copying commands blindly. [SRC-PERF-003] [SRC-PERF-009] [SRC-PERF-010] [SRC-BUILD-015] [SRC-BUILD-016] [SRC-BUILD-017] [SRC-BUILD-018] [SRC-ASSET-010] [SRC-WORLD-003]
+
+### Project 1/4/9 Runtime Presentation Target-Proof Extension
+
+**Goal:** Prove one gameplay action across animation, collision/physics, UI, audio and VFX under packaged runtime, multiplayer/lifecycle and profiler conditions.
+
+**Minimum Features:** montage or animation timing; server-validated collision or hit query; UI model projection with recycled entry or HUD update; local/predicted plus server-confirmed audio dedupe; pooled Niagara/VFX with reset and bounds policy; one physics reaction or ragdoll variant; packaged standalone and dedicated-server/two-client scenario where feasible; CSV plus one targeted trace; five injected failures.
+
+**Implementation Steps:**
+
+1. Define one action such as melee hit, projectile impact, ability cast or interactable use. Record operation ID, authority, presentation events and expected artifacts.
+2. Add animation timing: montage section, notify window or state-machine transition. Server-side gameplay must validate timing/state rather than trusting the notify alone.
+3. Add collision proof: trace/sweep/overlap matrix, object channels, expected hit/overlap/block result and `FHitResult` logging.
+4. Add UI proof: health/damage feed/inventory row driven from model state. If using a list, include recycled-entry reset and stale async icon rejection.
+5. Add audio proof: predicted/local sound plus confirmed/replicated sound with event key dedupe and concurrency policy.
+6. Add VFX proof: pooled Niagara or equivalent effect with owner, transform, user parameter, delegate and event-key reset. Test bounds/significance culling.
+7. Add physics proof: impulse, knockback or ragdoll with authority policy, collision profile restore and recovery path.
+8. Package and run standalone plus dedicated-server/two-client or nearest feasible target mode. Use latency/loss if networking is in scope.
+9. Inject failures: cancel montage while window open, wrong collision profile, stale UI row, duplicate audio, pooled VFX stale target, too-small bounds or ragdoll never recovers.
+10. Capture CSV and one targeted trace for the worst frame. Classify Animation, Physics, UI, Audio, VFX, Draw/RHI, GPU or Networking owner.
+11. Write a presentation-proof report with artifact links, pass/fail table, owners, fixed failures and residual risks.
+
+**Debugging Exercises:** notify applies damage after cancel; simulated proxy foot-slide; start-penetrating sweep misread; stale virtualised list entry; UI focus remains on closed modal; hit sound plays twice; pooled effect keeps old colour/target; VFX bounds cull impact early; ragdoll collision profile not restored; packaged audio/effect missing due to cook rules.  
+**Performance Checks:** animation update/evaluate cost, physics query/constraint time, widget rebuild/invalidation/list count, audio voice/concurrency pressure, Niagara system/emitter/render cost, render overdraw, memory, P95/P99 frame time and worst-frame trace.  
+**Interview Questions Unlocked:** animation notify authority, root-motion networking, collision matrix, recycled UI entry, audio dedupe, VFX pooling/bounds, cross-system failure injection, presentation versus gameplay truth.  
+**Version / Plugin Caveats:** montage/notify APIs, Chaos physics details, CommonUI/MVVM/ListView behaviour, audio concurrency/MetaSound, Niagara debug/profiling tools and target package support are branch/platform/plugin sensitive. Verify exact UE5.3-UE5.6 behaviour and use `practice/ue_runtime_presentation_target_proof_workbook.md`. [SRC-ANIM-003] [SRC-ANIM-006] [SRC-PHYS-003] [SRC-UI-005] [SRC-AUDIO-004] [SRC-FX-001] [SRC-PERF-003] [SRC-NET-006]
 
 ## Project 5: MassEntity Crowd Prototype
 

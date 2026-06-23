@@ -459,6 +459,8 @@ Extend Project 4:
 6. Create one intentional regression in CPU, memory and GPU; prove the CSV/device matrix catches each.
 7. Write a performance gate proposal with metric, threshold, artifact, owner and false-positive mitigation.
 
+For a deeper target-branch proof that combines this gate with release automation and World Partition/HLOD builder evidence, use [Packaged Performance, BuildGraph, and World Partition Proof](ue_packaged_performance_build_worldpartition_proof.md) and `practice/ue_packaged_performance_build_worldpartition_workbook.md`.
+
 ### Specialist common bugs
 
 1. Comparing editor viewport before with packaged build after.

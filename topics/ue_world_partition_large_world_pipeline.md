@@ -684,6 +684,8 @@ Build a small "large world pipeline" proof map or prototype project:
 
 For scenario practice, use `practice/ue_world_partition_debugging_workbook.md`. It contains packaged-world debugging cases for fast travel, Data Layers, OFPA, Level Instances, HLOD, PCG output, cook inclusion and validation gates.
 
+For a broader release-quality proof that combines World Partition/HLOD builder output with BuildGraph/RunUAT packaging, packaged CSV gates, symbols and forced-crash evidence, use [Packaged Performance, BuildGraph, and World Partition Proof](ue_packaged_performance_build_worldpartition_proof.md) and `practice/ue_packaged_performance_build_worldpartition_workbook.md`.
+
 ## Source Notes
 
 - `SRC-ASSET-010` is the base World Partition source for cells, streaming sources, spatial loading, conversion/build/cook commandlet concepts and related workflow anchors.

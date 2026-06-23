@@ -24,6 +24,7 @@ GamePrep is a source-traceable, interview-oriented curriculum for a roughly thre
 - [Game programming patterns](topics/game_programming_patterns.md)
 - [Advanced gameplay patterns specialist pass](topics/advanced_gameplay_patterns_specialist.md)
 - [Networking and replication](topics/ue_networking_and_replication.md)
+- [Networking target-branch implementation proof](topics/ue_networking_target_branch_proof.md)
 - [NetworkPrediction plugin and full rollback proof](topics/ue_network_prediction_rollback_proof.md)
 - [AI and navigation](topics/ue_ai_navigation.md)
 - [Smart Objects and StateTree gameplay integration](topics/ue_smart_objects_statetree.md)
@@ -33,6 +34,7 @@ GamePrep is a source-traceable, interview-oriented curriculum for a roughly thre
 - [Apple and console profiling](topics/ue_apple_console_profiling.md)
 - [Device lab automation and target evidence](topics/ue_device_lab_automation.md)
 - [Profiling and optimisation](topics/ue_profiling_optimisation.md)
+- [Packaged performance, BuildGraph, and World Partition proof](topics/ue_packaged_performance_build_worldpartition_proof.md)
 - [Rendering and GPU performance](topics/ue_rendering_graphics_performance.md)
 - [Asset references, loading, cooking, and streaming](topics/ue_assets_loading_cooking.md)
 - [World Partition and large-world production pipeline](topics/ue_world_partition_large_world_pipeline.md)
@@ -48,6 +50,7 @@ GamePrep is a source-traceable, interview-oriented curriculum for a roughly thre
 - [Unreal UI systems](topics/ue_ui_systems.md)
 - [Unreal audio systems](topics/ue_audio_systems.md)
 - [Unreal Niagara and VFX systems](topics/ue_niagara_vfx.md)
+- [Runtime presentation target-proof](topics/ue_runtime_presentation_target_proof.md)
 - [Lua and C# integration](topics/scripting_integration_lua_csharp.md)
 
 ## Repository map

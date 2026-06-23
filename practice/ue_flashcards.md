@@ -13286,3 +13286,1864 @@ Q: What is the simplest useful portfolio evidence packet?
 A: A short problem statement, source/version scope, before/after evidence, failure injection, profiler/debug captures and decision memo.
 Category: Derived Interview Bank / Interview Projects / Portfolio
 Priority: P1
+
+## Target-Proof, Build, World Partition, and Networking Expansion
+
+Q: What is the main purpose of a packaged performance manifest?
+A: To bind metrics and artifacts to an exact build, target, scenario, settings, thresholds and owner.
+Category: Packaged Proof / Performance
+Priority: P1
+
+Q: Why is a CSV file without build identity weak evidence?
+A: It cannot prove which package, platform, profile or scenario produced the numbers.
+Category: Packaged Proof / Evidence
+Priority: P1
+
+Q: What is the first thing to verify when packaged performance differs from editor performance?
+A: The exact package identity, active profile/CVars, scenario and target environment.
+Category: Packaged Proof / Debugging
+Priority: P1
+
+Q: What does CSV profiling prove best?
+A: Repeatable metric drift or regression signals across controlled runs.
+Category: Profiling / CSV
+Priority: P1
+
+Q: What does CSV profiling not prove by itself?
+A: The exact causal root of a failing frame or memory regression.
+Category: Profiling / CSV
+Priority: P1
+
+Q: What should happen after a CSV gate fails?
+A: Capture the smallest causal trace or platform/GPU/memory artifact for the failing window.
+Category: Profiling / Workflow
+Priority: P1
+
+Q: Why should a performance gate include warm-up?
+A: To separate startup/transient effects from the intended measurement window.
+Category: Profiling / Gates
+Priority: P1
+
+Q: Why should a gate include readiness markers?
+A: To avoid measuring loading or setup before the scenario has actually started.
+Category: Profiling / Gates
+Priority: P1
+
+Q: What is a better blocking metric than average FPS?
+A: Repeated P95/P99 frame time, hitch count, first-interactive time or memory growth tied to a scenario.
+Category: Profiling / Gates
+Priority: P1
+
+Q: Why must active Device Profile be logged in a packaged run?
+A: Source profile files do not prove which profile and CVars were selected at runtime.
+Category: Profiling / Device Profiles
+Priority: P1
+
+Q: What can dynamic resolution hide in a performance test?
+A: A GPU regression by lowering internal resolution rather than fixing the workload.
+Category: Profiling / Rendering
+Priority: P2
+
+Q: What can VSync hide in a performance test?
+A: Actual frame-time variation and GPU/CPU headroom beyond the cap.
+Category: Profiling / Method
+Priority: P2
+
+Q: Why should packaged tests record power or thermal state on mobile?
+A: Sustained performance can change as devices heat and throttle.
+Category: Platform / Mobile Profiling
+Priority: P1
+
+Q: What does LLM help identify?
+A: Memory ownership by subsystem/tag at budget checkpoints.
+Category: Profiling / Memory
+Priority: P1
+
+Q: What does Memory Insights help identify?
+A: Allocation lifetime, churn, growth, callstacks and leak-like patterns.
+Category: Profiling / Memory
+Priority: P1
+
+Q: What is a capacity memory problem?
+A: Stable resident memory exceeds the budget for a checkpoint or tier.
+Category: Profiling / Memory
+Priority: P1
+
+Q: What is a growth memory problem?
+A: Repeated cycles do not return near baseline memory.
+Category: Profiling / Memory
+Priority: P1
+
+Q: What is a churn memory problem?
+A: Short-lived allocation/free activity causes overhead or hitches even if live memory is acceptable.
+Category: Profiling / Memory
+Priority: P2
+
+Q: Why is "increase the pool" often a weak memory fix?
+A: It may hide ownership, retention or content-budget problems rather than solving them.
+Category: Profiling / Memory
+Priority: P1
+
+Q: What is a good first-interactive definition?
+A: The moment the player can safely see, control and interact with the intended state, not merely map load completion.
+Category: Loading / Performance
+Priority: P2
+
+Q: Why can async loading still hitch?
+A: Completion may trigger game-thread registration, callbacks, component creation, shader/PSO use or dependent loads.
+Category: Assets / Async Loading
+Priority: P1
+
+Q: What does BuildGraph add beyond a long command line?
+A: Explicit parameters, nodes, dependencies, agents, labels and artifact flow.
+Category: Build / BuildGraph
+Priority: P2
+
+Q: When is direct RunUAT usually enough?
+A: For a simple documented local or single-lane package proof without complex artifact dependencies.
+Category: Build / RunUAT
+Priority: P2
+
+Q: When does BuildGraph become more valuable?
+A: When builds need multiple targets, agents, artifacts, symbols, tests, publish steps and release visibility.
+Category: Build / BuildGraph
+Priority: P2
+
+Q: What should a BuildGraph dependency prevent?
+A: Downstream nodes such as performance or crash proof using stale or missing package/symbol artifacts.
+Category: Build / BuildGraph
+Priority: P2
+
+Q: Why is a green BuildGraph not automatically a valid release?
+A: It may have tested stale artifacts, skipped expected content or lacked launch/perf/crash evidence.
+Category: Build / Release Proof
+Priority: P1
+
+Q: What should a release artifact manifest include?
+A: Build ID, engine/project revision, target/config/platform, command lines, package path, symbols and validation results.
+Category: Build / Artifacts
+Priority: P1
+
+Q: Why are symbols from a similar build not enough?
+A: Crash diagnosis requires symbols that match the exact shipped binary/build ID.
+Category: Build / Crash Proof
+Priority: P1
+
+Q: What does a forced packaged crash prove?
+A: Crash reporting, build ID, logs and symbols work before real production crashes occur.
+Category: Build / Crash Proof
+Priority: P1
+
+Q: Why should a forced crash run outside the editor?
+A: Editor crash paths and symbols do not prove packaged client/server crash handling.
+Category: Build / Crash Proof
+Priority: P1
+
+Q: What is the first useful question in a RunUAT failure?
+A: Which phase failed first: build, cook, stage, package, deploy, run, test, symbols or crash route?
+Category: Build / Debugging
+Priority: P1
+
+Q: Why is the final AutomationTool error often not the root cause?
+A: It commonly wraps an earlier build, cook, stage or runtime error.
+Category: Build / Debugging
+Priority: P1
+
+Q: What is a cook failure usually about?
+A: Platform-specific content transformation, inclusion rules, dependencies or unsupported assets.
+Category: Build / Cooking
+Priority: P1
+
+Q: What is a stage failure usually about?
+A: Assembling runtime files, cooked content, plugin files and dependencies into the staged layout.
+Category: Build / Staging
+Priority: P1
+
+Q: What is a package/archive failure usually about?
+A: Producing and retaining the distributable container/layout and related release artifacts.
+Category: Build / Packaging
+Priority: P1
+
+Q: Why is "cook all content" a weak fix?
+A: It hides dependency rules, bloats packages and can break chunking/platform budgets.
+Category: Assets / Cooking
+Priority: P1
+
+Q: What should missing packaged assets make you inspect?
+A: Asset Manager rules, map lists, labels, soft references, redirectors, cook/stage manifests and plugin content.
+Category: Assets / Packaging
+Priority: P1
+
+Q: What proves a third-party DLL or shared library is staged correctly?
+A: A clean-machine/package launch without relying on globally installed or editor-adjacent files.
+Category: Build / Third-Party
+Priority: P2
+
+Q: Why should plugin runtime/editor module boundaries be package-tested?
+A: Editor targets can compile while Game/Shipping packages fail due to editor-only dependencies or asset classes.
+Category: Build / Plugins
+Priority: P1
+
+Q: What can unity builds hide?
+A: Missing includes, ODR problems and source-order assumptions that non-unity clean builds expose.
+Category: C++ / Build
+Priority: P1
+
+Q: What is UHT's job?
+A: Parse supported Unreal-reflected declarations and generate metadata/glue before C++ compilation.
+Category: Build / UHT
+Priority: P0
+
+Q: What is UBT's job?
+A: Resolve targets/modules/dependencies and drive compilation/linking with generated code.
+Category: Build / UBT
+Priority: P0
+
+Q: What is the main risk of non-local static initialisation in Unreal modules?
+A: It can run before engine systems, reflection, config or plugin dependencies are ready.
+Category: C++ / Startup
+Priority: P1
+
+Q: What should World Partition HLOD proof contain?
+A: Builder command/log, correct map, output freshness, packaged inclusion, visual acceptance and performance evidence.
+Category: World Partition / HLOD
+Priority: P2
+
+Q: Why is HLOD builder success not complete proof?
+A: It does not prove output freshness, packaged inclusion, visual quality or runtime performance.
+Category: World Partition / HLOD
+Priority: P2
+
+Q: What can stale HLOD output cause?
+A: Wrong visuals, missing geometry, incorrect package content or misleading performance results.
+Category: World Partition / HLOD
+Priority: P2
+
+Q: What does HLOD primarily reduce?
+A: Distant representation cost such as primitives, draws, material/shadow work or streaming complexity.
+Category: World Partition / HLOD
+Priority: P2
+
+Q: What does HLOD not automatically fix?
+A: Near-field actor activation, collision/nav setup, gameplay authority or first-use shader/PSO hitches.
+Category: World Partition / HLOD
+Priority: P2
+
+Q: What should a fast-travel readiness check include?
+A: Streaming completion plus project-specific collision, nav, Data Layer and gameplay actor readiness.
+Category: World Partition / Streaming
+Priority: P1
+
+Q: Why is a blind delay a weak fast-travel fix?
+A: It guesses timing instead of checking actual streaming and gameplay readiness.
+Category: World Partition / Streaming
+Priority: P1
+
+Q: What should packaged traversal logs show?
+A: Scenario boundaries, cell/layer/readiness state, HLOD transition and fast-travel commit/timeout.
+Category: World Partition / Proof
+Priority: P2
+
+Q: What is the role of Runtime Data Layers?
+A: Present and load/activate world phases, not serve as the only durable authority.
+Category: World Partition / Data Layers
+Priority: P2
+
+Q: Where should durable world-state truth live?
+A: In save/server/quest/state systems with stable IDs, not only in unloadable actors or Data Layers.
+Category: World Partition / Architecture
+Priority: P2
+
+Q: Why can manager hard references break spatial loading?
+A: They can keep spatial actors or bundles loaded through reference edges.
+Category: World Partition / References
+Priority: P2
+
+Q: How do you represent unloadable actor state safely?
+A: Store stable IDs and durable state outside the actor, then reconstruct presentation when loaded.
+Category: World Partition / Persistence
+Priority: P2
+
+Q: What is OFPA good for?
+A: Reducing level-file conflicts by storing actors externally during editor work.
+Category: World Partition / OFPA
+Priority: P2
+
+Q: What is OFPA not a substitute for?
+A: Source-control validation, reviewability, clean package tests or runtime streaming policy.
+Category: World Partition / OFPA
+Priority: P2
+
+Q: Why can a Level Blueprint reference be dangerous in World Partition?
+A: It can create hard references that affect loading or always-loaded behaviour.
+Category: World Partition / References
+Priority: P2
+
+Q: What should PCG generated output record?
+A: Seed, graph version, input identity, owner, cleanup policy, Data Layer/HLOD policy and runtime/cook behaviour.
+Category: PCG / Pipeline
+Priority: P2
+
+Q: Why separate PCG graph cost from output cost?
+A: Spawned actors, components, instances, collision, nav and rendering can dominate over graph execution.
+Category: PCG / Performance
+Priority: P2
+
+Q: Why are PCG metadata domains a debugging issue?
+A: Nodes may read attributes from a different domain than the one where values were authored.
+Category: PCG / Debugging
+Priority: P3
+
+Q: What makes a reusable POI production-ready?
+A: Authored structure, source-control policy, packaged behaviour, stable gameplay identity, Data Layer/HLOD/cook validation.
+Category: World Building / POI
+Priority: P2
+
+Q: When does Packed Level Blueprint fit best?
+A: Dense, mostly static visual arrangements where packed representation is acceptable.
+Category: World Building / Level Instances
+Priority: P2
+
+Q: What should mutable gameplay POIs preserve?
+A: Stable identity, save/replication state and runtime authority independent of reusable visual composition.
+Category: World Building / POI
+Priority: P2
+
+Q: What is the first networking authority principle?
+A: Server owns gameplay truth; clients request, predict or present subject to validation/reconciliation.
+Category: Networking / Authority
+Priority: P0
+
+Q: What is actor ownership not the same as?
+A: Authority, attachment, outer/lifetime ownership or guaranteed relevance.
+Category: Networking / Ownership
+Priority: P0
+
+Q: What does owning connection affect?
+A: RPC permissions and owner-based replication conditions/audience.
+Category: Networking / Ownership
+Priority: P0
+
+Q: Why is reliable RPC not durable state?
+A: It delivers calls, but late join/relevancy/dormancy require current state representation.
+Category: Networking / RPCs
+Priority: P1
+
+Q: What belongs in replicated properties instead of old RPC history?
+A: Durable current state needed by late joiners or newly relevant clients.
+Category: Networking / State
+Priority: P1
+
+Q: What should a Server RPC from a pickup make you check?
+A: Whether the actor is owned by the caller or request must route through an owned actor/controller.
+Category: Networking / RPCs
+Priority: P1
+
+Q: What does NetUpdateFrequency trade?
+A: Bandwidth/server update cost versus staleness, smoothness and correction behaviour.
+Category: Networking / Bandwidth
+Priority: P2
+
+Q: What does dormancy require before changing replicated state?
+A: Wake or flush appropriate actors before mutating state clients must observe.
+Category: Networking / Dormancy
+Priority: P2
+
+Q: What happens if you mutate dormant state without waking?
+A: Clients may remain stale until dormancy/relevancy changes or another update occurs.
+Category: Networking / Dormancy
+Priority: P2
+
+Q: What makes Fast Array useful?
+A: Delta-oriented replication for changing collections with stable item identity and dirty marking.
+Category: Networking / Fast Array
+Priority: P1
+
+Q: What are common Fast Array bugs?
+A: Missing dirty marks, unstable item IDs, bad removal hooks, late-join gaps and authority confusion.
+Category: Networking / Fast Array
+Priority: P1
+
+Q: What must Fast Array proof compare?
+A: Correct add/change/remove behaviour and bandwidth versus simple array replication under representative mutations.
+Category: Networking / Fast Array
+Priority: P1
+
+Q: What is the correct boundary for CharacterMovement saved moves?
+A: Deterministic movement-affecting client input/state needed for server reproduction and replay.
+Category: Networking / Saved Moves
+Priority: P1
+
+Q: What should not be hidden inside saved moves?
+A: Arbitrary gameplay truth such as damage, inventory, rewards or non-deterministic side effects.
+Category: Networking / Saved Moves
+Priority: P1
+
+Q: Why can saved move combining break custom movement?
+A: Combining moves with different state can erase one-frame edges or replay wrong input.
+Category: Networking / Saved Moves
+Priority: P2
+
+Q: What should `CanCombineWith` preserve?
+A: Deterministic equivalence for all movement-affecting custom state.
+Category: Networking / Saved Moves
+Priority: P2
+
+Q: What is a good saved-move sprint proof?
+A: Client predicts sprint, server reproduces/validates it, false client speed is corrected under latency.
+Category: Networking / Movement Prediction
+Priority: P1
+
+Q: What is a good saved-move dash proof?
+A: A short dash edge survives compressed flags/combine/replay and does not double-trigger side effects.
+Category: Networking / Movement Prediction
+Priority: P2
+
+Q: What is RepGraph best justified by?
+A: Measured scale/relevancy/list-building costs that actor policy can reduce.
+Category: Networking / RepGraph
+Priority: P2
+
+Q: What actor policies should a RepGraph design classify?
+A: Spatial, global, owner-only, team, always-relevant, dormant, frequency and temporary actors.
+Category: Networking / RepGraph
+Priority: P2
+
+Q: Why is RepGraph not a generic performance switch?
+A: It adds architecture and policy complexity that must match measured replication workload.
+Category: Networking / RepGraph
+Priority: P2
+
+Q: What first question should Iris answers ask?
+A: Is Iris enabled and supported for this target branch/project feature?
+Category: Networking / Iris
+Priority: P3
+
+Q: Why is Iris branch-sensitive?
+A: Status, APIs, fragments, filtering and subobject requirements can change by UE version.
+Category: Networking / Iris
+Priority: P3
+
+Q: What must dynamic replicated subobjects prove?
+A: Correct server ownership, registration, lifetime, mutation, removal, late join and GC safety.
+Category: Networking / Subobjects
+Priority: P2
+
+Q: Why can replicated subobjects go stale after removal?
+A: Clients or registered lists may retain references unless lifetime/removal is handled safely.
+Category: Networking / Subobjects
+Priority: P2
+
+Q: What does NetworkPrediction plugin public docs prove?
+A: Public module/API vocabulary exists, not a ready-to-copy target-branch integration recipe.
+Category: Networking / NetworkPrediction
+Priority: P3
+
+Q: What are core NetworkPrediction model concepts?
+A: Input/cmd, sync state, aux state, simulation tick, reconcile/rollback, cues and smoothing.
+Category: Networking / NetworkPrediction
+Priority: P3
+
+Q: What belongs in rollback sync state?
+A: Deterministic authoritative simulation state needed for rewind and resimulation.
+Category: Networking / Rollback
+Priority: P3
+
+Q: What belongs in rollback input/cmd state?
+A: Per-tick player or system commands driving the simulation.
+Category: Networking / Rollback
+Priority: P3
+
+Q: What belongs in rollback aux state?
+A: Slower-changing configuration or parameters that affect simulation but are not per-tick commands.
+Category: Networking / Rollback
+Priority: P3
+
+Q: Why are side effects dangerous in rollback?
+A: Resimulation can execute the same logical tick multiple times and duplicate irreversible effects.
+Category: Networking / Rollback
+Priority: P3
+
+Q: How do cue keys help rollback?
+A: They deduplicate presentation for the same logical event across replay/correction.
+Category: Networking / Rollback
+Priority: P3
+
+Q: What is a rollback compile proof?
+A: A minimal target-branch build that verifies plugin enablement, model definitions and required integration points.
+Category: Networking / NetworkPrediction
+Priority: P3
+
+Q: What is a valid rejection memo for NetworkPrediction?
+A: Evidence that target branch/project cannot support it, plus fallback design and future verification trigger.
+Category: Networking / NetworkPrediction
+Priority: P3
+
+Q: Why is owner-only replication useful?
+A: It limits private state to the owning connection and can reduce bandwidth/exposure.
+Category: Networking / Conditions
+Priority: P2
+
+Q: What is the risk of owner-only replication?
+A: Other clients, spectators or late joiners will not receive that state unless represented elsewhere.
+Category: Networking / Conditions
+Priority: P2
+
+Q: What causes unresolved replicated object references?
+A: Timing, relevancy, dormancy, unloaded content, unreplicated targets, subobject registration or NetGUID mapping issues.
+Category: Networking / References
+Priority: P2
+
+Q: When are stable IDs better than replicated pointers?
+A: When referenced actors may be unloaded, not yet relevant, destroyed or represented by durable save/world state.
+Category: Networking / References
+Priority: P2
+
+Q: What should late join never rely on alone?
+A: Past multicast/RPC events that were not represented as durable current state.
+Category: Networking / Late Join
+Priority: P1
+
+Q: What is a good late-join test?
+A: Join after world/inventory/door/objective state changed and verify current state reconstruction.
+Category: Networking / Late Join
+Priority: P1
+
+Q: How do you debug a network correction pop?
+A: Log input/saved moves, server authoritative state, correction size/timing, smoothing and custom movement flags.
+Category: Networking / Debugging
+Priority: P1
+
+Q: Why is increasing smoothing not always the fix for correction pops?
+A: It can hide symptoms while non-deterministic client/server movement remains broken.
+Category: Networking / Debugging
+Priority: P1
+
+Q: What should a hit validation server check include?
+A: Ability/montage state, timing, range, geometry/history, cooldown and duplicate-hit prevention.
+Category: Networking / Combat
+Priority: P1
+
+## Specialist Systems Flashcard Expansion
+
+Q: What should ASC placement be based on?
+A: Lifetime, owner/avatar relationship, respawn, replication audience, attributes and grant cleanup.
+Category: GAS / Architecture
+Priority: P2
+
+Q: When does ASC-on-PlayerState often fit?
+A: Player-owned abilities or attributes that should survive pawn respawn.
+Category: GAS / ASC Placement
+Priority: P2
+
+Q: When does ASC-on-Pawn often fit?
+A: Body-specific or NPC abilities whose state should die with the pawn/avatar.
+Category: GAS / ASC Placement
+Priority: P2
+
+Q: What is an ability grant ledger?
+A: A record of why each ability/effect was granted so cleanup and debugging are deterministic.
+Category: GAS / Grants
+Priority: P2
+
+Q: What bug does a grant ledger prevent?
+A: Orphaned or duplicate abilities after equipment removal, respawn, save/load or loadout changes.
+Category: GAS / Grants
+Priority: P2
+
+Q: What does ability commit usually represent?
+A: The point where cost/cooldown/activation commitments become part of the ability transaction.
+Category: GAS / Activation
+Priority: P2
+
+Q: Why can predicted ability cost double-apply?
+A: Client provisional cost and server authoritative cost can both affect UI/state without reconciliation.
+Category: GAS / Prediction
+Priority: P2
+
+Q: What should happen when a predicted ability is server-rejected?
+A: Client presentation and provisional cost/cooldown/UI state must reconcile to server truth.
+Category: GAS / Prediction
+Priority: P2
+
+Q: What is a prediction key used for?
+A: Associating predicted client-side actions with server confirmation or rejection.
+Category: GAS / Prediction
+Priority: P2
+
+Q: Why are GameplayCues not authority?
+A: They present effects; they should not own durable damage, inventory or gameplay truth.
+Category: GAS / Gameplay Cues
+Priority: P2
+
+Q: What common cue bug appears under prediction?
+A: Duplicate VFX/audio when prediction and server correction both fire presentation.
+Category: GAS / Gameplay Cues
+Priority: P2
+
+Q: What should a safe GameplayCue policy define?
+A: Audience, authority, dedupe keys, start/end semantics and correction behaviour.
+Category: GAS / Gameplay Cues
+Priority: P2
+
+Q: What is an AttributeSet invariant?
+A: A rule such as current health must stay between zero and max health after modifiers.
+Category: GAS / Attributes
+Priority: P2
+
+Q: Why is max-health buff ordering tricky?
+A: Changing the maximum can require deliberate clamping or proportional adjustment of current value.
+Category: GAS / Attributes
+Priority: P2
+
+Q: What does a GameplayEffect spec carry?
+A: Context, source/target data, captured values, tags, magnitudes and configuration for application.
+Category: GAS / Gameplay Effects
+Priority: P2
+
+Q: Why are snapshot captures important?
+A: They decide whether a calculation uses values from effect creation time or later current values.
+Category: GAS / Gameplay Effects
+Priority: P3
+
+Q: What can make GameplayEffect calculations hard to debug?
+A: Captures, tags, stacking, context, set-by-caller values and timing interactions.
+Category: GAS / Gameplay Effects
+Priority: P3
+
+Q: What should an AbilityTask cleanup test cover?
+A: Success, cancel, owner death, ability end, prediction rejection, travel and repeated activation.
+Category: GAS / Ability Tasks
+Priority: P2
+
+Q: Why can leaked AbilityTasks create ghost behaviour?
+A: Old delegates/timers/listeners can fire after the ability should be inactive.
+Category: GAS / Ability Tasks
+Priority: P2
+
+Q: What is target data in GAS used for?
+A: Carrying selected targets, hit results or targeting intent from client/prediction to validation.
+Category: GAS / Target Data
+Priority: P2
+
+Q: Why must target data be server-validated?
+A: Clients can send impossible or stale targets unless authority checks range/timing/visibility/state.
+Category: GAS / Target Data
+Priority: P2
+
+Q: When should a custom ability component beat GAS?
+A: When requirements are small and GAS complexity exceeds the benefit.
+Category: GAS / Adoption
+Priority: P2
+
+Q: What makes GAS adoption worthwhile?
+A: Networked abilities, attributes, effects, tags, prediction, designer authoring and reusable systems.
+Category: GAS / Adoption
+Priority: P2
+
+Q: What is a GameplayTag counted-state bug?
+A: Failing to add/remove counts symmetrically, leaving blocked/stunned states stuck or prematurely cleared.
+Category: GAS / Tags
+Priority: P2
+
+Q: What should a cooldown UI observe?
+A: Authoritative or reconciled cooldown state, not only local visual timers.
+Category: GAS / UI
+Priority: P2
+
+Q: What is a good GAS latency test?
+A: Run predicted activation, rejection, cancellation and cue playback under packet lag/loss.
+Category: GAS / Testing
+Priority: P2
+
+Q: What should a GAS debug log include?
+A: ASC owner/avatar, ability, prediction key, commit, cost, cooldown, target data, effects and cues.
+Category: GAS / Debugging
+Priority: P2
+
+Q: What is the main role of Behaviour Tree observer aborts?
+A: Reactively abort lower-priority or current branches when observed Blackboard/decorator conditions change.
+Category: AI / Behaviour Tree
+Priority: P1
+
+Q: Why do Behaviour Trees sometimes thrash?
+A: Conditions or Blackboard values change near thresholds without hysteresis/cooldowns or stable ownership.
+Category: AI / Behaviour Tree
+Priority: P2
+
+Q: What does StateTree combine?
+A: Hierarchical states, selection, transitions, tasks, evaluators/data and state-machine-like flow.
+Category: AI / StateTree
+Priority: P2
+
+Q: When can StateTree fit better than Behaviour Tree?
+A: Activity/state workflows with explicit transitions, Smart Object use or data-flow style orchestration.
+Category: AI / StateTree
+Priority: P2
+
+Q: What is the key Smart Object lifecycle?
+A: Query, claim, use, complete or abort, then release.
+Category: AI / Smart Objects
+Priority: P2
+
+Q: What does Smart Object claiming prevent?
+A: Multiple agents using the same exclusive slot or affordance simultaneously.
+Category: AI / Smart Objects
+Priority: P2
+
+Q: Why should Smart Objects not hide all interaction authority?
+A: Multiplayer/server validation and durable gameplay state still need explicit ownership.
+Category: AI / Smart Objects
+Priority: P2
+
+Q: What should custom AI senses produce?
+A: Evidence/stimuli with location, strength, tag and age, not final behaviour decisions.
+Category: AI / Perception
+Priority: P2
+
+Q: Why avoid gameplay policy inside `UAISense`?
+A: It couples sensing cost/timing with decision logic, difficulty and side effects.
+Category: AI / Custom Senses
+Priority: P2
+
+Q: What causes a custom sense to "remember forever"?
+A: Stimulus aging/expiration or Blackboard memory projection is not cleared correctly.
+Category: AI / Perception
+Priority: P2
+
+Q: What separates perception memory from Blackboard truth?
+A: Perception stores sensed evidence; Blackboard stores decision inputs chosen by AI logic.
+Category: AI / Perception
+Priority: P2
+
+Q: What does Visual Logger help debug?
+A: Spatial and timeline AI/path/perception decisions that are hard to see from logs alone.
+Category: AI / Debugging
+Priority: P2
+
+Q: What makes EQS cost grow?
+A: Agents times candidates times tests times frequency and test complexity.
+Category: AI / EQS
+Priority: P2
+
+Q: How do you budget EQS?
+A: Reduce frequency/candidates, run cheap filters early, cache where valid and profile real agent counts.
+Category: AI / EQS
+Priority: P2
+
+Q: What is a partial path bug?
+A: AI accepts or fails to handle a route that reaches only part of the intended destination.
+Category: AI / Navigation
+Priority: P2
+
+Q: What is the difference between pathfinding and avoidance?
+A: Pathfinding plans a route; avoidance adjusts local movement to avoid collisions/crowding.
+Category: AI / Navigation
+Priority: P1
+
+Q: Why should RVO and Detour Crowd not be blindly combined?
+A: They are different avoidance systems and can conflict or duplicate movement decisions.
+Category: AI / Avoidance
+Priority: P2
+
+Q: What does MassEntity improve when it fits?
+A: Large-population data processing through fragments/archetypes/chunks instead of many ticking actors.
+Category: MassEntity / ECS
+Priority: P2
+
+Q: What is a Mass fragment?
+A: Data attached to entities and processed in batches by queries/processors.
+Category: MassEntity / Fragments
+Priority: P2
+
+Q: What is a Mass tag?
+A: Marker data with no payload used for classification/query/state.
+Category: MassEntity / Tags
+Priority: P2
+
+Q: Why are frequent structural changes expensive in ECS?
+A: They can move entities between archetypes/chunks and create command-buffer/sync work.
+Category: MassEntity / Performance
+Priority: P3
+
+Q: What is actor promotion in Mass hybrid architecture?
+A: Creating or activating a richer Actor representation for a nearby/interactive entity.
+Category: MassEntity / Hybrid
+Priority: P3
+
+Q: What is the main bug in Mass actor promotion/demotion?
+A: Dual writers causing entity and actor state to diverge during handoff.
+Category: MassEntity / Hybrid
+Priority: P3
+
+Q: What does ZoneGraph provide?
+A: Structured lanes/zones for crowd or traffic-like movement, not a universal NavMesh replacement.
+Category: MassAI / ZoneGraph
+Priority: P3
+
+Q: What should a Mass crowd proof compare?
+A: Actor baseline versus Mass simulation/representation under equivalent movement and visual requirements.
+Category: MassEntity / Proof
+Priority: P2
+
+Q: What must Mass replication answers avoid?
+A: Claiming ordinary Actor replication patterns apply automatically to Mass entities.
+Category: MassEntity / Networking
+Priority: P3
+
+Q: What makes a PCG graph deterministic enough for production?
+A: Controlled seeds, inputs, graph version, parameters, output ownership and cleanup/regeneration policy.
+Category: PCG / Determinism
+Priority: P2
+
+Q: What is PCG density?
+A: A value used to influence point/output selection, not a guarantee of final object count by itself.
+Category: PCG / Concepts
+Priority: P2
+
+Q: What should a PCG debug checkpoint validate?
+A: Key assumptions such as point count, attribute existence, domain, seed or output ownership.
+Category: PCG / Debugging
+Priority: P2
+
+Q: Why can runtime PCG hitch?
+A: Graph work and generated output creation can happen during gameplay on the target device.
+Category: PCG / Runtime
+Priority: P2
+
+Q: What is the safest assumption about SceneCapture2D cost?
+A: It is another rendered view until profiling proves a cheaper path.
+Category: Rendering / Scene Capture
+Priority: P2
+
+Q: Why are cube captures especially costly?
+A: They can render six directions/views per update.
+Category: Rendering / Scene Capture
+Priority: P2
+
+Q: What render-target dimensions affect cost?
+A: Resolution, format, mips, update cadence, clears/resolves/readback and consumers.
+Category: Rendering / Render Targets
+Priority: P2
+
+Q: Why can render target readback be dangerous?
+A: It can introduce CPU/GPU synchronisation and stalls.
+Category: Rendering / Render Targets
+Priority: P2
+
+Q: What is shader permutation explosion?
+A: A large number of shader variants from static switches/features/platform/material combinations.
+Category: Rendering / Shaders
+Priority: P2
+
+Q: Why is one master material not always better?
+A: Too many switches/features can increase permutation count, compile time and PSO complexity.
+Category: Rendering / Materials
+Priority: P2
+
+Q: What is a PSO hitch?
+A: A runtime stall when a required pipeline state is created or encountered without adequate coverage/warmup.
+Category: Rendering / PSO
+Priority: P2
+
+Q: What should PSO proof use?
+A: Packaged cold-cache scenarios, PSO logging/collection where supported and first-use hitch verification.
+Category: Rendering / PSO
+Priority: P2
+
+Q: What does RDG make explicit?
+A: Render passes, resources, dependencies and lifetimes in the render graph.
+Category: Rendering / RDG
+Priority: P3
+
+Q: What is a common RDG bug?
+A: Using a resource outside its declared lifetime or without the needed dependency.
+Category: Rendering / RDG
+Priority: P3
+
+Q: What can material slots increase?
+A: Mesh sections, pass participation, draw/state changes and material/shader cost.
+Category: Rendering / Materials
+Priority: P2
+
+Q: Why is triangle count not the only render cost?
+A: Materials, overdraw, shadows, passes, draw setup, bandwidth and screen coverage matter.
+Category: Rendering / Performance
+Priority: P1
+
+Q: What does Nanite not solve by itself?
+A: Material, pixel, translucency, WPO, shadow, platform and gameplay representation costs.
+Category: Rendering / Nanite
+Priority: P2
+
+Q: What does instancing help most?
+A: Repeated compatible mesh data with shared rendering paths and manageable per-instance updates.
+Category: Rendering / Instancing
+Priority: P2
+
+Q: What can per-frame `MarkRenderStateDirty` cause?
+A: Extra render-state updates and loss of cached rendering work.
+Category: Rendering / Mesh Draw
+Priority: P3
+
+Q: What is overdraw?
+A: Multiple fragments/pixels shading the same screen area, common with translucent/masked effects.
+Category: Rendering / GPU
+Priority: P1
+
+Q: What is a good GPU-bound first question?
+A: Which pass/resource/shader/screen area dominates in a target GPU capture?
+Category: Rendering / GPU Profiling
+Priority: P1
+
+Q: What can VSM/Lumen/Nanite answers overclaim?
+A: That enabling a UE5 feature automatically improves performance or quality on every platform.
+Category: Rendering / UE5 Features
+Priority: P2
+
+Q: Why should visual quality be part of performance proof?
+A: A faster frame is not acceptable if gameplay readability or art requirements are broken.
+Category: Rendering / Quality
+Priority: P1
+
+Q: What can Niagara cost on CPU?
+A: Spawning, system update, component management, parameter work and renderer submission.
+Category: VFX / Niagara
+Priority: P2
+
+Q: What can Niagara cost on GPU?
+A: Particle simulation, material overdraw, render passes, sorting and bandwidth.
+Category: VFX / Niagara
+Priority: P2
+
+Q: Why can pooled VFX be stale?
+A: Parameters, owners, attachments, delegates or completion state may not reset.
+Category: VFX / Pooling
+Priority: P3
+
+Q: What should an audio concurrency rule define?
+A: Voice limits, priority, virtualization/stealing behaviour and user-perceived importance.
+Category: Audio / Concurrency
+Priority: P2
+
+Q: Why can multiplayer audio double-play?
+A: Local prediction and replicated/server events may both trigger the same sound.
+Category: Audio / Multiplayer
+Priority: P2
+
+Q: What is a persistent audio loop best driven by?
+A: Durable replicated/local state with start/stop dedupe, not repeated transient fire events.
+Category: Audio / Runtime
+Priority: P2
+
+Q: What makes MetaSounds different from simple playback?
+A: Procedural graph execution and parameter behaviour can affect runtime cost.
+Category: Audio / MetaSounds
+Priority: P3
+
+Q: What is the usual split between animation state machine and montage?
+A: State machine for continuous pose selection; montage for discrete authored actions/layers.
+Category: Animation / Runtime
+Priority: P1
+
+Q: Why are animation notifies weak gameplay authority alone?
+A: Playback can vary by client, montage state, LOD, prediction or cancellation.
+Category: Animation / Gameplay
+Priority: P1
+
+Q: What should a server-validated notify window check?
+A: Montage/ability state, timing, authority, target validity and duplicate-hit prevention.
+Category: Animation / Networking
+Priority: P1
+
+Q: Why can root motion foot-slide under networking?
+A: Animation root motion, server movement authority, corrections and smoothing may not align.
+Category: Animation / Root Motion
+Priority: P2
+
+Q: What should root-motion networking tests include?
+A: Dedicated server, latency/loss, simulated proxy view, correction and montage/cancel cases.
+Category: Animation / Networking
+Priority: P2
+
+Q: What is the collision triage first split?
+A: Query versus simulation versus movement versus event notification.
+Category: Physics / Collision
+Priority: P0
+
+Q: What does Collision Enabled separate?
+A: Query participation, physics simulation participation, both or neither.
+Category: Physics / Collision
+Priority: P0
+
+Q: What is the difference between Block and Overlap?
+A: Block stops/impedes movement or query; overlap reports intersection without blocking.
+Category: Physics / Collision
+Priority: P0
+
+Q: What can `StartPenetrating` indicate?
+A: A sweep/query started already overlapping or inside blocking geometry.
+Category: Physics / Queries
+Priority: P1
+
+Q: Why can multi sweeps confuse candidates?
+A: They may return touches/overlaps plus a blocking hit with specific ordering/semantics.
+Category: Physics / Queries
+Priority: P1
+
+Q: What does CCD help with?
+A: Fast-moving body collision detection that might otherwise tunnel between frames.
+Category: Physics / Simulation
+Priority: P2
+
+Q: What does substepping trade?
+A: Better simulation stability for extra CPU cost and added complexity.
+Category: Physics / Simulation
+Priority: P2
+
+Q: What commonly destabilises constraints?
+A: Bad frames, extreme mass ratios, unrealistic drives, collisions, timestep or solver settings.
+Category: Physics / Constraints
+Priority: P2
+
+Q: What should ragdoll recovery validate?
+A: Physics Asset bodies, constraints, collision, authority, sleep state and animation blend handoff.
+Category: Physics / Ragdoll
+Priority: P2
+
+Q: Why should UI not own gameplay truth?
+A: Widgets can be destroyed/recreated and are presentation scoped; truth belongs in gameplay/server/model state.
+Category: UI / Architecture
+Priority: P1
+
+Q: What should UI model projection define?
+A: Data audience, lifetime, owner, update path and stale-reference handling.
+Category: UI / Architecture
+Priority: P1
+
+Q: Why can UMG bindings hurt performance?
+A: They can evaluate repeatedly and perform hidden work every frame.
+Category: UI / Performance
+Priority: P1
+
+Q: Why are ListView entries dangerous with async icons?
+A: Recycled widgets may receive stale async completion for a previous item.
+Category: UI / ListView
+Priority: P2
+
+Q: What should virtualised list entries reset?
+A: Text, images, selection, delegates, async requests, model refs and transient state.
+Category: UI / ListView
+Priority: P2
+
+Q: What does CommonUI not remove the need for?
+A: Clear input/focus ownership, activation policy and local-player scoping.
+Category: UI / CommonUI
+Priority: P2
+
+Q: Why is `GetPlayerController(0)` risky in UI?
+A: It breaks split-screen/local-player scoping assumptions.
+Category: UI / Local Player
+Priority: P2
+
+Q: What should low scalability preserve?
+A: Gameplay readability, critical UI, input affordances and accessibility requirements.
+Category: UI / Scalability
+Priority: P2
+
+Q: What should a save schema version support?
+A: Migration, missing/renamed definitions, stable IDs and backwards compatibility decisions.
+Category: Gameplay / Saves
+Priority: P1
+
+Q: Why should saves avoid transient actor pointers?
+A: Streamed/destroyed/renamed actors may not exist when restoring; stable IDs are safer.
+Category: Gameplay / Saves
+Priority: P1
+
+Q: What is the split between item definition and item instance?
+A: Definition is shared content; instance holds player-owned mutable state.
+Category: Gameplay / Inventory
+Priority: P1
+
+Q: Why is stackable inventory not just a count?
+A: Stacks need definition, owner, limits, split/merge policy, save/replication and UI identity.
+Category: Gameplay / Inventory
+Priority: P2
+
+Q: What is a transactional gameplay operation?
+A: A multi-step change with validation, authoritative commit, idempotency and rollback/compensation policy.
+Category: Gameplay / Transactions
+Priority: P2
+
+Q: What prevents duplicate rewards?
+A: Authoritative operation/completion IDs and idempotent reward application.
+Category: Gameplay / Idempotency
+Priority: P1
+
+Q: What is a command in gameplay messaging?
+A: A request for a system to perform an action.
+Category: Gameplay / Messaging
+Priority: P1
+
+Q: What is an event in gameplay messaging?
+A: A report that something happened.
+Category: Gameplay / Messaging
+Priority: P1
+
+Q: Why can event-driven quests break on load?
+A: Past events are gone unless durable quest state is restored.
+Category: Gameplay / Quests
+Priority: P1
+
+Q: What should quest objective state use?
+A: Stable IDs, durable progress, authority and reconstruction for UI/world presentation.
+Category: Gameplay / Quests
+Priority: P2
+
+Q: Why are gameplay tags not a replacement for structured data?
+A: They label state/meaning but can become ambiguous without taxonomy and validation.
+Category: Gameplay / Tags
+Priority: P1
+
+Q: What makes tag hierarchies maintainable?
+A: Naming rules, ownership, documentation, validation and limited overlapping semantics.
+Category: Gameplay / Tags
+Priority: P1
+
+Q: When is direct call clearer than a delegate?
+A: When there is a known required collaborator and one-to-one dependency.
+Category: Architecture / Communication
+Priority: P1
+
+Q: When is a delegate appropriate?
+A: For observation, fan-out or optional listeners with explicit lifetime/unbinding.
+Category: Architecture / Communication
+Priority: P1
+
+Q: When is an interface appropriate?
+A: For polymorphic capability requests without hard dependency on concrete class.
+Category: Architecture / Communication
+Priority: P1
+
+Q: What is the risk of service locator overuse?
+A: Hidden dependencies, scope, lifetime, authority and testing problems.
+Category: Architecture / Dependencies
+Priority: P1
+
+Q: What should subsystem host selection match?
+A: Engine/editor/game-instance/world/local-player lifetime and scope.
+Category: Architecture / Subsystems
+Priority: P1
+
+Q: Why can GameInstanceSubsystem be wrong for local player state?
+A: It is too global for split-screen/player-specific input/UI state.
+Category: Architecture / Subsystems
+Priority: P1
+
+Q: When should you tick?
+A: Only when continuous per-frame work is truly needed and cheaper/batched alternatives do not fit.
+Category: Gameplay Framework / Tick
+Priority: P0
+
+Q: Why is "never tick" also a weak rule?
+A: Some high-frequency changes are clearer or cheaper as controlled Tick/batched updates.
+Category: Gameplay Framework / Tick
+Priority: P1
+
+Q: What can many actors cost besides Tick?
+A: Components, rendering primitives, physics, replication, GC, construction and registration.
+Category: Performance / Actors
+Priority: P1
+
+Q: What should you inspect in an Actor-count problem?
+A: Ticks, component counts, primitives/materials, collision, replication, UObject count and spawn churn.
+Category: Performance / Actors
+Priority: P1
+
+Q: What is deferred spawning useful for?
+A: Supplying initial data before actor construction/activation-dependent work completes.
+Category: Gameplay Framework / Spawning
+Priority: P1
+
+Q: What is the CDO?
+A: The class default object that holds default reflected/object state for a UClass.
+Category: UObject / CDO
+Priority: P0
+
+Q: Why can mutating defaults at runtime be dangerous?
+A: You may change class/default-subobject state rather than per-instance state.
+Category: UObject / CDO
+Priority: P1
+
+Q: What does `UPROPERTY` not automatically mean?
+A: Editable in editor, Blueprint-visible, replicated, saved or always strong in every context.
+Category: UObject / Reflection
+Priority: P0
+
+Q: Why are raw persistent UObject members risky?
+A: GC/reflection may not see the reference and lifetime can become accidental.
+Category: UObject / Pointers
+Priority: P0
+
+Q: When is `TWeakObjectPtr` useful?
+A: Non-owning observation of a UObject that may be destroyed.
+Category: UObject / Pointers
+Priority: P1
+
+Q: When is `TSoftObjectPtr` useful?
+A: Referencing an asset/object by path for deferred loading without keeping it resident.
+Category: UObject / Pointers
+Priority: P1
+
+Q: When is `TStrongObjectPtr` useful?
+A: Explicit strong native ownership where a reflected UPROPERTY edge is unavailable.
+Category: UObject / Pointers
+Priority: P2
+
+Q: Why is `TSharedPtr` usually not UObject ownership?
+A: UObjects are managed by Unreal GC/reflection, not standard/shared reference counting.
+Category: UObject / Pointers
+Priority: P0
+
+Q: What is a soft reference not?
+A: A guarantee that the asset is cooked, loaded or valid at runtime.
+Category: Assets / Soft References
+Priority: P1
+
+Q: What should async asset callbacks validate?
+A: Request identity, owner/widget validity, expected item and stale completion.
+Category: Assets / Async
+Priority: P1
+
+Q: What does Asset Registry provide?
+A: Metadata and discovery of assets without necessarily loading full objects.
+Category: Assets / Registry
+Priority: P1
+
+Q: What does Asset Manager add?
+A: Primary Asset identity, loading policy, bundles, cook/chunk rules and project-level asset ownership.
+Category: Assets / Asset Manager
+Priority: P1
+
+Q: Why can redirectors matter for releases?
+A: Stale references or unresolved moves can create clean-cook/package surprises.
+Category: Assets / Redirectors
+Priority: P2
+
+Q: What can `ConstructorHelpers` create?
+A: Hardcoded constructor-time asset dependencies and early load/cook coupling.
+Category: UE C++ / Assets
+Priority: P2
+
+Q: When is `FText` appropriate?
+A: User-facing localised/culture-aware display text.
+Category: UE C++ / Strings
+Priority: P1
+
+Q: When is `FName` appropriate?
+A: Stable identifiers/keys where name-table semantics and comparison are desired.
+Category: UE C++ / Strings
+Priority: P1
+
+Q: When is `FString` appropriate?
+A: Mutable string manipulation/storage rather than localised display identity.
+Category: UE C++ / Strings
+Priority: P1
+
+Q: What should Blueprint pure functions avoid?
+A: Side effects, expensive work, hidden loads, randomness and mutable state changes.
+Category: Blueprint / API Design
+Priority: P1
+
+Q: Why can Blueprint bindings be expensive?
+A: They may reevaluate frequently and hide logic from obvious execution flow.
+Category: Blueprint / Performance
+Priority: P1
+
+Q: What is a safe Blueprint API surface?
+A: Narrow, validated, intention-revealing functions with correct edit/Blueprint/authority/lifetime specifiers.
+Category: Blueprint / API Design
+Priority: P1
+
+Q: What should editor batch tools support?
+A: Dry-run, source-control awareness, validation, logs, undo/transactions where relevant and partial-failure recovery.
+Category: Tools / Editor
+Priority: P1
+
+Q: When should you write a commandlet?
+A: For repeatable headless validation, migration, export/import or build pipeline work.
+Category: Tools / Commandlets
+Priority: P2
+
+Q: When should you use an Editor Utility Widget?
+A: For interactive editor workflows needing guided selection, preview or designer control.
+Category: Tools / Editor Utility
+Priority: P2
+
+Q: Why share core logic between commandlet and EUW?
+A: It keeps CI/headless and interactive tools consistent.
+Category: Tools / Architecture
+Priority: P2
+
+Q: What is a spatial hash good for?
+A: Average-case nearby queries when distribution, cell size and update cost fit the workload.
+Category: Algorithms / Spatial
+Priority: P1
+
+Q: What can break spatial hash performance?
+A: Bad cell size, clustering, large query radii and high update churn.
+Category: Algorithms / Spatial
+Priority: P1
+
+Q: Why use a slow oracle in algorithm tests?
+A: To prove fast implementation correctness on random and adversarial cases.
+Category: Algorithms / Testing
+Priority: P1
+
+Q: What is A* admissibility?
+A: The heuristic never overestimates true remaining cost, preserving optimality under assumptions.
+Category: Algorithms / Pathfinding
+Priority: P1
+
+Q: What else matters besides A* heuristic?
+A: Graph quality, costs, dynamic obstacles, smoothing, partial paths, avoidance and budget.
+Category: Algorithms / Pathfinding
+Priority: P1
+
+Q: Why do normals need special transform handling under non-uniform scale?
+A: They represent surface orientation and generally require inverse-transpose-style handling.
+Category: Maths / Transforms
+Priority: P2
+
+Q: Why do quaternions not solve rotation policy automatically?
+A: Interpolation, constraints, shortest path, designer control and networking still need decisions.
+Category: Maths / Rotation
+Priority: P1
+
+Q: Why avoid exact float equality in gameplay?
+A: Floating-point operations are approximate and order/platform sensitive.
+Category: Maths / Numerics
+Priority: P1
+
+Q: What does server authority do for float divergence?
+A: It corrects clients to authoritative state instead of trusting divergent local simulation.
+Category: Maths / Networking
+Priority: P2
+
+Q: Why is Lua integration plugin-dependent in Unreal?
+A: Unreal has no single built-in Lua runtime semantics; bridges define lifetime, reflection and packaging behaviour.
+Category: Scripting / Lua
+Priority: P3
+
+Q: What is the main Lua/UObject lifetime risk?
+A: Script references may outlive destroyed UObjects or hide references from GC.
+Category: Scripting / Lua
+Priority: P3
+
+Q: What is a common C# Unreal-adjacent use?
+A: AutomationTool, Gauntlet/build tooling or plugin-specific editor/runtime ecosystems.
+Category: Scripting / C#
+Priority: P3
+
+Q: What should runtime C# claims in Unreal include?
+A: Plugin, platform, packaging, UObject bridge, GC/lifetime and performance caveats.
+Category: Scripting / C#
+Priority: P3
+
+Q: What should managed/native bridge tests cover?
+A: Object destruction, world teardown, reload, async callbacks and delegate unbinding.
+Category: Scripting / Interop
+Priority: P3
+
+Q: Why is simulator performance not target-device proof?
+A: Hardware, graphics stack, OS services and memory pressure differ from physical devices.
+Category: Platform / Apple
+Priority: P2
+
+Q: What does Apple/console profiling evidence need?
+A: Build identity, target device/package, scenario markers, authorised tools and source-safe reporting.
+Category: Platform / Profiling
+Priority: P3
+
+Q: Why not publish console profiler details casually?
+A: Platform-holder documentation, tools and certification details are confidential.
+Category: Platform / Console
+Priority: P3
+
+Q: What does AGI complement in Unreal Android profiling?
+A: Device/GPU/render-pass evidence that aligns with Unreal markers and CSV/traces.
+Category: Platform / Android
+Priority: P3
+
+Q: Why not compare raw Android GPU counters across vendors blindly?
+A: Counter names and meanings are vendor-specific and need documentation.
+Category: Platform / Android
+Priority: P3
+
+Q: What does Android LMK evidence show?
+A: OS/process low-memory kill context that should be correlated with Unreal memory checkpoints.
+Category: Platform / Android Memory
+Priority: P2
+
+Q: How can ADPF hide a regression?
+A: It may drop quality or workload to keep frame time acceptable.
+Category: Platform / Android Performance
+Priority: P3
+
+Q: What belongs in a device-lab run manifest?
+A: Build ID, device ID, scenario ID, command line, profile/settings, artifacts, timestamps and gate policy.
+Category: Automation / Device Lab
+Priority: P2
+
+Q: What are device-lab gate states?
+A: Pass, product fail, lab infrastructure fail, flaky/quarantined, reporting-only and blocked by missing evidence.
+Category: Automation / Device Lab
+Priority: P2
+
+Q: Why is blind rerun a bad automation policy?
+A: It hides deterministic product failures and erodes trust in gates.
+Category: Automation / Triage
+Priority: P1
+
+Q: What should a smoke scenario prove?
+A: Package launches, representative content loads, basic path runs and pass/fail marker exits.
+Category: Automation / Smoke
+Priority: P1
+
+Q: What should a failure injection prove?
+A: Diagnostics and recurrence guards catch an expected broken state clearly.
+Category: Debugging / Verification
+Priority: P1
+
+Q: What makes a regression guard useful?
+A: It fails for the original root cause with the smallest reliable check and acceptable false-positive rate.
+Category: Debugging / Regression
+Priority: P1
+
+Q: What should structured logs include?
+A: Scenario, build ID, object/operation IDs, net mode/owner, state transition and error code.
+Category: Debugging / Observability
+Priority: P1
+
+Q: When should high-frequency data use CSV instead of logs?
+A: When repeated samples/counters would spam logs and obscure state transitions.
+Category: Debugging / Observability
+Priority: P1
+
+Q: What is an actionable handoff report?
+A: Repro, artifact identity, evidence, first cause, owner, fix/guard and residual risk.
+Category: Team Workflow / Debugging
+Priority: P1
+
+Q: What is a good "hard bug" interview structure?
+A: Symptom, scope, hypotheses, evidence, root cause, fix, guard and lesson.
+Category: Interview / Debugging
+Priority: P0
+
+Q: What is a good optimisation story structure?
+A: Target scenario, bottleneck evidence, change, before/after result, trade-off and recurrence guard.
+Category: Interview / Performance
+Priority: P0
+
+Q: What makes a system design answer concrete?
+A: State ownership, data flow, lifecycle, authority, failure modes, profiling/debugging and tests.
+Category: Interview / System Design
+Priority: P0
+
+Q: What should you do when unsure about an Unreal API name?
+A: State the stable concept and explain target branch source/API verification instead of bluffing.
+Category: Interview / Version Sensitivity
+Priority: P0
+
+Q: What does "source-sensitive" mean in this curriculum?
+A: The concept is useful but exact signatures/commands/behaviour must be verified against the target branch.
+Category: Interview / Source Discipline
+Priority: P1
+
+Q: What should a rejection memo include?
+A: Evidence unsupported now, fallback design, residual risk and trigger for future verification.
+Category: Production Readiness / Scope
+Priority: P1
+
+Q: What is the best first answer to "it depends"?
+A: Name exactly what it depends on and how you would verify each variable.
+Category: Interview / Communication
+Priority: P0
+
+Q: What is the minimum portfolio proof packet?
+A: Problem, scope, source/version notes, implementation, failure case, profiler/debug evidence and decision memo.
+Category: Interview / Portfolio
+Priority: P1
+
+Q: Why should a five-minute deep dive include a failure case?
+A: It proves debugging judgement and production learning, not just feature description.
+Category: Interview / Communication
+Priority: P0
+
+Q: What should an "out of scope" section include?
+A: Exclusions, rationale, risk, and triggers that would make the scope change.
+Category: System Design / Scope
+Priority: P1
+
+Q: What is a production-readiness checklist trying to prevent?
+A: Demo-only success that fails under packaging, scale, platforms, networking, saves or failure states.
+Category: Production Readiness / General
+Priority: P0
+
+Q: What is a good answer when a feature is branch-unsupported?
+A: Document evidence, fallback and future verification instead of silently omitting or overclaiming.
+Category: Production Readiness / Versioning
+Priority: P1
+
+## Final Target Reinforcement Cards
+
+Q: What should a packaged proof packet never rely on alone?
+A: A developer's local editor state, warm cache or manual memory of commands.
+Category: Packaged Proof / Evidence
+Priority: P1
+
+Q: What makes a package reproducible?
+A: Exact source revisions, commands, target/config/platform, artifacts, symbols and validation results.
+Category: Build / Reproducibility
+Priority: P1
+
+Q: Why should a build artifact path include build ID?
+A: To prevent downstream jobs from accidentally consuming stale or adjacent outputs.
+Category: Build / Artifacts
+Priority: P1
+
+Q: What is a good staged-file check?
+A: Verify every expected runtime dependency exists in the packaged/staged layout from a clean build.
+Category: Build / Staging
+Priority: P2
+
+Q: What should a package smoke failure report include first?
+A: First causal log line, phase, package identity and scenario marker.
+Category: Build / Smoke
+Priority: P1
+
+Q: What does a clean-agent package prove?
+A: The project does not rely on undeclared local files, caches or developer-machine environment state.
+Category: Build / CI
+Priority: P1
+
+Q: Why keep cook and stage manifests?
+A: They let you trace whether expected content and runtime files entered the package.
+Category: Build / Artifacts
+Priority: P2
+
+Q: What should a package-size regression start with?
+A: Manifest and dependency diff by build ID.
+Category: Assets / Package Size
+Priority: P2
+
+Q: What can shader library data affect?
+A: Package size, startup, first-use hitches and platform-specific rendering behaviour.
+Category: Rendering / Shaders
+Priority: P2
+
+Q: What is a good PSO regression guard?
+A: A packaged scenario that exercises representative first-use states and records misses/hitches where supported.
+Category: Rendering / PSO
+Priority: P2
+
+Q: What does a target branch audit prevent?
+A: Copying commands or APIs from a different UE version before proving availability.
+Category: Versioning / Branch Proof
+Priority: P1
+
+Q: What is a branch-sensitive command?
+A: A command whose name, flags, output or support can change across engine versions or studio wrappers.
+Category: Versioning / Branch Proof
+Priority: P1
+
+Q: What is a branch-sensitive API example?
+A: NetworkPrediction model hooks, custom AI sense signatures, Iris fragments or builder commandlet classes.
+Category: Versioning / Branch Proof
+Priority: P1
+
+Q: What should schematic code clearly mark?
+A: Which names/signatures are conceptual and require target-branch verification.
+Category: Writing / Source Discipline
+Priority: P1
+
+Q: Why is "works in PIE" weak multiplayer evidence?
+A: PIE can hide process, package, ownership, timing and dedicated-server differences.
+Category: Networking / Testing
+Priority: P1
+
+Q: What should a dedicated-server network test add?
+A: Multi-process or packaged server/client execution, latency/loss settings and authority/ownership logs.
+Category: Networking / Testing
+Priority: P1
+
+Q: What is a good packet-loss test for prediction?
+A: Fixed movement/action scenario under configured lag/loss with correction, replay and side-effect logs.
+Category: Networking / Prediction
+Priority: P2
+
+Q: Why can client-only movement changes create corrections?
+A: The server cannot reproduce the client's movement, so it sends authoritative correction.
+Category: Networking / Movement
+Priority: P1
+
+Q: What should a custom movement flag encode?
+A: Compact deterministic input/state needed by server movement replay.
+Category: Networking / Movement
+Priority: P2
+
+Q: What is a bad custom movement flag use?
+A: Encoding arbitrary gameplay authority or one-off side effects in movement compression.
+Category: Networking / Movement
+Priority: P2
+
+Q: What should replicated collection late-join proof test?
+A: New client receives current collection state after previous adds/changes/removes.
+Category: Networking / Fast Array
+Priority: P1
+
+Q: What should replicated subobject removal proof test?
+A: Client cleanup, stale-reference rejection and GC-safe registered-list removal.
+Category: Networking / Subobjects
+Priority: P2
+
+Q: What is a good Iris adoption status result?
+A: Enabled/supported with branch proof, or explicitly not enabled with fallback replication path.
+Category: Networking / Iris
+Priority: P3
+
+Q: Why should NetworkPrediction side effects use a ledger or cue dedupe?
+A: Rollback/replay can otherwise repeat gameplay or presentation side effects.
+Category: Networking / NetworkPrediction
+Priority: P3
+
+Q: What should a rollback invalid-command test prove?
+A: Server rejection reconciles state without double-applying costs, cues or rewards.
+Category: Networking / Rollback
+Priority: P3
+
+Q: What should a GameplayCue not do?
+A: Own authoritative gameplay state such as damage, inventory or quest completion.
+Category: GAS / Gameplay Cues
+Priority: P2
+
+Q: Why is ASC owner/avatar split important?
+A: Owner defines long-lived controlling entity; avatar defines current physical actor body.
+Category: GAS / ASC
+Priority: P2
+
+Q: What should ability cancellation clean up?
+A: Tasks, delegates, timers, cues, target actors and provisional UI/predicted state.
+Category: GAS / Cancellation
+Priority: P2
+
+Q: What should a server ability validation check?
+A: Tags, cost, cooldown, target data, range, authority state and current activation rules.
+Category: GAS / Validation
+Priority: P2
+
+Q: What is Smart Object release failure?
+A: A claimed slot remains unavailable because use/abort cleanup did not release it.
+Category: AI / Smart Objects
+Priority: P2
+
+Q: What should Smart Object race tests include?
+A: Two or more agents attempting the same exclusive slot under timing variation.
+Category: AI / Smart Objects
+Priority: P2
+
+Q: What is a Mass processor ordering issue?
+A: Processors read stale or not-yet-produced fragment data because dependencies/phases are wrong.
+Category: MassEntity / Processors
+Priority: P3
+
+Q: What should Mass debug views help inspect?
+A: Entity archetypes, fragments/tags, processors, representation and LOD/promotion state.
+Category: MassEntity / Debugging
+Priority: P3
+
+Q: What should PCG package proof include?
+A: Generated output policy, cooked asset references and packaged runtime behaviour if runtime generation is enabled.
+Category: PCG / Packaging
+Priority: P2
+
+Q: What is a PCG stale-output bug?
+A: Regeneration leaves duplicate or obsolete generated actors/components/assets.
+Category: PCG / Cleanup
+Priority: P2
+
+Q: What should an HLOD visual acceptance compare?
+A: Far, transition and near ranges for missing geometry, material artefacts and popping.
+Category: World Partition / HLOD
+Priority: P2
+
+Q: What should an HLOD performance acceptance compare?
+A: Primitive/draw/material/shadow cost, memory/proxy cost and transition hitches.
+Category: World Partition / HLOD
+Priority: P2
+
+Q: What should a Data Layer save/load test prove?
+A: Durable state restores expected runtime layer presentation after reload.
+Category: World Partition / Data Layers
+Priority: P2
+
+Q: Why can editor-only Data Layers fool testing?
+A: They can appear correct in editor while not being runtime-loadable/controllable in package.
+Category: World Partition / Data Layers
+Priority: P2
+
+Q: What should a packaged traversal failure report classify?
+A: Streaming, Data Layer, HLOD, cook/package, collision/nav, gameplay readiness or performance.
+Category: World Partition / Debugging
+Priority: P2
+
+Q: What should a platform profiler report avoid?
+A: Overgeneralising one device/tool capture to all platforms or SKUs.
+Category: Platform / Profiling
+Priority: P2
+
+Q: What should an Apple Metal capture be tied to?
+A: Exact device/OS/Xcode/build/scenario and corresponding UE markers or captures.
+Category: Platform / Apple
+Priority: P3
+
+Q: What should console profiling answers say about confidentiality?
+A: Use authorised tools and docs, keep raw confidential artifacts out of public reports.
+Category: Platform / Console
+Priority: P3
+
+Q: What is a thermal soak test for?
+A: Proving sustained performance after the device reaches realistic thermal state.
+Category: Platform / Mobile
+Priority: P2
+
+Q: What is a lifecycle memory test?
+A: Exercise map load, background/foreground, memory pressure and return-to-menu checkpoints.
+Category: Platform / Mobile
+Priority: P2
+
+Q: What should an automation rerun policy distinguish?
+A: Deterministic product failures, flaky tests, flaky devices and infrastructure failures.
+Category: Automation / Triage
+Priority: P1
+
+Q: What does "blocked by missing evidence" mean?
+A: The gate cannot make a valid pass/fail decision because required artifacts or markers are absent.
+Category: Automation / Triage
+Priority: P1
+
+Q: What should a debug overlay never assume?
+A: That developer-only usage makes unbounded draw/text/allocation cost acceptable.
+Category: Debugging / Tools
+Priority: P2
+
+Q: What is the safest capture strategy under time pressure?
+A: Use a cheap classifier first, then a targeted causal capture for the suspected failing window.
+Category: Profiling / Workflow
+Priority: P1
+
+Q: What is bottleneck migration?
+A: An optimisation reduces one limit but exposes or worsens another thread/resource limit.
+Category: Profiling / Method
+Priority: P1
+
+Q: What should before/after optimisation tables include?
+A: Same scenario/settings, repeated metrics, visual/correctness checks and changed trade-offs.
+Category: Profiling / Reporting
+Priority: P1
+
+Q: What makes a performance improvement not shippable?
+A: It breaks gameplay readability, quality requirements, memory limits or another target scenario.
+Category: Profiling / Reporting
+Priority: P1
+
+Q: Why is "more async" not a general fix?
+A: Async work still has scheduling, ownership, merge, memory, thread-safety and latency costs.
+Category: Performance / Async
+Priority: P1
+
+Q: What does task granularity affect?
+A: Scheduling overhead, worker utilisation, cache locality and merge cost.
+Category: Performance / Tasks
+Priority: P2
+
+Q: What should an async UObject task never do casually?
+A: Mutate or dereference UObjects off-thread without a verified thread-safe contract.
+Category: Performance / Async
+Priority: P1
+
+Q: What is false sharing?
+A: Independent thread writes to data on the same cache line causing cache ownership contention.
+Category: C++ / Performance
+Priority: P2
+
+Q: What is the safest default for multi-field shared invariants?
+A: A mutex-protected critical section unless a proven atomic protocol exists.
+Category: C++ / Concurrency
+Priority: P1
+
+Q: What does relaxed atomic ordering not provide?
+A: Publication/visibility ordering for other non-atomic data.
+Category: C++ / Atomics
+Priority: P1
+
+Q: What should condition-variable waits use?
+A: A mutex-protected predicate loop, not notification as stored state.
+Category: C++ / Concurrency
+Priority: P1
+
+Q: Why can lambda capture by reference be unsafe in async code?
+A: The referenced object may be destroyed before the callback/task runs.
+Category: C++ / Lifetime
+Priority: P1
+
+Q: What should `TFunctionRef` never do?
+A: Escape or be stored beyond the synchronous call that received it.
+Category: UE C++ / Callables
+Priority: P2
+
+Q: What should `TArray` selection consider?
+A: Dense iteration, order, cache locality, insertion/removal pattern and invalidation.
+Category: UE C++ / Containers
+Priority: P0
+
+Q: What should `TMap` selection consider?
+A: Key lookup needs, hashing, memory overhead, deterministic order and mutation patterns.
+Category: UE C++ / Containers
+Priority: P1
+
+Q: Why can Blueprint pure functions be called more than expected?
+A: Graph evaluation can reevaluate pure nodes wherever their output is needed.
+Category: Blueprint / Pure
+Priority: P1
+
+Q: What should an interview answer do when the exact API is unknown?
+A: Avoid bluffing, explain stable design shape and name the target-source verification path.
+Category: Interview / Accuracy
+Priority: P0
+
+Q: What makes an interview answer "specialist depth"?
+A: Implementation trade-offs, edge cases, debugging workflow, proof artifacts and version caveats.
+Category: Interview / Depth
+Priority: P0
+
+Q: What is a weak answer pattern for Unreal interviews?
+A: Naming a system without ownership, lifecycle, failure modes or evidence.
+Category: Interview / Answer Patterns
+Priority: P0
+
+Q: What is a strong answer pattern for Unreal interviews?
+A: Define the system, explain why, describe implementation boundaries, debug failures and cite proof.
+Category: Interview / Answer Patterns
+Priority: P0
+
+Q: What should every hands-on project extension produce?
+A: Working behaviour or clear rejection, injected failure, evidence artifacts and acceptance criteria.
+Category: Practice / Projects
+Priority: P1
+
+Q: What is the curriculum's bias for target-sensitive topics?
+A: Teach the mental model, then require target-branch/source/capture proof before implementation claims.
+Category: Study Strategy / Versioning
+Priority: P1

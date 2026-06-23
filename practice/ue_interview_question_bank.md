@@ -7669,3 +7669,2540 @@
 - **Hands-on Verification Task:** Create a one-page evidence packet for Project 3 or Project 9.
 - **Sources:** [SRC-PERF-003], [SRC-NET-010], [SRC-BUILD-017], [SRC-ARCH-012]
 - **Version Notes:** Portfolio expectations vary by role.
+
+## Target-Proof, Networking, Profiling, Build, and Specialist Expansion
+
+### Question: What belongs in a packaged performance proof manifest?
+
+- **Category:** Profiling / Release Evidence
+- **Priority:** P1
+- **Expected Depth:** D4
+- **Short Answer:** Build identity, target environment, scenario, metrics, thresholds, command lines, artifacts and owners.
+- **Strong 3-Year-Engineer Answer:** A manifest should make the package reproducible: engine/project revision, target/config/platform, build ID, device/profile, map, command line, warm-up, sample window, CSV/trace paths, symbols and pass/fail thresholds. Without identity, CSV files and traces become anecdotes. I also record unsupported branch features instead of pretending all tools exist everywhere.
+- **Common Weak Answer:** "Attach the CSV."
+- **Follow-up Questions:** build ID? active profile? symbols? threshold owner?
+- **Hands-on Verification Task:** Fill a manifest for one packaged scenario and ask another engineer to reproduce it.
+- **Sources:** [SRC-PERF-009], [SRC-BUILD-017], [SRC-BUILD-018]
+- **Version Notes:** Command fields and artifact paths are project-specific.
+
+### Question: Why is an active Device Profile dump part of performance evidence?
+
+- **Category:** Profiling / Scalability
+- **Priority:** P1
+- **Expected Depth:** D3
+- **Short Answer:** Source files do not prove runtime selection; the packaged build must show which profile and CVars were actually active.
+- **Strong 3-Year-Engineer Answer:** Device profiles and scalability can completely change render cost, resolution, streaming pools and feature quality. I capture applied CVars/profile inheritance in logs or a dump before comparing results. Otherwise a regression can be hidden by lower quality or a fix can be credited to the wrong change.
+- **Common Weak Answer:** "The profile is configured in DefaultDeviceProfiles."
+- **Follow-up Questions:** inherited profile? packaged? dynamic resolution? low-tier readability?
+- **Hands-on Verification Task:** Run the same package with two profiles and compare CVar dumps.
+- **Sources:** [SRC-PERF-007], [SRC-PERF-008], [SRC-PLAT-005]
+- **Version Notes:** Profile selectors and CVars are branch/platform sensitive.
+
+### Question: When should a CSV performance gate block a change?
+
+- **Category:** Profiling / Automation
+- **Priority:** P1
+- **Expected Depth:** D4
+- **Short Answer:** When repeated, controlled runs exceed actionable thresholds tied to an owner and artifact evidence.
+- **Strong 3-Year-Engineer Answer:** I do not block on one noisy FPS average. A blocking gate needs fixed scenario, warm-up, repeated runs, active profile proof and stable metrics like P95/P99 frame time, hitch count, first-interactive time or memory growth. Failing output should point to an owner and request causal capture only for that failing window.
+- **Common Weak Answer:** "Fail if FPS drops below 60 once."
+- **Follow-up Questions:** variance? rolling baseline? reporting-only metrics? causal escalation?
+- **Hands-on Verification Task:** Design thresholds for three runs of a UI, combat and traversal scenario.
+- **Sources:** [SRC-PERF-009], [SRC-PERF-011]
+- **Version Notes:** CSV categories and automation hooks vary by branch.
+
+### Question: How do you separate a CSV signal from causal profiling?
+
+- **Category:** Profiling / Method
+- **Priority:** P1
+- **Expected Depth:** D3
+- **Short Answer:** CSV detects repeatable regressions cheaply; Insights/GPU/platform captures explain the failing window.
+- **Strong 3-Year-Engineer Answer:** I use CSV for long-run and automation metrics because it is cheap enough for repeated packaged scenarios. If CSV fails, I take a small targeted trace around the scenario window and classify CPU, Draw/RHI, GPU, memory, I/O, streaming or shader/PSO cost. Treating CSV alone as root cause usually leads to guesswork.
+- **Common Weak Answer:** "CSV tells you what caused the hitch."
+- **Follow-up Questions:** marker alignment? trace overhead? causal owner?
+- **Hands-on Verification Task:** Trigger a CSV hitch and capture a 10-second Insights window around it.
+- **Sources:** [SRC-PERF-003], [SRC-PERF-009]
+- **Version Notes:** Trace channels and marker APIs are target-sensitive.
+
+### Question: What is a good packaged hitch triage order?
+
+- **Category:** Profiling / Packaged Builds
+- **Priority:** P1
+- **Expected Depth:** D4
+- **Short Answer:** Confirm package/settings, locate the window, classify thread/resource ownership, make one causal change, rerun same scenario.
+- **Strong 3-Year-Engineer Answer:** I first verify build ID, platform, active profile, VSync/dynamic resolution and scenario reproducibility. Then I use CSV/logs to locate the hitch and capture a bounded trace. I check Game, Draw/RHI, GPU, loading/file I/O, memory/GC, shader/PSO and streaming before changing code or content.
+- **Common Weak Answer:** "Packaged builds are slower."
+- **Follow-up Questions:** cold cache? PSO? streaming? memory? Draw/RHI?
+- **Hands-on Verification Task:** Reproduce one packaged-only hitch and classify it using a trace.
+- **Sources:** [SRC-PERF-003], [SRC-RENDER-014], [SRC-ASSET-006]
+- **Version Notes:** Tooling and shader/PSO workflows vary by platform.
+
+### Question: How would you prove a memory budget regression?
+
+- **Category:** Profiling / Memory
+- **Priority:** P1
+- **Expected Depth:** D4
+- **Short Answer:** Combine stable checkpoint budgets with LLM/tag ownership and Memory Insights or equivalent allocation evidence.
+- **Strong 3-Year-Engineer Answer:** I define checkpoints such as boot, menu, map loaded, peak combat, travel and return-to-menu. LLM or tag totals identify subsystem ownership; Memory Insights explains allocation lifetime, callstacks, growth and churn. Then I separate capacity, leak-like retention, churn, streaming pressure and GC/object count issues.
+- **Common Weak Answer:** "Increase the pool size."
+- **Follow-up Questions:** checkpoint? tag ownership? churn? long session?
+- **Hands-on Verification Task:** Run five menu open/close cycles and report memory growth by tag/callstack.
+- **Sources:** [SRC-PERF-006], [SRC-PERF-010]
+- **Version Notes:** LLM tags and memory tracing depend on build/platform.
+
+### Question: What makes a BuildGraph file better than a shell blob?
+
+- **Category:** Build / BuildGraph
+- **Priority:** P2
+- **Expected Depth:** D4
+- **Short Answer:** It exposes parameters, dependencies, agents, labels and artifacts as a graph rather than implicit command order.
+- **Strong 3-Year-Engineer Answer:** BuildGraph is useful when release work has build, cook, package, tests, symbols, crash proof and publish steps. I want dependencies such as `PerfGate` requiring `Package`, and `CrashProof` requiring package plus symbols. A shell blob can work locally, but it hides skipped work, stale outputs and failure ownership.
+- **Common Weak Answer:** "BuildGraph is just XML for running commands."
+- **Follow-up Questions:** artifacts? agents? labels? stale package?
+- **Hands-on Verification Task:** Draw a graph where performance cannot run before packaging.
+- **Sources:** [SRC-BUILD-015], [SRC-BUILD-016]
+- **Version Notes:** Exact BuildGraph tasks are branch/tooling sensitive.
+
+### Question: When is direct RunUAT enough instead of BuildGraph?
+
+- **Category:** Build / AutomationTool
+- **Priority:** P2
+- **Expected Depth:** D3
+- **Short Answer:** For a simple local or single-lane package proof where dependency graph/artifact publishing is not yet needed.
+- **Strong 3-Year-Engineer Answer:** RunUAT/BuildCookRun is appropriate for a documented build-cook-stage-package command, especially early in a project or for one-off validation. Once the pipeline needs multiple targets, agents, symbols, smoke/performance gates and reusable artifacts, BuildGraph or equivalent CI graph becomes more defensible.
+- **Common Weak Answer:** "Always use BuildGraph."
+- **Follow-up Questions:** artifact flow? cost? release candidate? wrapper?
+- **Hands-on Verification Task:** Document a RunUAT package command and list when it should graduate to graph automation.
+- **Sources:** [SRC-BUILD-016], [SRC-BUILD-017], [SRC-BUILD-015]
+- **Version Notes:** RunUAT flags must be checked in the target branch.
+
+### Question: How do you find the first useful error in a RunUAT failure?
+
+- **Category:** Build / Debugging
+- **Priority:** P1
+- **Expected Depth:** D3
+- **Short Answer:** Identify the failed phase and search upward from the final AutomationTool wrapper to the first causal build/cook/stage/runtime error.
+- **Strong 3-Year-Engineer Answer:** The final UAT exception often says the command failed, not why. I classify phase, inspect the earliest concrete error, then check command line, target/config/platform, cook scope, staged files and environment. Fixing the wrapper message or deleting caches does not prevent recurrence.
+- **Common Weak Answer:** "Clean Intermediate and rerun."
+- **Follow-up Questions:** build vs cook vs stage? first cause? artifact path?
+- **Hands-on Verification Task:** Annotate a failing UAT log with phase and first causal line.
+- **Sources:** [SRC-BUILD-016], [SRC-BUILD-017]
+- **Version Notes:** Logs and wrappers vary by studio.
+
+### Question: What is the difference between cook, stage, package and archive failures?
+
+- **Category:** Build / Packaging
+- **Priority:** P1
+- **Expected Depth:** D3
+- **Short Answer:** Cook transforms content for platform; stage assembles runtime layout; package produces distributable containers/layout; archive retains outputs.
+- **Strong 3-Year-Engineer Answer:** Missing asset rules usually surface in cook, missing runtime DLLs or plugin files in stage, container/signing/layout issues in package, and missing reproducibility evidence in archive. I classify the phase before fixing because "package failed" is too broad to assign ownership.
+- **Common Weak Answer:** "They are all packaging."
+- **Follow-up Questions:** staged dependency? cooked asset? archive manifest?
+- **Hands-on Verification Task:** Create one artificial failure in each phase and document the log signature.
+- **Sources:** [SRC-BUILD-017], [SRC-ASSET-006]
+- **Version Notes:** Platform packaging details vary.
+
+### Question: Why is a forced packaged crash part of release proof?
+
+- **Category:** Build / Crash Reporting
+- **Priority:** P1
+- **Expected Depth:** D3
+- **Short Answer:** It proves crash reports, build IDs, symbols and routing work before players hit real crashes.
+- **Strong 3-Year-Engineer Answer:** A crash pipeline is only useful if the report matches the exact package and symbols. I force a controlled crash in a non-editor package, verify callstack symbolication, log tail, build ID and privacy-safe context, then archive the evidence with the release. Unsymbolicated production crashes are a release-process failure.
+- **Common Weak Answer:** "Crash reports show up automatically."
+- **Follow-up Questions:** symbol archive? build ID? endpoint? privacy?
+- **Hands-on Verification Task:** Force a packaged crash and intentionally test wrong-symbol rejection.
+- **Sources:** [SRC-BUILD-018], [SRC-BUILD-017]
+- **Version Notes:** Crash routing is project/platform policy.
+
+### Question: How do you prove staged third-party dependencies are correct?
+
+- **Category:** Build / Third-Party Integration
+- **Priority:** P2
+- **Expected Depth:** D3
+- **Short Answer:** Build/link and launch on a clean machine without global installs, then inspect staged runtime files.
+- **Strong 3-Year-Engineer Answer:** Headers and link libraries prove compile-time integration only. Runtime proof needs platform/config library selection, staged DLL/shared object/framework, clean-machine launch and symbol/debug policy. Developer-machine PATH or editor-adjacent files can hide broken staging.
+- **Common Weak Answer:** "It links locally."
+- **Follow-up Questions:** delay-load? clean machine? server target? licence?
+- **Hands-on Verification Task:** Remove the globally installed dependency and launch the package.
+- **Sources:** [SRC-BUILD-004], [SRC-BUILD-017]
+- **Version Notes:** Staging rules vary by platform and build system.
+
+### Question: Why is "cook all content" a weak missing-asset fix?
+
+- **Category:** Assets / Packaging
+- **Priority:** P1
+- **Expected Depth:** D3
+- **Short Answer:** It hides dependency/cook-rule bugs, bloats package size and can break chunking or platform budgets.
+- **Strong 3-Year-Engineer Answer:** If a packaged asset is missing, I inspect map list, Asset Manager rules, hard/soft references, Primary Assets, labels and stage manifests. Cooking everything may pass locally, but it destroys intent and makes releases larger and less predictable. The fix should express the ownership rule that includes the asset.
+- **Common Weak Answer:** "Add the Content folder to always cook."
+- **Follow-up Questions:** Primary Asset? soft ref? chunk? package size?
+- **Hands-on Verification Task:** Fix a missing soft-referenced item through Asset Manager rules rather than broad cook.
+- **Sources:** [SRC-ASSET-005], [SRC-ASSET-006], [SRC-BUILD-017]
+- **Version Notes:** Cook rules depend on project setup.
+
+### Question: What should a World Partition HLOD builder proof include?
+
+- **Category:** World Partition / HLOD
+- **Priority:** P2
+- **Expected Depth:** D4
+- **Short Answer:** Builder command/log, target map, output freshness, packaged inclusion, visual quality and performance impact.
+- **Strong 3-Year-Engineer Answer:** A builder log alone is not enough. I prove it ran for the correct map, generated or validated expected output, shipped in the package, improved the intended cost and did not introduce unacceptable visual or transition issues. Stale HLOD should be caught by automation, not by manual release memory.
+- **Common Weak Answer:** "HLOD build completed."
+- **Follow-up Questions:** stale output? packaged? transition hitch? memory?
+- **Hands-on Verification Task:** Change one HLOD-relevant actor and prove the builder/gate detects freshness.
+- **Sources:** [SRC-WORLD-003], [SRC-ASSET-010], [SRC-BUILD-017]
+- **Version Notes:** Builder commandlets and requirements are branch-sensitive.
+
+### Question: Why can HLOD hide but not fix near-field activation cost?
+
+- **Category:** World Partition / Performance
+- **Priority:** P2
+- **Expected Depth:** D4
+- **Short Answer:** HLOD reduces distant representation cost, but near actors still need loading, registration, collision, nav, materials and gameplay startup.
+- **Strong 3-Year-Engineer Answer:** If a hitch occurs at HLOD handoff, I separate proxy cost from near-field cell activation. The fix might be streaming readiness, preloading, actor/component reduction, construction script cleanup, shader/PSO coverage or content budgets. Raising proxy quality cannot fix a BeginPlay or collision setup spike.
+- **Common Weak Answer:** "Use better HLOD settings."
+- **Follow-up Questions:** transition range? actor activation? shader first use? collision?
+- **Hands-on Verification Task:** Capture far, transition and near-field ranges separately and identify the hitch owner.
+- **Sources:** [SRC-WORLD-003], [SRC-PERF-003], [SRC-RENDER-011]
+- **Version Notes:** HLOD costs are content and platform dependent.
+
+### Question: How do you prove fast travel readiness in a World Partition map?
+
+- **Category:** World Partition / Streaming
+- **Priority:** P1
+- **Expected Depth:** D4
+- **Short Answer:** Use a streaming source/readiness check plus project-specific collision, nav and gameplay readiness before teleporting.
+- **Strong 3-Year-Engineer Answer:** Cell load is not the whole contract. I log streaming source state, requested cells, Runtime Data Layers, collision/nav readiness and key gameplay actors. A packaged traversal or teleport scenario should commit movement only after readiness or fail gracefully with a loading/fallback state.
+- **Common Weak Answer:** "Add a delay before teleport."
+- **Follow-up Questions:** collision? Data Layer? timeout? packaged proof?
+- **Hands-on Verification Task:** Implement a preloader that logs readiness and rejects premature teleport.
+- **Sources:** [SRC-ASSET-010], [SRC-WORLD-001], [SRC-PERF-009]
+- **Version Notes:** Exact streaming-source APIs are branch-sensitive.
+
+### Question: What does Runtime Data Layer proof need beyond toggling visibility?
+
+- **Category:** World Partition / Data Layers
+- **Priority:** P2
+- **Expected Depth:** D3
+- **Short Answer:** Runtime layer state must be tied to durable gameplay truth, save/load and packaged behaviour.
+- **Strong 3-Year-Engineer Answer:** Runtime Data Layers present world phases; they should not be the only authority for quest/save/server state. I prove initial state, transitions, package inclusion, late-load behaviour and reconstruction from durable state. Editor-only layers or unsaved editor state can hide packaged failure.
+- **Common Weak Answer:** "The layer is visible in editor."
+- **Follow-up Questions:** save authority? late join? initial state? packaged?
+- **Hands-on Verification Task:** Save/load a phase change and verify packaged Data Layer state.
+- **Sources:** [SRC-WORLD-001], [SRC-ASSET-010]
+- **Version Notes:** Data Layer APIs and replication policy are project-sensitive.
+
+### Question: How do you stop manager actors from keeping spatial actors loaded?
+
+- **Category:** World Partition / References
+- **Priority:** P2
+- **Expected Depth:** D4
+- **Short Answer:** Avoid hard references from always-loaded systems to unloadable actors; use stable IDs, soft refs, events or registries.
+- **Strong 3-Year-Engineer Answer:** In World Partition, reference edges can affect loading bundles. I keep durable truth in managers/save/server systems and represent spatial actors by stable identifiers or soft lookup paths. Then I validate always-loaded actor lists and packaged memory/cell unloading rather than trusting author intent.
+- **Common Weak Answer:** "Set Is Spatially Loaded."
+- **Follow-up Questions:** hard refs? Level Blueprint? soft ref? durable state?
+- **Hands-on Verification Task:** Add a hard manager reference to a spatial actor and observe loaded cell/memory behaviour.
+- **Sources:** [SRC-ASSET-010], [SRC-EPIC-009], [SRC-ASSET-003]
+- **Version Notes:** Reference loading behaviour is version/content sensitive.
+
+### Question: Why does OFPA need source-control validation?
+
+- **Category:** World Building / OFPA
+- **Priority:** P2
+- **Expected Depth:** D3
+- **Short Answer:** External actor files reduce map-file conflicts but make partial submits and review mapping real risks.
+- **Strong 3-Year-Engineer Answer:** OFPA improves collaboration, but encoded files and mass moves can make review hard. I use editor/source-control tooling, actor labels, validation and clean-workspace package tests to catch omitted external actor files or unintended generated churn.
+- **Common Weak Answer:** "OFPA solves source control."
+- **Follow-up Questions:** partial submit? encoded files? generated actors? clean workspace?
+- **Hands-on Verification Task:** Omit one external actor file and document the packaged/editor failure.
+- **Sources:** [SRC-WORLD-002], [SRC-ASSET-010]
+- **Version Notes:** Workflow depends on source-control integration.
+
+### Question: What makes a RepGraph adoption defensible?
+
+- **Category:** Networking / Replication Graph
+- **Priority:** P2
+- **Expected Depth:** D4
+- **Short Answer:** A profile shows per-connection relevancy/list-building cost or scale needs that RepGraph policy can reduce.
+- **Strong 3-Year-Engineer Answer:** I would not adopt RepGraph just because the game is multiplayer. I classify actors by spatial, global, owner-only, team, dormancy and frequency policy, then compare server CPU, bandwidth and correctness under representative actor/client counts. Adoption is justified when graph policy beats default replication complexity without hiding ownership bugs.
+- **Common Weak Answer:** "Use RepGraph for big maps."
+- **Follow-up Questions:** actor policy? bandwidth? dormancy? splitscreen caveat?
+- **Hands-on Verification Task:** Compare default replication with a simple spatial/global RepGraph setup.
+- **Sources:** [SRC-NET-007], [SRC-NET-008], [SRC-NET-013], [SRC-NET-010]
+- **Version Notes:** RepGraph setup and platform caveats are branch/project sensitive.
+
+### Question: How do you prove a Fast Array implementation is correct?
+
+- **Category:** Networking / Fast Array
+- **Priority:** P1
+- **Expected Depth:** D4
+- **Short Answer:** Mutations mark items/array dirty, IDs/keys remain stable, clients receive add/change/remove hooks, and bandwidth improves for representative changes.
+- **Strong 3-Year-Engineer Answer:** I test add, modify, remove, reorder, burst and stale-client cases. Correctness includes server authority, stable identity, dirty marking, client prediction/cosmetic policy and late join. Performance proof compares simple replicated arrays with Fast Array under realistic list size and change frequency.
+- **Common Weak Answer:** "Fast Array only sends deltas."
+- **Follow-up Questions:** dirty marking? item identity? late join? removal hook?
+- **Hands-on Verification Task:** Build a 100-item inventory test and compare one-item mutation bandwidth.
+- **Sources:** [SRC-NET-015], [SRC-NET-004], [SRC-NET-016]
+- **Version Notes:** Exact hooks and debug CVars require target-source confirmation.
+
+### Question: What is a safe saved-move extension boundary?
+
+- **Category:** Networking / Character Movement
+- **Priority:** P1
+- **Expected Depth:** D4
+- **Short Answer:** Only include deterministic movement-affecting input/state needed for client prediction and server replay.
+- **Strong 3-Year-Engineer Answer:** Saved moves are for reproducing movement, not arbitrary gameplay state. I store compact sprint/dash input flags or vectors, implement clear/set/combine contracts, and prove correction/replay under lag/loss. Damage, inventory and non-deterministic effects remain server authority or separate prediction systems.
+- **Common Weak Answer:** "Put anything the client needs in saved moves."
+- **Follow-up Questions:** compressed flags? combine? replay? server authority?
+- **Hands-on Verification Task:** Add predicted sprint and show server correction when client lies.
+- **Sources:** [SRC-NET-009], [SRC-NET-017], [SRC-NET-018], [SRC-NET-019]
+- **Version Notes:** Virtuals and packed move details are branch-sensitive.
+
+### Question: Why is saved-move combining a correctness risk?
+
+- **Category:** Networking / Prediction
+- **Priority:** P2
+- **Expected Depth:** D4
+- **Short Answer:** Combining moves with different movement-affecting state can lose edges or replay the wrong input.
+- **Strong 3-Year-Engineer Answer:** If sprint state, dash edge, custom acceleration or movement mode differs, combining may erase the exact command sequence needed for server reproduction. I define `CanCombineWith` around deterministic equivalence and test one-frame transitions under packet loss and correction.
+- **Common Weak Answer:** "Combining just saves bandwidth."
+- **Follow-up Questions:** edge events? dash? acceleration? correction?
+- **Hands-on Verification Task:** Create a one-frame dash bug caused by over-aggressive move combining.
+- **Sources:** [SRC-NET-009], [SRC-NET-018]
+- **Version Notes:** Saved-move internals are target-branch sensitive.
+
+### Question: How do you separate movement prediction from ability authority?
+
+- **Category:** Networking / Gameplay Architecture
+- **Priority:** P1
+- **Expected Depth:** D4
+- **Short Answer:** Let client predict movement presentation where safe, but keep gameplay effects, damage and cooldown authority on the server or prediction framework.
+- **Strong 3-Year-Engineer Answer:** A sprint or dash movement input can be predicted via CharacterMovement saved moves, but damage, invulnerability, stamina spend and cooldowns need server validation. I design one authoritative ledger and make client prediction cosmetic or replay-safe, then test correction under latency.
+- **Common Weak Answer:** "The client feels responsive, so accept it."
+- **Follow-up Questions:** cooldown? stamina? rollback? correction? cheating?
+- **Hands-on Verification Task:** Implement predicted dash movement with server-authoritative cooldown.
+- **Sources:** [SRC-NET-009], [SRC-GAS-010], [SRC-NET-020]
+- **Version Notes:** NetworkPrediction/GAS behaviour is plugin/project sensitive.
+
+### Question: Why can dynamic replicated subobjects crash or desynchronise?
+
+- **Category:** Networking / Subobjects
+- **Priority:** P2
+- **Expected Depth:** D4
+- **Short Answer:** Registration, lifetime, ownership and stale references must align with replication and GC.
+- **Strong 3-Year-Engineer Answer:** A dynamic UObject subobject needs server ownership, correct outer/lifetime, replication registration, stable removal and GC-safe references. I test create, mutate, remove, late join and owner disconnect. With Iris, registered subobject/fragments requirements become especially branch-sensitive.
+- **Common Weak Answer:** "Set the object to replicate."
+- **Follow-up Questions:** registered list? GC? late join? Iris?
+- **Hands-on Verification Task:** Add/remove a replicated inventory subobject and test client stale reference handling.
+- **Sources:** [SRC-NET-012], [SRC-NET-011], [SRC-NET-014], [SRC-EPIC-009]
+- **Version Notes:** Exact subobject APIs vary by UE version and Iris status.
+
+### Question: What first question should you ask before using Iris details in an answer?
+
+- **Category:** Networking / Iris
+- **Priority:** P3
+- **Expected Depth:** D3
+- **Short Answer:** Is Iris enabled and supported in the target project/branch for this feature?
+- **Strong 3-Year-Engineer Answer:** Iris is specialist and version-sensitive. I first check project settings, branch source and platform status. If enabled, I verify registered subobject/fragments requirements, filtering and debug tools in that branch. If not enabled, I keep the answer at awareness level and use default replication proof.
+- **Common Weak Answer:** "Iris replaces old replication."
+- **Follow-up Questions:** opt-in? fragments? subobjects? fallback?
+- **Hands-on Verification Task:** Capture target project Iris status and one branch-specific API proof.
+- **Sources:** [SRC-NET-014], [SRC-NET-012], [SRC-NET-016]
+- **Version Notes:** Iris is experimental/opt-in in target scope.
+
+### Question: How do you explain NetworkPrediction without overclaiming?
+
+- **Category:** Networking / NetworkPrediction Plugin
+- **Priority:** P3
+- **Expected Depth:** D4
+- **Short Answer:** It is a plugin/API surface for fixed/rollback-style prediction models, but exact integration must be proven in target source.
+- **Strong 3-Year-Engineer Answer:** I describe the model vocabulary: input/cmd, sync state, aux state, simulation tick, reconcile/rollback, cues and smoothing. Then I state that public API docs are not a copyable UE5.3-UE5.6 recipe. A target proof needs plugin enablement, compile gate, forced reconcile and side-effect safety tests.
+- **Common Weak Answer:** "It gives rollback networking."
+- **Follow-up Questions:** sync vs aux? cue dedupe? compile proof? branch?
+- **Hands-on Verification Task:** Produce a minimal compile or rejection memo for the plugin in a target branch.
+- **Sources:** [SRC-NET-020], [SRC-NET-009]
+- **Version Notes:** Plugin APIs are highly branch-sensitive.
+
+### Question: What state belongs in a rollback sync state?
+
+- **Category:** Networking / Rollback Design
+- **Priority:** P3
+- **Expected Depth:** D4
+- **Short Answer:** Deterministic authoritative simulation state required to rewind and resimulate.
+- **Strong 3-Year-Engineer Answer:** Sync state should hold compact values such as position-like state, velocity-like state or simulation counters that define outcome. Input commands are per-tick inputs; aux state holds slower parameters/config. Non-deterministic side effects, spawned actors and audio/VFX cues need separate dedupe or authoritative handling.
+- **Common Weak Answer:** "Put all actor state in sync."
+- **Follow-up Questions:** input? aux? cues? determinism?
+- **Hands-on Verification Task:** Classify dash model fields into input, sync, aux and cue state.
+- **Sources:** [SRC-NET-020], [SRC-NET-009]
+- **Version Notes:** Exact NetworkPrediction model definitions require target source.
+
+### Question: Why are side effects dangerous in rollback simulation?
+
+- **Category:** Networking / Rollback
+- **Priority:** P3
+- **Expected Depth:** D4
+- **Short Answer:** Resimulation may execute the same tick multiple times, duplicating non-idempotent effects.
+- **Strong 3-Year-Engineer Answer:** Rollback-safe simulation should update deterministic state, while irreversible effects such as sound, particles, damage events, inventory grants or analytics are gated through cues or authoritative ledgers. I add operation IDs or cue keys so replay/reconcile does not double-spawn or double-apply.
+- **Common Weak Answer:** "Just do everything in the sim tick."
+- **Follow-up Questions:** cue key? damage? analytics? replay?
+- **Hands-on Verification Task:** Force a correction and prove a dash cue fires once.
+- **Sources:** [SRC-NET-020], [SRC-ARCH-014]
+- **Version Notes:** Cue APIs and services are plugin/branch sensitive.
+
+### Question: How do you debug an owning-connection RPC failure?
+
+- **Category:** Networking / RPCs
+- **Priority:** P1
+- **Expected Depth:** D3
+- **Short Answer:** Check actor ownership, net mode, role, call site, connection, relevancy and whether the RPC direction is legal.
+- **Strong 3-Year-Engineer Answer:** Server RPCs require an owning client connection. I inspect owner chain, Pawn/Controller possession, actor spawn side, replicated state timing and logs. A common fix is moving the request through the PlayerController or an owned component, not making everything reliable or multicast.
+- **Common Weak Answer:** "RPCs are unreliable."
+- **Follow-up Questions:** PlayerController? owner? possession? dedicated server?
+- **Hands-on Verification Task:** Call a Server RPC from an unowned pickup and repair the route.
+- **Sources:** [SRC-NET-003], [SRC-NET-006], [SRC-NET-001]
+- **Version Notes:** Ownership principles stable; debug tooling varies.
+
+### Question: Why is reliable RPC not a state synchronisation strategy?
+
+- **Category:** Networking / RPCs
+- **Priority:** P1
+- **Expected Depth:** D3
+- **Short Answer:** Reliable RPC guarantees delivery ordering for calls on a channel, not durable reconstruction for late join, relevancy or lost state context.
+- **Strong 3-Year-Engineer Answer:** Persistent state belongs in replicated properties, Fast Arrays, save/server state or explicit snapshots. Reliable RPCs fit important events, but can backlog and still require a valid actor/channel and receiver context. Late joiners will not receive old RPC history unless the state is represented elsewhere.
+- **Common Weak Answer:** "Make important state reliable."
+- **Follow-up Questions:** late join? backlog? channel? OnRep?
+- **Hands-on Verification Task:** Convert a cosmetic event plus durable inventory state into RPC plus replicated property design.
+- **Sources:** [SRC-NET-004], [SRC-NET-006], [SRC-NET-015]
+- **Version Notes:** RPC order/channel behaviour is engine implementation sensitive.
+
+### Question: How do dormancy and push-style updates fail in practice?
+
+- **Category:** Networking / Dormancy
+- **Priority:** P2
+- **Expected Depth:** D4
+- **Short Answer:** Mutating dormant actors or unmarked changed state can leave clients stale until explicitly woken or dirtied.
+- **Strong 3-Year-Engineer Answer:** Dormancy reduces replication work, but the server must wake or flush relevant actors before changing replicated state that clients need. I test state changes while dormant, late join, relevancy return and debug CVars. For push-style/delta systems, dirty marking and validation are part of correctness.
+- **Common Weak Answer:** "Dormancy just saves bandwidth."
+- **Follow-up Questions:** wake before change? late join? debug CVar? Fast Array?
+- **Hands-on Verification Task:** Change a dormant door state and prove the client receives or misses it.
+- **Sources:** [SRC-NET-008], [SRC-NET-016], [SRC-NET-015]
+- **Version Notes:** Dormancy/Iris interactions are target-version sensitive.
+
+### Question: What is a strong answer to "server authority"?
+
+- **Category:** Networking / Architecture
+- **Priority:** P0
+- **Expected Depth:** D3
+- **Short Answer:** The server owns truth for gameplay outcomes; clients may predict, request or display but must be validated/reconciled.
+- **Strong 3-Year-Engineer Answer:** I separate authority, ownership, relevancy and prediction. The server decides damage, inventory, objectives and world state. Clients can send intent and locally predict safe movement/presentation, but the server validates and replicates truth. I test cheating paths, late join and packet loss rather than only happy-path responsiveness.
+- **Common Weak Answer:** "Server does everything."
+- **Follow-up Questions:** ownership? autonomous proxy? prediction? cosmetic multicast?
+- **Hands-on Verification Task:** Build a pickup request that rejects impossible client claims.
+- **Sources:** [SRC-NET-001], [SRC-NET-003], [SRC-NET-006]
+- **Version Notes:** Architecture principle stable.
+
+### Question: How do you decide between replicated component, subobject and actor?
+
+- **Category:** Networking / Object Model
+- **Priority:** P2
+- **Expected Depth:** D4
+- **Short Answer:** Choose by lifetime, transform/world identity, ownership, replication audience, RPC needs and object count.
+- **Strong 3-Year-Engineer Answer:** Actors fit world identity/relevancy/transform/lifecycle. Components fit actor-owned behaviour with component lifecycle and optional RPC/property replication. UObject subobjects fit actor-owned data or polymorphic state when actor overhead is unnecessary, but require careful registration/lifetime proof. I test late join and removal for whichever path I choose.
+- **Common Weak Answer:** "Use UObject because it is lighter."
+- **Follow-up Questions:** transform? owner? relevancy? Iris? GC?
+- **Hands-on Verification Task:** Model inventory entry as actor, component and subobject; compare overhead and correctness.
+- **Sources:** [SRC-NET-011], [SRC-NET-012], [SRC-EPIC-012]
+- **Version Notes:** Subobject/Iris details are branch-sensitive.
+
+### Question: What would you measure before lowering NetUpdateFrequency?
+
+- **Category:** Networking / Bandwidth
+- **Priority:** P2
+- **Expected Depth:** D3
+- **Short Answer:** Actor importance, change frequency, relevancy, bandwidth, visual smoothness and correction/latency impact.
+- **Strong 3-Year-Engineer Answer:** Lower frequency can reduce traffic but worsen perceived staleness or increase correction artifacts. I first classify actor type, ownership, relevancy and update value. I measure with network profiler/stat tools under representative clients and use dormancy/conditions/RepGraph/Fast Array where more appropriate.
+- **Common Weak Answer:** "Lower it for all static actors."
+- **Follow-up Questions:** dormancy? relevancy? movement smoothing? owner-only?
+- **Hands-on Verification Task:** Compare traffic and visual quality for three replicated actor classes.
+- **Sources:** [SRC-NET-007], [SRC-NET-008], [SRC-NET-010]
+- **Version Notes:** Metrics/tooling vary by branch.
+
+### Question: How do you prove a GAS prediction bug is not just a visual bug?
+
+- **Category:** GAS / Prediction
+- **Priority:** P2
+- **Expected Depth:** D4
+- **Short Answer:** Compare local prediction, server authoritative state, GameplayEffect/cooldown/cost state and correction outcome.
+- **Strong 3-Year-Engineer Answer:** I log ability activation, prediction key/window, commit, cost/cooldown, target data, GE application and cue firing on client and server. A visual-only mismatch is different from server rejecting an ability or duplicating a GameplayCue. I prove under latency and packet loss.
+- **Common Weak Answer:** "The animation desynced."
+- **Follow-up Questions:** prediction key? commit? target data? cue duplicate?
+- **Hands-on Verification Task:** Inject server rejection for a predicted dash ability and trace client correction.
+- **Sources:** [SRC-GAS-001], [SRC-GAS-010], [SRC-NET-001]
+- **Version Notes:** GAS prediction details are project and branch sensitive.
+
+### Question: What should an ASC placement decision consider?
+
+- **Category:** GAS / Architecture
+- **Priority:** P2
+- **Expected Depth:** D4
+- **Short Answer:** Lifetime, possession, replication audience, respawn, attribute ownership and ability grants.
+- **Strong 3-Year-Engineer Answer:** ASC on PlayerState can survive pawn respawn and fit player-owned abilities; ASC on Pawn can fit creature/body-specific abilities. I decide based on owner/avatar separation, replication mode, save/respawn and grant ledger. Then I test possession changes, death/respawn and dedicated server.
+- **Common Weak Answer:** "Put ASC on PlayerState for multiplayer."
+- **Follow-up Questions:** NPC? avatar? replication mode? respawn?
+- **Hands-on Verification Task:** Move ASC placement and document which state survives respawn.
+- **Sources:** [SRC-GAS-001], [SRC-GAS-002], [SRC-EPIC-014]
+- **Version Notes:** Common patterns are project-dependent.
+
+### Question: Why is an ability grant ledger useful?
+
+- **Category:** GAS / Grants
+- **Priority:** P2
+- **Expected Depth:** D3
+- **Short Answer:** It records why abilities/effects were granted so cleanup, reload, respawn and debugging are deterministic.
+- **Strong 3-Year-Engineer Answer:** Ability specs and handles are not enough context by themselves. A ledger ties grants to item, class, quest, loadout or temporary buff source. It prevents orphaned abilities after equipment removal, respawn or save/load and makes bug reports explainable.
+- **Common Weak Answer:** "Remove the ability handle."
+- **Follow-up Questions:** duplicate grant? source item? save/load? cleanup?
+- **Hands-on Verification Task:** Equip/unequip an item repeatedly and prove no orphan ability remains.
+- **Sources:** [SRC-GAS-003], [SRC-GAS-013], [SRC-ARCH-014]
+- **Version Notes:** Grant policies are project-specific.
+
+### Question: How do Attribute base and current values shape bugs?
+
+- **Category:** GAS / Attributes
+- **Priority:** P2
+- **Expected Depth:** D3
+- **Short Answer:** Confusing permanent base changes with temporary/current modifiers causes stacking, restore and UI bugs.
+- **Strong 3-Year-Engineer Answer:** I treat base value as durable baseline and current value as the result after active effects/modifiers where the project pattern supports that distinction. Damage, healing, max-health changes and buffs need explicit invariants and clamps. UI should observe the authoritative attribute flow rather than caching stale derived values.
+- **Common Weak Answer:** "Health is just a float."
+- **Follow-up Questions:** max health change? clamp? stacking? UI?
+- **Hands-on Verification Task:** Apply max-health buff, damage, expiry and verify final health invariant.
+- **Sources:** [SRC-GAS-004], [SRC-GAS-005], [SRC-GAS-006]
+- **Version Notes:** Exact attribute callbacks are branch-sensitive.
+
+### Question: Why can GameplayEffect execution calculations become hard to debug?
+
+- **Category:** GAS / Gameplay Effects
+- **Priority:** P3
+- **Expected Depth:** D4
+- **Short Answer:** Captures, snapshots, tags, stacking and source/target context interact across time.
+- **Strong 3-Year-Engineer Answer:** I log source/target ASC, captured attributes, snapshot policy, granted/blocked tags, set-by-caller values and stacking rules. A wrong damage result may come from capture timing, missing tag, wrong source object or stale spec. I create deterministic tests for each calculation path.
+- **Common Weak Answer:** "The formula is wrong."
+- **Follow-up Questions:** snapshot? captured attr? tags? spec context?
+- **Hands-on Verification Task:** Build two damage calculations with snapshot and live capture and compare.
+- **Sources:** [SRC-GAS-005], [SRC-GAS-006], [SRC-GAS-007]
+- **Version Notes:** GAS internals require branch/source confirmation.
+
+### Question: What is a safe GameplayCue policy?
+
+- **Category:** GAS / Gameplay Cues
+- **Priority:** P3
+- **Expected Depth:** D3
+- **Short Answer:** Cues present gameplay state/events without becoming authority or duplicating under prediction/correction.
+- **Strong 3-Year-Engineer Answer:** GameplayCues should be keyed, audience-aware and resilient to prediction replay. I separate cue visuals/audio from authoritative effect application, handle removal/end events and test under latency. Duplicate cue spam often points to missing dedupe or incorrect prediction handling.
+- **Common Weak Answer:** "Cues are just particles."
+- **Follow-up Questions:** prediction? remove? authority? cosmetic audience?
+- **Hands-on Verification Task:** Force a predicted ability correction and prove the cue does not duplicate.
+- **Sources:** [SRC-GAS-008], [SRC-GAS-010], [SRC-NET-020]
+- **Version Notes:** Cue systems are project/plugin sensitive.
+
+### Question: How do you test AbilityTask cleanup?
+
+- **Category:** GAS / Ability Tasks
+- **Priority:** P2
+- **Expected Depth:** D4
+- **Short Answer:** Cancel/end abilities across success, failure, owner death, travel and prediction rejection while checking delegates/timers/listeners are removed.
+- **Strong 3-Year-Engineer Answer:** AbilityTasks often bind delegates, wait on gameplay events or manage timers. I test every exit path and assert no duplicate callbacks after reactivation. Cleanup must be robust on server and client because leaked tasks create ghost activation, cue duplication or crashes.
+- **Common Weak Answer:** "EndAbility cleans it."
+- **Follow-up Questions:** cancellation? owner destroyed? prediction reject? delegates?
+- **Hands-on Verification Task:** Build a wait-target task and cancel it from five paths.
+- **Sources:** [SRC-GAS-009], [SRC-GAS-013]
+- **Version Notes:** AbilityTask APIs can vary by branch.
+
+### Question: When should you not adopt GAS?
+
+- **Category:** GAS / Architecture
+- **Priority:** P2
+- **Expected Depth:** D3
+- **Short Answer:** When the game's ability/state needs are small enough that GAS complexity, replication and authoring overhead exceed its benefits.
+- **Strong 3-Year-Engineer Answer:** GAS is powerful for networked abilities, tags, effects, attributes and prediction, but it imposes mental model and tooling cost. For a simple single-player interaction system, a custom component may be clearer. I decide from feature roadmap, team familiarity, multiplayer needs and designer authoring requirements.
+- **Common Weak Answer:** "Always use GAS for abilities."
+- **Follow-up Questions:** prediction? designer workflow? complexity? migration?
+- **Hands-on Verification Task:** Write a decision memo comparing GAS and a bespoke ability component.
+- **Sources:** [SRC-GAS-001], [SRC-ARCH-014]
+- **Version Notes:** GAS value is highly project-dependent.
+
+### Question: How do Smart Objects prevent AI hardcoding?
+
+- **Category:** AI / Smart Objects
+- **Priority:** P2
+- **Expected Depth:** D3
+- **Short Answer:** They move affordance data and claimable interaction slots into world-authored objects rather than bespoke AI code.
+- **Strong 3-Year-Engineer Answer:** Smart Objects let AI query, claim, use and release authored affordances. The AI does not need a hardcoded list of "chairs" or "cover"; it asks for suitable objects by tags/filters/context. Correctness depends on claim lifecycle, failure handling, nav/animation integration and server authority if multiplayer.
+- **Common Weak Answer:** "Smart Objects are interactable actors."
+- **Follow-up Questions:** claim? slot? tags? release?
+- **Hands-on Verification Task:** Build two AI agents racing for one Smart Object slot and prove only one claims it.
+- **Sources:** [SRC-AI-011], [SRC-AI-012], [SRC-AI-015]
+- **Version Notes:** Smart Objects are plugin/project sensitive.
+
+### Question: StateTree or Behaviour Tree?
+
+- **Category:** AI / Decision Systems
+- **Priority:** P2
+- **Expected Depth:** D3
+- **Short Answer:** Choose based on decision shape, data flow, authoring needs, team expertise and debugging support rather than trend.
+- **Strong 3-Year-Engineer Answer:** Behaviour Trees are strong for hierarchical AI decisions with Blackboard and event-driven decorators; StateTree combines hierarchical states, selectors, tasks and data flow and can fit smart-object/activity style logic. I compare transition semantics, reuse, debugging, designer workflow and performance before choosing.
+- **Common Weak Answer:** "StateTree is the new Behaviour Tree."
+- **Follow-up Questions:** transitions? observers? task lifetime? debugging?
+- **Hands-on Verification Task:** Implement patrol/interrupt/use-object in both and compare clarity.
+- **Sources:** [SRC-AI-002], [SRC-AI-010], [SRC-AI-008]
+- **Version Notes:** StateTree feature/API status is branch/plugin sensitive.
+
+### Question: How do you debug a custom AI sense that remembers forever?
+
+- **Category:** AI / Perception
+- **Priority:** P2
+- **Expected Depth:** D4
+- **Short Answer:** Inspect stimulus age, success state, forgetting policy, listener updates and Blackboard projection.
+- **Strong 3-Year-Engineer Answer:** A sense should report evidence, not permanent truth. I check FAIStimulus age/expiration, source registration, listener configuration and whether AI code projects stale perception into Blackboard without clearing it. Visual Logger and AI debugger help separate sense data from decision memory.
+- **Common Weak Answer:** "Clear the Blackboard key sometimes."
+- **Follow-up Questions:** stimulus age? listener? source? decision memory?
+- **Hands-on Verification Task:** Make a target leave range and prove perception and Blackboard clear independently.
+- **Sources:** [SRC-AI-004], [SRC-AI-016], [SRC-AI-018], [SRC-AI-009]
+- **Version Notes:** Custom sense APIs are source-sensitive.
+
+### Question: Why should custom senses avoid gameplay decisions inside the sense?
+
+- **Category:** AI / Architecture
+- **Priority:** P2
+- **Expected Depth:** D3
+- **Short Answer:** Senses should provide evidence; controllers/BT/StateTree decide behaviour.
+- **Strong 3-Year-Engineer Answer:** Putting "attack now" logic in a sense couples perception sampling, AI policy, difficulty and gameplay side effects. I make the sense produce stimuli with strength/location/tag, then let decision systems reason over memory, Blackboard, EQS or StateTree. This keeps debugging and scaling manageable.
+- **Common Weak Answer:** "Sense knows what the AI should do."
+- **Follow-up Questions:** evidence vs truth? difficulty? testing? scaling?
+- **Hands-on Verification Task:** Move a "flee if smell" decision from sense code into StateTree/BT.
+- **Sources:** [SRC-AI-016], [SRC-AI-019], [SRC-AI-002], [SRC-AI-010]
+- **Version Notes:** API signatures are branch-sensitive.
+
+### Question: What does MassEntity buy over actors?
+
+- **Category:** MassEntity / ECS
+- **Priority:** P2
+- **Expected Depth:** D3
+- **Short Answer:** Data-oriented batches over fragments/archetypes for large populations, with explicit trade-offs in tooling, representation and gameplay integration.
+- **Strong 3-Year-Engineer Answer:** Mass can improve scale by processing homogeneous data in chunks instead of thousands of ticking actors. It is not a drop-in Actor replacement: you need representation, promotion/demotion, debugging, replication awareness and authoring workflow. I adopt it when measured actor scale fails and Mass fits the simulation shape.
+- **Common Weak Answer:** "Mass is faster ECS."
+- **Follow-up Questions:** fragments? processors? representation? hybrid actor?
+- **Hands-on Verification Task:** Compare 1000 Actor agents with Mass agents under equal movement/representation requirements.
+- **Sources:** [SRC-MASS-001], [SRC-MASS-002], [SRC-MASS-006]
+- **Version Notes:** Mass APIs are branch/plugin sensitive.
+
+### Question: Why is structural mutation expensive in ECS/Mass systems?
+
+- **Category:** MassEntity / Performance
+- **Priority:** P3
+- **Expected Depth:** D4
+- **Short Answer:** Adding/removing fragments or tags can move entities between archetypes/chunks and invalidate assumptions.
+- **Strong 3-Year-Engineer Answer:** ECS performance depends on stable archetypes and cache-friendly chunk iteration. Frequent structural changes can create command-buffer work, chunk moves and synchronisation points. I prefer tags/fragments that change at controlled phase boundaries and profile mutation bursts separately from steady-state processing.
+- **Common Weak Answer:** "Tags are free."
+- **Follow-up Questions:** archetype move? command buffer? observer? phase?
+- **Hands-on Verification Task:** Toggle a fragment on thousands of entities every frame and measure versus state field.
+- **Sources:** [SRC-MASS-002], [SRC-MASS-004], [SRC-MASS-006]
+- **Version Notes:** Exact processor/command APIs are version-sensitive.
+
+### Question: How should Mass actors be promoted and demoted?
+
+- **Category:** MassEntity / Hybrid Architecture
+- **Priority:** P3
+- **Expected Depth:** D4
+- **Short Answer:** Promote only entities needing rich Actor behaviour and keep one authoritative state writer during transitions.
+- **Strong 3-Year-Engineer Answer:** A common hybrid pattern uses Mass for far/large-scale simulation and Actors for nearby, interactive or cinematic entities. Promotion/demotion needs identity mapping, state copy, ownership, replication policy and rollback for failed creation. Dual writers are the main bug.
+- **Common Weak Answer:** "Spawn actors near the player."
+- **Follow-up Questions:** identity? state handoff? replication? dual writer?
+- **Hands-on Verification Task:** Promote one crowd entity to Actor near the player and demote it without state divergence.
+- **Sources:** [SRC-MASS-007], [SRC-MASS-008], [SRC-MASS-010]
+- **Version Notes:** Representation and crowd plugins are branch-sensitive.
+
+### Question: What is ZoneGraph's role in crowd AI?
+
+- **Category:** MassAI / ZoneGraph
+- **Priority:** P3
+- **Expected Depth:** D3
+- **Short Answer:** It provides lane/zone-style spatial data for movement/crowd flow rather than per-agent freeform pathfinding.
+- **Strong 3-Year-Engineer Answer:** ZoneGraph can support structured pedestrian/traffic-like flow where agents follow authored lanes/zones. It complements Mass crowd and StateTree-style activities. I still need avoidance, representation, transitions to NavMesh/Actors and debugging for blocked or disconnected lanes.
+- **Common Weak Answer:** "It replaces NavMesh."
+- **Follow-up Questions:** lanes? avoidance? Mass? transitions?
+- **Hands-on Verification Task:** Build a simple two-lane route and debug a disconnected lane.
+- **Sources:** [SRC-MASS-009], [SRC-MASS-010], [SRC-AI-006]
+- **Version Notes:** ZoneGraph/MassCrowd are plugin/version sensitive.
+
+### Question: How do you profile a PCG graph versus its generated output?
+
+- **Category:** PCG / Performance
+- **Priority:** P2
+- **Expected Depth:** D3
+- **Short Answer:** Separate graph execution cost from spawned Actors/components/instances, collision, nav, memory and rendering cost.
+- **Strong 3-Year-Engineer Answer:** PCG graph time is only one part. Output may create thousands of components, collision bodies, nav modifiers, materials or draw calls. I record input point count, filtered count, output count, generated representation and packaged/runtime policy before optimising graph nodes.
+- **Common Weak Answer:** "The PCG graph is slow."
+- **Follow-up Questions:** output count? Actors vs ISM? collision? runtime generation?
+- **Hands-on Verification Task:** Generate the same points as Actors and instances and compare cost.
+- **Sources:** [SRC-PCG-001], [SRC-PCG-003], [SRC-PERF-003]
+- **Version Notes:** PCG runtime behaviour is plugin/branch sensitive.
+
+### Question: What should PCG output ownership record?
+
+- **Category:** PCG / Pipeline
+- **Priority:** P2
+- **Expected Depth:** D3
+- **Short Answer:** Seed, graph version, input identity, owner, cleanup policy, Data Layer/HLOD policy and runtime/cook behaviour.
+- **Strong 3-Year-Engineer Answer:** Generated output needs provenance or the team cannot safely regenerate, diff, cook or debug it. I store enough metadata to know why output exists and whether stale duplicates should be removed. In World Partition, I also verify Data Layer and HLOD assignment.
+- **Common Weak Answer:** "Regenerate if it looks wrong."
+- **Follow-up Questions:** seed? cleanup? package? HLOD?
+- **Hands-on Verification Task:** Change a PCG seed and prove old output is removed or versioned.
+- **Sources:** [SRC-PCG-001], [SRC-PCG-004], [SRC-WORLD-003]
+- **Version Notes:** Generated output policy is project-specific.
+
+### Question: Why are metadata domains a PCG debugging issue?
+
+- **Category:** PCG / Debugging
+- **Priority:** P3
+- **Expected Depth:** D3
+- **Short Answer:** Attribute values may live on different data/point/element domains, so filters or mutations can read the wrong assumption.
+- **Strong 3-Year-Engineer Answer:** A PCG graph can appear logically correct while a filter sees missing/default values because the attribute is not on the domain the node expects. I inspect debug points and metadata at intermediate nodes, then assert assumptions with sanity checkpoints.
+- **Common Weak Answer:** "The filter node is broken."
+- **Follow-up Questions:** point attribute? data attribute? debug node? defaults?
+- **Hands-on Verification Task:** Put an attribute on the wrong domain and diagnose a dead branch.
+- **Sources:** [SRC-PCG-001], [SRC-PCG-003], [SRC-PCG-007]
+- **Version Notes:** Node behaviour evolves across plugin versions.
+
+### Question: How do you choose between Level Instance and Packed Level Blueprint?
+
+- **Category:** World Building / Reusable Content
+- **Priority:** P2
+- **Expected Depth:** D3
+- **Short Answer:** Choose by editability, reuse, static density, runtime behaviour, OFPA support and gameplay identity.
+- **Strong 3-Year-Engineer Answer:** Level Instances help reuse authored level chunks; Packed Level Blueprints can suit dense static visual clusters. Mutable gameplay actors, unique save identity or high-density runtime streaming need careful treatment. I prove packaged behaviour and source-control workflow rather than assuming editor composition is enough.
+- **Common Weak Answer:** "Use Packed Level Blueprint for reusable places."
+- **Follow-up Questions:** static? mutable? OFPA? runtime mode?
+- **Hands-on Verification Task:** Build a POI both ways and compare packaged edit/runtime constraints.
+- **Sources:** [SRC-WORLD-004], [SRC-ASSET-010]
+- **Version Notes:** Level Instance modes are target-version sensitive.
+
+### Question: How do you prove a shader plugin works in a package?
+
+- **Category:** Rendering / Shaders
+- **Priority:** P3
+- **Expected Depth:** D4
+- **Short Answer:** Compile/cook/package the shader path, render a visible target output and capture failure logs for missing mapping/library issues.
+- **Strong 3-Year-Engineer Answer:** Editor success can hide shader directory mapping, load phase, platform permutation or cook issues. I verify plugin module load phase, shader registration, supported platforms, cooked shader library and a packaged smoke view that would be obviously wrong if the shader failed.
+- **Common Weak Answer:** "It compiles in editor."
+- **Follow-up Questions:** load phase? cook? platform? black output?
+- **Hands-on Verification Task:** Package a material/global shader path and intentionally break directory mapping.
+- **Sources:** [SRC-RENDER-012], [SRC-RENDER-013], [SRC-BUILD-017]
+- **Version Notes:** Shader plugin APIs are branch/RHI sensitive.
+
+### Question: How do you diagnose a first-use PSO hitch?
+
+- **Category:** Rendering / PSO
+- **Priority:** P2
+- **Expected Depth:** D4
+- **Short Answer:** Correlate hitch timing with first material/effect/view use, PSO logging and packaged cold-cache runs.
+- **Strong 3-Year-Engineer Answer:** I separate shader compilation, shader library availability, PSO creation, texture streaming and render-state setup. Then I collect representative PSOs from packaged scenarios or reduce state diversity. Warm developer caches are not proof that shipped users avoid first-use hitches.
+- **Common Weak Answer:** "Precompile shaders."
+- **Follow-up Questions:** shader library? PSO cache? cold cache? scene capture?
+- **Hands-on Verification Task:** Trigger a first-use effect hitch and verify PSO/cache coverage.
+- **Sources:** [SRC-RENDER-014], [SRC-PERF-003], [SRC-BUILD-017]
+- **Version Notes:** PSO workflows vary by RHI/platform.
+
+### Question: Why can scene captures dominate cost?
+
+- **Category:** Rendering / Scene Capture
+- **Priority:** P2
+- **Expected Depth:** D3
+- **Short Answer:** They can render additional views with their own visibility, passes, render targets and update cadence.
+- **Strong 3-Year-Engineer Answer:** I treat a SceneCapture2D as another camera until evidence says otherwise; cube captures can be much worse. I reduce resolution/format/update rate/show flags, avoid per-frame captures unless necessary, and profile GPU, Draw/RHI and render-target memory separately.
+- **Common Weak Answer:** "It is just a texture preview."
+- **Follow-up Questions:** capture every frame? cube? show flags? UI retainer?
+- **Hands-on Verification Task:** Compare 1, 10 and 50 capture components with manual update.
+- **Sources:** [SRC-RENDER-016], [SRC-RENDER-017], [SRC-RENDER-018]
+- **Version Notes:** Renderer path/platform support changes cost.
+
+### Question: What does RDG help you reason about?
+
+- **Category:** Rendering / RDG
+- **Priority:** P3
+- **Expected Depth:** D3
+- **Short Answer:** Render pass/resource lifetime, dependencies, aliasing and validation in the render graph.
+- **Strong 3-Year-Engineer Answer:** RDG makes render work explicit as passes and resources with declared dependencies. It helps catch lifetime and ordering bugs that ad hoc render code can hide. Specialist answers should still be source-checked because exact APIs and validation tools change.
+- **Common Weak Answer:** "RDG is a faster way to render."
+- **Follow-up Questions:** resource lifetime? pass dependency? extraction? validation?
+- **Hands-on Verification Task:** Write a small pass that intentionally uses a resource outside lifetime and fix it.
+- **Sources:** [SRC-RENDER-019], [SRC-RENDER-012]
+- **Version Notes:** RDG APIs are source/RHI sensitive.
+
+### Question: How do you choose Nanite, LOD, ISM/HISM or HLOD?
+
+- **Category:** Rendering / Visibility
+- **Priority:** P1
+- **Expected Depth:** D3
+- **Short Answer:** Match the technique to geometry, repetition, distance grouping, material/deformation needs, platform support and measured bottleneck.
+- **Strong 3-Year-Engineer Answer:** Nanite helps supported complex geometry, LOD simplifies individual assets, instancing helps repeated compatible meshes, and HLOD replaces distant spatial groups. I measure CPU submission, GPU passes, shadows, memory and streaming rather than choosing by name.
+- **Common Weak Answer:** "Use Nanite for everything."
+- **Follow-up Questions:** material? WPO? repeated mesh? platform? shadows?
+- **Hands-on Verification Task:** Render one population four ways and compare Draw/GPU/memory.
+- **Sources:** [SRC-RENDER-008], [SRC-RENDER-010], [SRC-RENDER-011]
+- **Version Notes:** Feature support varies by platform and UE version.
+
+### Question: Why can material slots be more expensive than triangle count?
+
+- **Category:** Rendering / Materials
+- **Priority:** P2
+- **Expected Depth:** D3
+- **Short Answer:** Slots can split mesh sections and create more pass/material/draw work across multiple rendering passes.
+- **Strong 3-Year-Engineer Answer:** Triangle count is only one axis. Many slots, unique material instances and pass participation can increase CPU draw setup and GPU state/pixel cost. I inspect section counts, material complexity, shadow/depth/base participation and render-thread/RHI metrics.
+- **Common Weak Answer:** "Optimise polygons first."
+- **Follow-up Questions:** sections? shadow pass? material instance? overdraw?
+- **Hands-on Verification Task:** Compare one mesh with 1 versus 12 material slots at equal triangle count.
+- **Sources:** [SRC-RENDER-004], [SRC-RENDER-015], [SRC-PERF-003]
+- **Version Notes:** Renderer internals are branch/RHI sensitive.
+
+### Question: How do you decide whether a VFX regression is CPU or GPU?
+
+- **Category:** VFX / Profiling
+- **Priority:** P2
+- **Expected Depth:** D3
+- **Short Answer:** Separate system simulation, spawning, component count, renderer submission, material overdraw and GPU pass time.
+- **Strong 3-Year-Engineer Answer:** Niagara can cost CPU in spawn/update, memory from buffers, render-thread work from components/renderers and GPU from materials/overdraw/particles. I profile with stats/Insights/GPU capture and scale emitter count, particle count and material complexity independently.
+- **Common Weak Answer:** "Particles are GPU-heavy."
+- **Follow-up Questions:** CPU sim? GPU sim? overdraw? pooling?
+- **Hands-on Verification Task:** Build a CPU-sim and GPU-sim effect and compare under 100 emitters.
+- **Sources:** [SRC-FX-001], [SRC-FX-006], [SRC-PERF-003]
+- **Version Notes:** Niagara feature support is platform/branch sensitive.
+
+### Question: Why can pooling Niagara components be wrong?
+
+- **Category:** VFX / Lifetime
+- **Priority:** P3
+- **Expected Depth:** D3
+- **Short Answer:** Reused components may retain parameters, bindings, transforms or lifecycle assumptions unless reset explicitly.
+- **Strong 3-Year-Engineer Answer:** Pooling can reduce spawn/destruction churn, but pooled VFX must reset user parameters, attachment, owner, scalability state, completion callbacks and audio/gameplay coupling. I test cancellation, replay and owner destruction, not only the happy path.
+- **Common Weak Answer:** "Pool all effects for performance."
+- **Follow-up Questions:** reset? owner destroyed? scalability? completion?
+- **Hands-on Verification Task:** Pool a status effect and prove no stale colour/target remains.
+- **Sources:** [SRC-FX-001], [SRC-FX-007], [SRC-ARCH-014]
+- **Version Notes:** Pooling APIs/policies vary by project.
+
+### Question: How do you debug audio that plays twice in multiplayer?
+
+- **Category:** Audio / Multiplayer
+- **Priority:** P2
+- **Expected Depth:** D3
+- **Short Answer:** Determine whether audio is predicted locally, replicated as an event, attached to state, or triggered by both client and server.
+- **Strong 3-Year-Engineer Answer:** I separate local feedback from authoritative replicated events. Some sounds should be local-only, some multicast/cue-based, and persistent loops should follow replicated state with dedupe. Logs should include instigator, net mode, owner and event ID so double fire is visible.
+- **Common Weak Answer:** "Only play it on server."
+- **Follow-up Questions:** local feedback? multicast? persistent loop? event ID?
+- **Hands-on Verification Task:** Trigger a weapon sound under prediction and remove duplicate server echo.
+- **Sources:** [SRC-AUDIO-001], [SRC-AUDIO-004], [SRC-NET-006]
+- **Version Notes:** Audio replication policy is project-specific.
+
+### Question: What makes a MetaSound performance issue different from a SoundCue issue?
+
+- **Category:** Audio / MetaSounds
+- **Priority:** P3
+- **Expected Depth:** D3
+- **Short Answer:** MetaSounds are procedural graphs with graph execution/parameter complexity, not only asset playback routing.
+- **Strong 3-Year-Engineer Answer:** I inspect graph complexity, update rate, parameter driving, voice count, concurrency, submix routing and platform CPU. A MetaSound can be powerful, but procedural authoring should still follow budgets and profiler evidence. I avoid assuming it is cheaper or more expensive without measuring.
+- **Common Weak Answer:** "MetaSounds are always better."
+- **Follow-up Questions:** graph cost? voices? parameters? platform?
+- **Hands-on Verification Task:** Compare a looping SoundCue and MetaSound variant under 100 voices.
+- **Sources:** [SRC-AUDIO-002], [SRC-AUDIO-009], [SRC-PERF-003]
+- **Version Notes:** MetaSounds are version/platform sensitive.
+
+### Question: How do you decide between animation montage and state machine logic?
+
+- **Category:** Animation / Gameplay
+- **Priority:** P1
+- **Expected Depth:** D3
+- **Short Answer:** Use state machines for continuous locomotion/state selection and montages for discrete authored actions layered through slots/sections.
+- **Strong 3-Year-Engineer Answer:** Montages are strong for attacks, reloads and reactions with sections/notifies/slots; locomotion state machines/blend spaces are better for continuous pose selection. I define authority and cancellation policy, especially for multiplayer notifies and root motion.
+- **Common Weak Answer:** "Use montages for actions."
+- **Follow-up Questions:** slots? sync? notify authority? root motion?
+- **Hands-on Verification Task:** Implement a melee attack montage layered over locomotion and test cancellation.
+- **Sources:** [SRC-ANIM-003], [SRC-ANIM-006], [SRC-ANIM-009]
+- **Version Notes:** Animation APIs and tooling vary by branch.
+
+### Question: Why are animation notifies not reliable gameplay authority by themselves?
+
+- **Category:** Animation / Networking
+- **Priority:** P1
+- **Expected Depth:** D3
+- **Short Answer:** They are tied to animation playback/timing and can differ by client, LOD, montage state, prediction and cancellation.
+- **Strong 3-Year-Engineer Answer:** Notifies are useful timing signals, but authoritative damage or inventory changes should be server-validated. I design notify windows with server checks, montage state verification and fallback for interrupted animations. Cosmetic notifies can remain client-side.
+- **Common Weak Answer:** "Put damage in the notify."
+- **Follow-up Questions:** montage cancel? server? LOD? prediction?
+- **Hands-on Verification Task:** Trigger damage from a notify window and reject it when montage state is invalid.
+- **Sources:** [SRC-ANIM-006], [SRC-NET-001], [SRC-GAS-009]
+- **Version Notes:** Notify behaviour depends on animation setup.
+
+### Question: How do you diagnose root-motion foot sliding in multiplayer?
+
+- **Category:** Animation / Movement
+- **Priority:** P2
+- **Expected Depth:** D4
+- **Short Answer:** Compare animation root motion, CharacterMovement authority, network smoothing, montage state and correction.
+- **Strong 3-Year-Engineer Answer:** I check whether movement is in-place or root-motion-driven, who owns authority, whether root motion is replicated/consumed correctly, and how smoothing/correction affects simulated proxies. I use a dedicated-server latency test, not only local PIE.
+- **Common Weak Answer:** "Fix the animation."
+- **Follow-up Questions:** server authority? montage? smoothing? simulated proxy?
+- **Hands-on Verification Task:** Compare in-place and root-motion dodge under 100 ms latency.
+- **Sources:** [SRC-ANIM-010], [SRC-NET-009], [SRC-ANIM-015]
+- **Version Notes:** Root-motion networking is setup/branch sensitive.
+
+### Question: How do you classify a collision bug before fixing it?
+
+- **Category:** Physics / Collision
+- **Priority:** P0
+- **Expected Depth:** D3
+- **Short Answer:** Determine query versus physics simulation, channel/object response, simple/complex geometry and event notification path.
+- **Strong 3-Year-Engineer Answer:** I first ask whether this is a trace/sweep/overlap query, rigid-body contact, CharacterMovement movement, or hit/overlap event bug. Then I inspect collision enabled, object type, responses, profile, simple/complex geometry, movement flags and notification settings.
+- **Common Weak Answer:** "Collision is set wrong."
+- **Follow-up Questions:** query vs physics? simple/complex? hit vs overlap? channel?
+- **Hands-on Verification Task:** Build a response matrix for projectile, pawn, trigger and physics prop.
+- **Sources:** [SRC-PHYS-001], [SRC-PHYS-002], [SRC-PHYS-003]
+- **Version Notes:** Chaos details and debug tools vary.
+
+### Question: Why can sweep results be misunderstood?
+
+- **Category:** Physics / Queries
+- **Priority:** P1
+- **Expected Depth:** D3
+- **Short Answer:** Initial overlap, blocking hit, touch hits, normal direction, impact point and trace complexity have specific meanings.
+- **Strong 3-Year-Engineer Answer:** I read the FHitResult fields carefully: blocking hit versus overlap/touch, start penetrating, time, impact point, location, normals and actor/component. Multi traces may include non-blocking hits before a block. Misreading these creates teleport, projectile and ledge bugs.
+- **Common Weak Answer:** "Use Hit Actor and Impact Point."
+- **Follow-up Questions:** start penetrating? trace complex? normal? multi?
+- **Hands-on Verification Task:** Log and visualise a sphere sweep starting inside geometry.
+- **Sources:** [SRC-PHYS-003], [SRC-MATH-011]
+- **Version Notes:** Query APIs are stable, details branch-sensitive.
+
+### Question: When should you use physics substepping?
+
+- **Category:** Physics / Simulation
+- **Priority:** P2
+- **Expected Depth:** D3
+- **Short Answer:** When simulation stability needs smaller physics timesteps, after confirming cost and determinism/authority implications.
+- **Strong 3-Year-Engineer Answer:** Substepping can improve fast-moving or constrained simulation stability, but it increases CPU cost and does not fix bad collision setup or unrealistic forces. I profile physics time, test network authority and tune damping/mass/constraints first.
+- **Common Weak Answer:** "Turn on substepping for better physics."
+- **Follow-up Questions:** cost? CCD? constraints? network?
+- **Hands-on Verification Task:** Compare a high-speed projectile/constraint with and without substepping.
+- **Sources:** [SRC-PHYS-005], [SRC-PHYS-006], [SRC-PERF-003]
+- **Version Notes:** Chaos settings differ by branch/platform.
+
+### Question: How do you design UI model projection for multiplayer?
+
+- **Category:** UI / Architecture
+- **Priority:** P1
+- **Expected Depth:** D3
+- **Short Answer:** Project replicated/local model state into view models or widgets with clear audience and lifetime boundaries.
+- **Strong 3-Year-Engineer Answer:** UI should not own gameplay truth. I define whether data is server-public, owner-only, local-only or cosmetic, then project it into widgets via model/view-model/event bindings. I test pawn death, possession change, split-screen/local player and stale async assets.
+- **Common Weak Answer:** "Bind widgets directly to actors."
+- **Follow-up Questions:** owner-only? PlayerState? async icon? possession?
+- **Hands-on Verification Task:** Build an inventory UI that survives pawn respawn without stale actor pointers.
+- **Sources:** [SRC-UI-001], [SRC-UI-011], [SRC-NET-004]
+- **Version Notes:** MVVM/CommonUI are plugin/version sensitive.
+
+### Question: Why can UMG bindings hurt performance?
+
+- **Category:** UI / Performance
+- **Priority:** P1
+- **Expected Depth:** D3
+- **Short Answer:** Frequent polling/binding evaluation can cause repeated work and hidden object traversal every frame.
+- **Strong 3-Year-Engineer Answer:** I prefer event-driven or batched updates for stable UI state, while recognising very high-frequency changes may need explicit efficient update paths. I profile Slate/UMG invalidation, list recycling and widget counts rather than guessing.
+- **Common Weak Answer:** "Never use bindings."
+- **Follow-up Questions:** invalidation? list view? event frequency? retainer?
+- **Hands-on Verification Task:** Replace polling health bindings with event updates and profile 100 widgets.
+- **Sources:** [SRC-UI-009], [SRC-PERF-005], [SRC-PERF-003]
+- **Version Notes:** UMG optimisation guidance changes across versions.
+
+### Question: How do ListView recycled entries fail?
+
+- **Category:** UI / ListView
+- **Priority:** P2
+- **Expected Depth:** D3
+- **Short Answer:** Recycled widgets can keep stale delegates, async icons, selection state or model references if not rebound/reset.
+- **Strong 3-Year-Engineer Answer:** Entry widgets are reused, so `OnListItemObjectSet` must reset every visual and binding, cancel or validate async loads, and unbind old delegates. I stress with scroll, filter, sort and destroyed data items.
+- **Common Weak Answer:** "Create a widget per item."
+- **Follow-up Questions:** async image? delegate? selection? sort?
+- **Hands-on Verification Task:** Create a 1000-row inventory and prove no stale icon after rapid scrolling.
+- **Sources:** [SRC-UI-005], [SRC-UI-009], [SRC-ASSET-004]
+- **Version Notes:** UMG/ListView APIs vary by branch.
+
+### Question: How do you handle UI focus across gamepad, mouse and CommonUI?
+
+- **Category:** UI / Input
+- **Priority:** P2
+- **Expected Depth:** D3
+- **Short Answer:** Define input mode, focus target, navigation rules, activation stack and game/UI ownership transitions.
+- **Strong 3-Year-Engineer Answer:** I test focus entry/exit, modal layers, gamepad navigation, pointer interaction, pause/menu transitions and local-player scope. CommonUI can help with activation, but the project still needs clear ownership and fallback for lost focus.
+- **Common Weak Answer:** "Set keyboard focus."
+- **Follow-up Questions:** local player? modal? back action? Enhanced Input?
+- **Hands-on Verification Task:** Build a modal inventory and verify gamepad back/focus restoration.
+- **Sources:** [SRC-UI-010], [SRC-UI-012], [SRC-INPUT-001]
+- **Version Notes:** CommonUI/Enhanced Input are plugin/branch sensitive.
+
+### Question: What belongs in a save-game schema version?
+
+- **Category:** Gameplay Architecture / Save Systems
+- **Priority:** P1
+- **Expected Depth:** D4
+- **Short Answer:** Stable IDs, version number, migration rules and separation between durable truth and transient runtime pointers.
+- **Strong 3-Year-Engineer Answer:** Saves should not serialise arbitrary actor pointers from streamed cells. I store stable content IDs, state values, schema version and migration code. For World Partition, I reconstruct presentation from durable state and handle missing/renamed content gracefully.
+- **Common Weak Answer:** "Mark fields SaveGame."
+- **Follow-up Questions:** migration? stable ID? streamed actor? missing asset?
+- **Hands-on Verification Task:** Rename/remove a saved pickup definition and migrate the save.
+- **Sources:** [SRC-ARCH-010], [SRC-EPIC-007], [SRC-ASSET-010]
+- **Version Notes:** Save format is project-specific.
+
+### Question: How do you design an inventory item identity model?
+
+- **Category:** Gameplay Architecture / Inventory
+- **Priority:** P1
+- **Expected Depth:** D4
+- **Short Answer:** Separate item definition, instance ID, stack/count, runtime state, ownership and replication/persistence policy.
+- **Strong 3-Year-Engineer Answer:** A definition asset describes item type; an instance or stack carries player-owned mutable state. I avoid using actor pointers as identity and define how item state replicates, saves, stacks, trades and survives asset renames. Fast Array may fit replicated collections.
+- **Common Weak Answer:** "Use Data Assets for items."
+- **Follow-up Questions:** instance state? stack? Fast Array? save ID?
+- **Hands-on Verification Task:** Model stackable potions and unique weapons through definitions plus instances.
+- **Sources:** [SRC-ARCH-008], [SRC-ASSET-005], [SRC-NET-015]
+- **Version Notes:** Inventory architecture is project-dependent.
+
+### Question: What is a transactional gameplay operation?
+
+- **Category:** Gameplay Architecture / Transactions
+- **Priority:** P2
+- **Expected Depth:** D4
+- **Short Answer:** A multi-step gameplay change with explicit validate/apply/commit/rollback or compensation semantics.
+- **Strong 3-Year-Engineer Answer:** Operations like trade, craft, equip or quest reward often touch inventory, UI, save, analytics and abilities. I give them operation IDs, precondition checks, authoritative commit order and idempotent retries where needed. This prevents duplicate rewards and half-applied state after disconnect or crash.
+- **Common Weak Answer:** "Call all the functions in order."
+- **Follow-up Questions:** idempotency? rollback? server authority? save?
+- **Hands-on Verification Task:** Implement craft operation with failure after inventory removal and repair it.
+- **Sources:** [SRC-ARCH-014], [SRC-NET-001], [SRC-GAS-013]
+- **Version Notes:** Pattern is engine-agnostic; UE implementation varies.
+
+### Question: How do gameplay tags help without becoming string soup?
+
+- **Category:** Gameplay Architecture / Tags
+- **Priority:** P1
+- **Expected Depth:** D3
+- **Short Answer:** They provide hierarchical semantic labels, but require taxonomy ownership, validation and clear query semantics.
+- **Strong 3-Year-Engineer Answer:** Gameplay tags are great for state, requirements, filtering and cross-system communication. They become unmaintainable if every feature invents overlapping tags. I define naming rules, authority, documentation, validation and avoid using tags as a hidden replacement for structured data.
+- **Common Weak Answer:** "Use tags instead of enums."
+- **Follow-up Questions:** hierarchy? validation? tag queries? ownership?
+- **Hands-on Verification Task:** Design a tag taxonomy for stun, silence, elemental damage and item rarity.
+- **Sources:** [SRC-ARCH-013], [SRC-GAS-011], [SRC-BUILD-009]
+- **Version Notes:** Gameplay tag setup is project-specific.
+
+### Question: How should Blueprint pure functions be treated?
+
+- **Category:** Blueprint / API Design
+- **Priority:** P1
+- **Expected Depth:** D3
+- **Short Answer:** Pure functions should be cheap, side-effect-free queries; expensive or mutating work should be explicit.
+- **Strong 3-Year-Engineer Answer:** Blueprint pure nodes can be reevaluated in ways authors do not expect. I avoid hidden loads, allocations, random state, network calls or mutation in pure functions. Expensive queries should be cached, event-driven or explicit so graphs show cost and side effects.
+- **Common Weak Answer:** "Pure means no exec pin."
+- **Follow-up Questions:** hidden load? random? allocation? binding?
+- **Hands-on Verification Task:** Replace an expensive pure inventory query in UI with cached/event update.
+- **Sources:** [SRC-EPIC-031], [SRC-PERF-005], [SRC-ASSET-004]
+- **Version Notes:** Blueprint VM/editor behaviour can vary.
+
+### Question: How do you expose C++ safely to Blueprint?
+
+- **Category:** C++ / Blueprint API
+- **Priority:** P0
+- **Expected Depth:** D3
+- **Short Answer:** Expose a narrow, intention-revealing surface with correct specifiers, validation, lifetime and authority rules.
+- **Strong 3-Year-Engineer Answer:** I decide editability, Blueprint access, categories, authority checks and object lifetime deliberately. Blueprint-callable APIs should validate inputs, avoid raw dangerous ownership, communicate latent/async behaviour and preserve invariants. Broad `BlueprintReadWrite` on internal state is a maintenance hazard.
+- **Common Weak Answer:** "Add BlueprintCallable."
+- **Follow-up Questions:** EditDefaultsOnly? authority? latent? UObject lifetime?
+- **Hands-on Verification Task:** Refactor a public mutable health field into safe Blueprint functions/events.
+- **Sources:** [SRC-EPIC-007], [SRC-EPIC-030], [SRC-EPIC-031]
+- **Version Notes:** Specifiers are UE-version sensitive.
+
+### Question: How do you choose between UObject, struct and plain C++ type?
+
+- **Category:** UE C++ / Type Design
+- **Priority:** P0
+- **Expected Depth:** D4
+- **Short Answer:** Choose based on reflection, identity/lifetime, value semantics, editor/Blueprint/serialisation needs and performance.
+- **Strong 3-Year-Engineer Answer:** Plain C++ fits implementation detail and RAII. USTRUCT fits reflected value data. UObject fits identity, reflection, polymorphism, GC and engine integration. I avoid making everything UObject because lifetime, allocation and GC/debug complexity matter.
+- **Common Weak Answer:** "Use UObject if Blueprint needs it."
+- **Follow-up Questions:** value copy? GC? editor? replication?
+- **Hands-on Verification Task:** Implement the same config as struct, UObject and plain C++ helper and compare trade-offs.
+- **Sources:** [SRC-EPIC-003], [SRC-EPIC-008], [SRC-CPP-001]
+- **Version Notes:** Core concepts stable UE4/UE5.
+
+### Question: When is TStrongObjectPtr appropriate?
+
+- **Category:** UE C++ / UObject Pointers
+- **Priority:** P2
+- **Expected Depth:** D3
+- **Short Answer:** For explicit strong ownership of a UObject from non-reflected/native contexts where GC must see the reference.
+- **Strong 3-Year-Engineer Answer:** Most UObject fields should be reflected `TObjectPtr`/UPROPERTY. `TStrongObjectPtr` is a special native owner for cases like temporary tools or non-UObject managers where a reflected property is unavailable. I use it sparingly and document lifetime because it can unintentionally retain objects.
+- **Common Weak Answer:** "Use it instead of UPROPERTY."
+- **Follow-up Questions:** non-UObject owner? leak risk? weak/soft alternative?
+- **Hands-on Verification Task:** Retain a UObject from a non-UObject helper and then release it under forced GC.
+- **Sources:** [SRC-EPIC-009], [SRC-EPIC-003]
+- **Version Notes:** UE5 pointer guidance is version-sensitive.
+
+### Question: Why can raw UObject members be dangerous even if they are never null in testing?
+
+- **Category:** UE C++ / Lifetime
+- **Priority:** P0
+- **Expected Depth:** D4
+- **Short Answer:** Reflection/GC may not see the reference, and destruction/editor reload/async timing can invalidate assumptions.
+- **Strong 3-Year-Engineer Answer:** A raw pointer can work accidentally while some other root retains the object. I ask what owns the object and whether the reference edge is visible to GC, serialisation, editor undo or replication. If it is only a temporary non-owning observation, weak or raw may be fine with validity checks; persistent ownership needs a tracked path.
+- **Common Weak Answer:** "It works because another object owns it."
+- **Follow-up Questions:** GC edge? weak? async? editor reload?
+- **Hands-on Verification Task:** Force GC after removing the hidden owner and observe the raw pointer.
+- **Sources:** [SRC-EPIC-005], [SRC-EPIC-009], [SRC-EPIC-006]
+- **Version Notes:** Pointer wrappers changed in UE5.
+
+### Question: How do you diagnose a CDO mutation bug?
+
+- **Category:** UObject / Construction
+- **Priority:** P1
+- **Expected Depth:** D4
+- **Short Answer:** Check whether code changed class default object/default subobject state instead of per-instance runtime state.
+- **Strong 3-Year-Engineer Answer:** Constructors and default subobjects configure defaults through the CDO. Runtime mutation should happen on instances at appropriate lifecycle points. If all future instances inherit unexpected state or editor defaults change, I inspect constructor, PostInit, construction script and asset default mutation paths.
+- **Common Weak Answer:** "The constructor ran twice."
+- **Follow-up Questions:** CDO? default subobject? construction script? instance?
+- **Hands-on Verification Task:** Mutate a default subobject at runtime incorrectly and observe new instance defaults.
+- **Sources:** [SRC-EPIC-003], [SRC-EPIC-006], [SRC-EPIC-012]
+- **Version Notes:** Lifecycle details are branch-sensitive.
+
+### Question: Why can `ConstructorHelpers` create asset-coupling problems?
+
+- **Category:** UE C++ / Assets
+- **Priority:** P2
+- **Expected Depth:** D3
+- **Short Answer:** It creates hard constructor-time references that affect load/cook dependencies and can be inflexible for data-driven content.
+- **Strong 3-Year-Engineer Answer:** ConstructorHelpers can be valid for fixed native defaults, but widespread use hardcodes asset paths and loads dependencies early. I prefer editable soft references, Data Assets or Asset Manager rules where designers need variation or streaming control.
+- **Common Weak Answer:** "Use it to load assets in C++."
+- **Follow-up Questions:** hard ref? cook? streaming? designer override?
+- **Hands-on Verification Task:** Replace a hard constructor asset path with a soft/Data Asset-driven reference and inspect cook deps.
+- **Sources:** [SRC-EPIC-004], [SRC-ASSET-001], [SRC-ASSET-003]
+- **Version Notes:** Asset loading rules are project/version sensitive.
+
+### Question: How do you choose between delegate, interface and direct call?
+
+- **Category:** Gameplay Architecture / Communication
+- **Priority:** P1
+- **Expected Depth:** D3
+- **Short Answer:** Direct calls fit known required collaborators; interfaces fit polymorphic requests; delegates/events fit observation and fan-out.
+- **Strong 3-Year-Engineer Answer:** I consider ownership, lifetime, cardinality, authority and testability. Delegates need unbinding/lifetime care; interfaces should express required capability; direct references are clearest when dependency is real and scoped. Overusing events hides flow.
+- **Common Weak Answer:** "Delegates make it decoupled."
+- **Follow-up Questions:** lifetime? one-to-many? authority? test?
+- **Hands-on Verification Task:** Refactor an interaction system three ways and compare debugging clarity.
+- **Sources:** [SRC-EPIC-029], [SRC-ARCH-001], [SRC-ARCH-004]
+- **Version Notes:** Delegate binding APIs vary.
+
+### Question: How do you prevent subsystem abuse?
+
+- **Category:** Gameplay Architecture / Subsystems
+- **Priority:** P1
+- **Expected Depth:** D3
+- **Short Answer:** Define scope, lifetime, ownership, authority, dependencies and test seams instead of using global access casually.
+- **Strong 3-Year-Engineer Answer:** Subsystems are useful for engine/world/game-instance/local-player services, but they can become service locators. I document which world/player they belong to, teardown order, net mode, threading and dependency interface. Gameplay state that belongs to actors, saves or server authority should not be hidden in the wrong subsystem.
+- **Common Weak Answer:** "Put shared things in GameInstanceSubsystem."
+- **Follow-up Questions:** world scope? local player? multiplayer? teardown?
+- **Hands-on Verification Task:** Move a global inventory service to the correct owner and explain why.
+- **Sources:** [SRC-EPIC-017], [SRC-ARCH-007], [SRC-EPIC-018]
+- **Version Notes:** Subsystem lifetimes are stable conceptually; APIs vary.
+
+### Question: How do you decide whether to tick?
+
+- **Category:** Gameplay Framework / Performance
+- **Priority:** P0
+- **Expected Depth:** D3
+- **Short Answer:** Tick only when continuous per-frame work is required and cheaper event/timer/batch/significance alternatives do not fit.
+- **Strong 3-Year-Engineer Answer:** I classify update frequency, owner count, data dependencies and visibility/importance. Timers/events are better for sparse changes, but high-frequency batched work can beat many delegate events. I measure cost, disable unused ticks and consider manager batching or Mass for large populations.
+- **Common Weak Answer:** "Never tick."
+- **Follow-up Questions:** timers? batching? significance? event storm?
+- **Hands-on Verification Task:** Replace 1000 actor ticks with a batched manager and compare.
+- **Sources:** [SRC-EPIC-011], [SRC-PERF-004], [SRC-PERF-005]
+- **Version Notes:** Tick configuration details are branch-sensitive.
+
+### Question: What does Actor ownership not mean?
+
+- **Category:** Gameplay Framework / Networking
+- **Priority:** P0
+- **Expected Depth:** D3
+- **Short Answer:** Ownership is not attachment, not authority, not lifetime ownership and not necessarily relevance by itself.
+- **Strong 3-Year-Engineer Answer:** In Unreal networking, owner/owning connection affects RPC permission and owner-based replication conditions. Authority is about which machine owns truth. Attachment is transform hierarchy. Lifetime may be GC/outer/world ownership. Mixing these meanings causes RPC and replication bugs.
+- **Common Weak Answer:** "Owner means who controls it."
+- **Follow-up Questions:** attachment? outer? server authority? owner-only replication?
+- **Hands-on Verification Task:** Build an attached weapon that is not owned by the right controller and fix RPC routing.
+- **Sources:** [SRC-NET-003], [SRC-EPIC-011], [SRC-EPIC-012]
+- **Version Notes:** Ownership semantics stable; implementation details vary.
+
+### Question: How do you debug a BeginPlay ordering assumption?
+
+- **Category:** Gameplay Framework / Lifecycle
+- **Priority:** P1
+- **Expected Depth:** D3
+- **Short Answer:** Log lifecycle and dependencies, then move setup to explicit readiness/registration instead of relying on incidental order.
+- **Strong 3-Year-Engineer Answer:** BeginPlay order across actors/components/streamed levels/network spawn can surprise. I avoid "actor B exists because A began first" assumptions. Systems should register, wait for required dependencies or use authoritative initialization points such as GameMode/GameState/subsystem flows.
+- **Common Weak Answer:** "Delay by one frame."
+- **Follow-up Questions:** streamed level? replication? component registration? dependency?
+- **Hands-on Verification Task:** Create two actors with BeginPlay ordering dependency and replace it with registration/readiness.
+- **Sources:** [SRC-EPIC-015], [SRC-EPIC-016], [SRC-EPIC-011]
+- **Version Notes:** Exact ordering requires target confirmation.
+
+### Question: How do you use Data Assets without putting runtime state in them?
+
+- **Category:** Gameplay Architecture / Data
+- **Priority:** P1
+- **Expected Depth:** D3
+- **Short Answer:** Treat Data Assets as definitions/config, and store mutable per-player/per-instance state elsewhere.
+- **Strong 3-Year-Engineer Answer:** Data Assets are shared content definitions. If runtime code mutates them, every user of that definition can see unintended changes, and save/replication semantics become unclear. I store instance state in components, structs, save data, ASC specs or replicated collections with stable IDs back to the definition.
+- **Common Weak Answer:** "Data Assets are item instances."
+- **Follow-up Questions:** shared asset? save? replication? instance ID?
+- **Hands-on Verification Task:** Build item definitions and per-player inventory instances.
+- **Sources:** [SRC-ARCH-008], [SRC-ASSET-005], [SRC-EPIC-007]
+- **Version Notes:** Asset/editor behaviour is branch-sensitive.
+
+### Question: How do you design a quest objective system for networking and saves?
+
+- **Category:** Gameplay Architecture / Quests
+- **Priority:** P2
+- **Expected Depth:** D4
+- **Short Answer:** Store durable objective state on server/save with stable IDs, project presentation separately, and make updates idempotent.
+- **Strong 3-Year-Engineer Answer:** Objective definitions live in data; player/world progress lives in authoritative state. Events should carry stable IDs and operation IDs where duplication is possible. UI, markers and world actors present that state and can be rebuilt after streaming, late join or load.
+- **Common Weak Answer:** "Each quest actor tracks itself."
+- **Follow-up Questions:** stable IDs? late join? duplicate event? streaming?
+- **Hands-on Verification Task:** Complete an objective in a streamed cell, unload it and reload/save/late-join.
+- **Sources:** [SRC-ARCH-010], [SRC-ASSET-010], [SRC-NET-004]
+- **Version Notes:** Save/quest patterns are project-specific.
+
+### Question: How do you evaluate a spatial hash implementation?
+
+- **Category:** Algorithms / Spatial Structures
+- **Priority:** P1
+- **Expected Depth:** D3
+- **Short Answer:** Test distribution, cell size, query radius, worst-case clustering, update cost and correctness against a slow oracle.
+- **Strong 3-Year-Engineer Answer:** A spatial hash can make neighbour queries fast on average, but bad cell size or clustering can degrade heavily. I compare against all-pairs on generated/adversarial cases, track false negatives, update cost and memory, and choose structure based on workload distribution.
+- **Common Weak Answer:** "Use spatial hash for nearby objects."
+- **Follow-up Questions:** cell size? clustering? dynamic updates? oracle?
+- **Hands-on Verification Task:** Build random and clustered tests and compare against brute force.
+- **Sources:** [SRC-ALG-010], [SRC-ALG-011], [SRC-MATH-011]
+- **Version Notes:** Algorithm is engine-independent.
+
+### Question: Why is A* admissibility not the whole pathfinding story?
+
+- **Category:** Algorithms / AI Navigation
+- **Priority:** P1
+- **Expected Depth:** D3
+- **Short Answer:** Heuristic admissibility helps optimality, but real games also need graph quality, dynamic obstacles, smoothing, costs, queries and budget.
+- **Strong 3-Year-Engineer Answer:** In UE, Recast/NavMesh handles much of the path graph, but understanding A* helps reason about costs, heuristics and failure. I also care about path following, avoidance, links, partial paths, dynamic generation, EQS query cost and debug visualization.
+- **Common Weak Answer:** "A* finds shortest path."
+- **Follow-up Questions:** costs? heuristic? avoidance? partial path?
+- **Hands-on Verification Task:** Implement grid A* and compare with UE NavMesh behaviour on costs/links.
+- **Sources:** [SRC-ALG-007], [SRC-AI-006], [SRC-AI-007]
+- **Version Notes:** UE navigation behaviour is branch/settings sensitive.
+
+### Question: How do you debug non-uniform scale transforming normals?
+
+- **Category:** Maths / Rendering
+- **Priority:** P2
+- **Expected Depth:** D3
+- **Short Answer:** Normals require inverse-transpose style handling, not the same transform as positions under non-uniform scale.
+- **Strong 3-Year-Engineer Answer:** Points, vectors and normals transform differently. Non-uniform scale can make a visually plausible mesh shade incorrectly if normals are transformed like positions. I build a small test with known normal/light direction and compare engine/material output to expected math.
+- **Common Weak Answer:** "Normalize after transform."
+- **Follow-up Questions:** inverse transpose? tangent space? negative scale?
+- **Hands-on Verification Task:** Visualise normals on a non-uniformly scaled mesh and explain the lighting error.
+- **Sources:** [SRC-MATH-005], [SRC-MATH-010], [SRC-RENDER-004]
+- **Version Notes:** Maths stable; engine spaces/settings vary.
+
+### Question: Why do quaternions not automatically solve rotation design?
+
+- **Category:** Maths / Rotation
+- **Priority:** P1
+- **Expected Depth:** D3
+- **Short Answer:** They avoid many Euler/gimbal issues, but interpolation, shortest path, normalisation and designer-facing controls still matter.
+- **Strong 3-Year-Engineer Answer:** Quaternions are a representation/tool, not a policy. I decide whether rotation should be constant-speed, shortest-arc, constrained, network-smoothed or designer-authored. I also normalise and handle conversions carefully because exposing raw quaternions to designers is rarely ergonomic.
+- **Common Weak Answer:** "Use quaternions to avoid gimbal lock."
+- **Follow-up Questions:** Slerp? shortest path? constant speed? network smoothing?
+- **Hands-on Verification Task:** Compare Rotator interpolation, Slerp and constant angular speed for a turret.
+- **Sources:** [SRC-MATH-006], [SRC-MATH-007], [SRC-NET-009]
+- **Version Notes:** API names/version availability vary.
+
+### Question: How do you reason about floating-point determinism in gameplay?
+
+- **Category:** Maths / Determinism
+- **Priority:** P2
+- **Expected Depth:** D4
+- **Short Answer:** Floating point is approximate and platform/order sensitive; deterministic gameplay needs constrained operations, fixed steps, quantisation or authoritative correction.
+- **Strong 3-Year-Engineer Answer:** I avoid assuming bit-identical floats across platforms, compilers and execution order. For networked gameplay I use server authority, quantised replicated state or rollback models with strict determinism proofs. For local gameplay I define tolerances and avoid exact equality.
+- **Common Weak Answer:** "Use doubles."
+- **Follow-up Questions:** fixed step? quantisation? tolerance? platform?
+- **Hands-on Verification Task:** Create a simulation that diverges with different update order and repair it.
+- **Sources:** [SRC-MATH-002], [SRC-NET-009], [SRC-NET-020]
+- **Version Notes:** Determinism requirements are system-specific.
+
+### Question: What makes Lua integration unsafe around UObject lifetime?
+
+- **Category:** Scripting / Lua
+- **Priority:** P3
+- **Expected Depth:** D3
+- **Short Answer:** Script references can outlive UObjects or hide references from GC unless the bridge defines ownership and validity clearly.
+- **Strong 3-Year-Engineer Answer:** Lua is plugin-dependent in Unreal projects, so bridge semantics matter. I need to know whether wrappers hold weak, strong or reflected references; how destruction invalidates script objects; and how hot reload/reload handles delegates/timers. I avoid presenting plugin behaviour as core UE.
+- **Common Weak Answer:** "Lua has garbage collection too."
+- **Follow-up Questions:** UObject GC? weak wrapper? delegate unbind? plugin?
+- **Hands-on Verification Task:** Destroy a UObject referenced by Lua and test wrapper validity/error behaviour.
+- **Sources:** [SRC-SCRIPT-001], [SRC-SCRIPT-002], [SRC-EPIC-009]
+- **Version Notes:** Lua integration is plugin-dependent.
+
+### Question: How should C# tooling integration be scoped in Unreal workflows?
+
+- **Category:** Scripting / C#
+- **Priority:** P3
+- **Expected Depth:** D2
+- **Short Answer:** Treat it as editor/tool/build ecosystem integration unless the project has a specific runtime C# plugin with proven constraints.
+- **Strong 3-Year-Engineer Answer:** C# may appear in AutomationTool/Gauntlet/build tooling or plugins. I separate official tooling usage from runtime scripting ecosystems. For runtime C#, I ask about plugin support, hot reload, GC/lifetime bridge, platform support, packaging and performance before making claims.
+- **Common Weak Answer:** "Unreal supports C# like Unity."
+- **Follow-up Questions:** runtime plugin? packaging? UObject bridge? platform?
+- **Hands-on Verification Task:** Classify three C# uses as AutomationTool, editor tooling or runtime plugin.
+- **Sources:** [SRC-SCRIPT-006], [SRC-SCRIPT-007], [SRC-BUILD-016]
+- **Version Notes:** Runtime C# is plugin-dependent.
+
+### Question: How do you avoid managed/native lifetime bugs in scripting bridges?
+
+- **Category:** Scripting / Interop
+- **Priority:** P3
+- **Expected Depth:** D3
+- **Short Answer:** Define ownership, weak/strong handles, invalidation, thread affinity and teardown paths explicitly.
+- **Strong 3-Year-Engineer Answer:** Managed objects and UObjects have separate lifetime systems. A bridge must decide whether native references are tracked by Unreal GC, script GC or explicit handles. I test object destruction, world teardown, script reload, delegate callbacks and async calls after owner death.
+- **Common Weak Answer:** "The wrapper keeps it alive."
+- **Follow-up Questions:** weak handle? world teardown? delegate? async?
+- **Hands-on Verification Task:** Trigger callback after UObject destruction and verify safe failure.
+- **Sources:** [SRC-SCRIPT-002], [SRC-SCRIPT-008], [SRC-EPIC-009]
+- **Version Notes:** Bridge behaviour is plugin-specific.
+
+### Question: How do you answer console profiling questions without leaking confidential details?
+
+- **Category:** Platform / Console
+- **Priority:** P3
+- **Expected Depth:** D3
+- **Short Answer:** Discuss source-safe methodology: target package identity, authorised tools, scenario markers, before/after evidence and confidentiality boundaries.
+- **Strong 3-Year-Engineer Answer:** I do not invent or disclose platform-holder counters, TRC/TCR details or tool screenshots. I explain how I would use authorised devkit tooling, symbols, package identity and UE markers, then report source-safe conclusions such as CPU/GPU/memory ownership and residual risk.
+- **Common Weak Answer:** "Share exact console certification rules."
+- **Follow-up Questions:** confidentiality? authorised docs? symbol match? source-safe report?
+- **Hands-on Verification Task:** Rewrite a platform-profiler report with confidential details redacted but useful ownership retained.
+- **Sources:** [SRC-PLAT-024], [SRC-PERF-003], [SRC-BUILD-018]
+- **Version Notes:** Console details require authorised platform docs.
+
+### Question: How do Apple MetricKit and Xcode captures complement Unreal evidence?
+
+- **Category:** Platform / Apple Profiling
+- **Priority:** P3
+- **Expected Depth:** D3
+- **Short Answer:** Unreal traces show engine-side ownership; Apple tools show platform/GPU/memory/responsiveness evidence on real devices.
+- **Strong 3-Year-Engineer Answer:** I align UE markers, build ID and scenario with Xcode/Instruments/Metal/MetricKit artifacts. Platform evidence can reveal GPU pass, memory high-water, responsiveness or field trends that engine-only data misses. I still map findings back to UE systems/content before fixing.
+- **Common Weak Answer:** "Use Xcode instead of Unreal Insights."
+- **Follow-up Questions:** markers? device vs simulator? field metric? Metal capture?
+- **Hands-on Verification Task:** Correlate a UE CSV spike with one Xcode/Instruments finding.
+- **Sources:** [SRC-PLAT-018], [SRC-PLAT-019], [SRC-PLAT-021], [SRC-PERF-003]
+- **Version Notes:** Apple tooling depends on Xcode/OS/device.
+
+### Question: Why is simulator memory not device memory proof?
+
+- **Category:** Platform / Apple
+- **Priority:** P2
+- **Expected Depth:** D3
+- **Short Answer:** Simulators differ in hardware, OS services, graphics stack, memory pressure and packaging from physical devices.
+- **Strong 3-Year-Engineer Answer:** Simulators are useful for functional iteration, but memory/performance release proof needs physical device or target-equivalent hardware. I record device model, OS, build config, scenario and memory high-water; then compare with field or device profiling where available.
+- **Common Weak Answer:** "It passes on simulator."
+- **Follow-up Questions:** GPU? memory pressure? OS? package?
+- **Hands-on Verification Task:** Run the same scene on simulator and device and compare memory/performance.
+- **Sources:** [SRC-PLAT-002], [SRC-PLAT-020], [SRC-PERF-003]
+- **Version Notes:** Platform support changes with SDK/device.
+
+### Question: How do Android AGI frame profiles complement Unreal GPU stats?
+
+- **Category:** Platform / Android Profiling
+- **Priority:** P3
+- **Expected Depth:** D3
+- **Short Answer:** Unreal shows engine pass/timing context; AGI can expose device/GPU render-pass and counter details where supported.
+- **Strong 3-Year-Engineer Answer:** I use UE markers/CSV to locate the failing frame, then AGI to inspect render pass, tiler/binning/rendering or GMEM load/store style costs where available. I do not compare raw counters across vendors without documentation, and I map the finding back to UE content/pass ownership.
+- **Common Weak Answer:** "AGI tells the exact Unreal fix."
+- **Follow-up Questions:** frame match? vendor counters? GMEM? UE pass?
+- **Hands-on Verification Task:** Capture a GPU-bound Android frame and map longest pass to a UE feature.
+- **Sources:** [SRC-PLAT-010], [SRC-PLAT-013], [SRC-PLAT-014], [SRC-PERF-003]
+- **Version Notes:** AGI support depends on device/driver/API.
+
+### Question: How do you use Android LMK evidence in a UE memory investigation?
+
+- **Category:** Platform / Android Memory
+- **Priority:** P2
+- **Expected Depth:** D3
+- **Short Answer:** Correlate OS low-memory kill/process evidence with UE memory checkpoints and scenario state.
+- **Strong 3-Year-Engineer Answer:** I record UE LLM/Memory Insights checkpoints around map load, peak gameplay and background/foreground. If Android LMK kills the app, I correlate process logs, memory pressure, lifecycle state and UE resident allocations. The fix might be content budget, streaming, cache lifetime or platform lifecycle handling.
+- **Common Weak Answer:** "The OS killed us randomly."
+- **Follow-up Questions:** background? peak? LLM tag? lifecycle?
+- **Hands-on Verification Task:** Run background/foreground memory pressure and correlate UE checkpoints with OS logs.
+- **Sources:** [SRC-PLAT-015], [SRC-PERF-006], [SRC-PERF-010]
+- **Version Notes:** Android memory policies vary by OS/device.
+
+### Question: How can ADPF hide a regression?
+
+- **Category:** Platform / Android Performance
+- **Priority:** P3
+- **Expected Depth:** D3
+- **Short Answer:** Adaptive performance can reduce quality or workload, making frame time look better without fixing the underlying cost.
+- **Strong 3-Year-Engineer Answer:** ADPF can be valuable for thermal/sustained performance, but I compare baseline and adapted runs. If quality drops to mask a GPU or CPU regression, the report must say so. I treat adaptation as product policy, not a substitute for optimisation.
+- **Common Weak Answer:** "ADPF fixes mobile performance."
+- **Follow-up Questions:** quality changed? thermal? baseline? user experience?
+- **Hands-on Verification Task:** Run a scenario with and without adaptation and record quality/performance changes.
+- **Sources:** [SRC-PLAT-016], [SRC-PLAT-017], [SRC-PERF-009]
+- **Version Notes:** ADPF support is device/plugin/version sensitive.
+
+### Question: What belongs in a device-lab run manifest?
+
+- **Category:** Automation / Device Lab
+- **Priority:** P2
+- **Expected Depth:** D3
+- **Short Answer:** Build ID, device ID, scenario ID, command line, profile/settings, artifact paths, timestamps and gate policy.
+- **Strong 3-Year-Engineer Answer:** A device-lab result must bind exact package to exact device and scenario. I include install/launch command, OS/toolchain, power/thermal state where relevant, CSV/log paths, screenshots/video if useful, rerun policy and owner. Otherwise failures cannot be compared or reproduced.
+- **Common Weak Answer:** "The lab output says failed."
+- **Follow-up Questions:** artifact identity? device state? rerun? owner?
+- **Hands-on Verification Task:** Write a run manifest for two devices and two scenarios.
+- **Sources:** [SRC-PLAT-009], [SRC-BUILD-017], [SRC-PERF-011]
+- **Version Notes:** Gauntlet/device adapters are branch/platform sensitive.
+
+### Question: How should automation classify failures?
+
+- **Category:** Automation / Triage
+- **Priority:** P1
+- **Expected Depth:** D3
+- **Short Answer:** Separate product failure, infrastructure failure, flaky device/test, blocked by missing evidence and reporting-only metric drift.
+- **Strong 3-Year-Engineer Answer:** Blind reruns erode trust. I capture first causal log, artifact identity and device state, then classify. Product failures get owners and blockers; lab infrastructure gets infra owner; flaky devices enter quarantine; missing evidence fails the proof process if the gate is meant to block.
+- **Common Weak Answer:** "Rerun failures."
+- **Follow-up Questions:** quarantine? deterministic? first-cause? missing evidence?
+- **Hands-on Verification Task:** Classify ten historical lab failures and define recurrence guards.
+- **Sources:** [SRC-PERF-011], [SRC-PLAT-009], [SRC-BUILD-018]
+- **Version Notes:** Automation policy is project-specific.
+
+### Question: How do you design a smoke scenario for packaging?
+
+- **Category:** Build / Smoke Testing
+- **Priority:** P1
+- **Expected Depth:** D3
+- **Short Answer:** It should launch packaged build, load representative content, execute a small deterministic path and exit with machine-readable pass/fail.
+- **Strong 3-Year-Engineer Answer:** A smoke scenario is not a full test suite. It catches missing modules/assets/config, startup crashes and basic map readiness quickly. I include log markers, timeout, screenshot optional, artifact pull and stable exit code so CI can distinguish product failure from runner failure.
+- **Common Weak Answer:** "Open the game manually."
+- **Follow-up Questions:** timeout? pass marker? missing asset? exit code?
+- **Hands-on Verification Task:** Create a front-end-to-map smoke path with pass/fail log markers.
+- **Sources:** [SRC-BUILD-017], [SRC-PERF-011], [SRC-PLAT-009]
+- **Version Notes:** Runner APIs are branch/platform sensitive.
+
+### Question: How do you validate a plugin's runtime/editor module split?
+
+- **Category:** Build / Plugins
+- **Priority:** P1
+- **Expected Depth:** D3
+- **Short Answer:** Build/package non-editor targets and audit module dependencies, descriptors and runtime assets.
+- **Strong 3-Year-Engineer Answer:** Editor code must not leak into runtime modules or packaged assets. I check Build.cs dependencies, module type/loading phase, descriptor filters, UObject class references in assets and Shipping/Game builds. The proof is a package, not only an Editor compile.
+- **Common Weak Answer:** "It compiles in the editor."
+- **Follow-up Questions:** module type? asset class? server target? Shipping?
+- **Hands-on Verification Task:** Put an editor-only class into a runtime asset and catch it in package.
+- **Sources:** [SRC-BUILD-005], [SRC-BUILD-006], [SRC-BUILD-017]
+- **Version Notes:** Module descriptors vary by UE version.
+
+### Question: How do unity builds hide include and ODR problems?
+
+- **Category:** C++ / Build
+- **Priority:** P1
+- **Expected Depth:** D3
+- **Short Answer:** Unity compilation merges translation units, masking missing includes and changing duplicate/static initialization visibility.
+- **Strong 3-Year-Engineer Answer:** Code that compiles only in unity may rely on incidental includes from neighbouring files. I run non-unity or targeted clean jobs for important modules, maintain IWYU discipline and treat ODR/static-init failures separately from ordinary syntax errors.
+- **Common Weak Answer:** "Unity builds are faster."
+- **Follow-up Questions:** missing include? ODR? generated header? clean build?
+- **Hands-on Verification Task:** Remove an include masked by unity and catch it in non-unity build.
+- **Sources:** [SRC-BUILD-001], [SRC-CPP-027], [SRC-CPP-029]
+- **Version Notes:** Build settings are project-specific.
+
+### Question: How do you debug Unreal unresolved externals across modules?
+
+- **Category:** C++ / Unreal Modules
+- **Priority:** P0
+- **Expected Depth:** D4
+- **Short Answer:** Compare declaration/definition/export macro/module dependency/target visibility and template instantiation.
+- **Strong 3-Year-Engineer Answer:** I read the mangled or demangled symbol, verify namespace/class/signature, ensure the definition is linked into the module, add proper Public/Private dependency, and check API export macros across module boundaries. Unity or stale binaries can mask the real issue.
+- **Common Weak Answer:** "Add the module to Build.cs."
+- **Follow-up Questions:** export macro? Private dependency? template? target?
+- **Hands-on Verification Task:** Create an exported class used by another module and break/fix the API macro.
+- **Sources:** [SRC-BUILD-001], [SRC-BUILD-002], [SRC-CPP-027]
+- **Version Notes:** Toolchain/linker details vary.
+
+### Question: Why can static initialisation be especially risky in Unreal modules?
+
+- **Category:** C++ / Startup
+- **Priority:** P1
+- **Expected Depth:** D4
+- **Short Answer:** Cross-translation-unit and module load order can run before engine systems, reflection, configs or plugin dependencies are ready.
+- **Strong 3-Year-Engineer Answer:** I avoid non-local dynamic initialisation that depends on engine state. Prefer function-local statics for pure constants, explicit module startup for engine-dependent setup and clear shutdown order. Hot reload/live coding and plugin unload make hidden globals even riskier.
+- **Common Weak Answer:** "Static variables are fine if they compile."
+- **Follow-up Questions:** module startup? shutdown? hot reload? config?
+- **Hands-on Verification Task:** Create a global that touches UObject system too early and move it to module startup.
+- **Sources:** [SRC-CPP-029], [SRC-BUILD-005], [SRC-EPIC-002]
+- **Version Notes:** Module load order is project/branch sensitive.
+
+### Question: When should you use `TFunctionRef` instead of `TFunction`?
+
+- **Category:** UE C++ / Callables
+- **Priority:** P2
+- **Expected Depth:** D3
+- **Short Answer:** Use `TFunctionRef` for non-owning synchronous callbacks; use owning wrappers when callback must outlive the call.
+- **Strong 3-Year-Engineer Answer:** A function ref should not escape. It avoids ownership/allocation overhead but relies on caller lifetime. If I store, dispatch async or bind later, I need an owning callable/delegate and safe captured object lifetime. This mirrors standard callable ownership reasoning.
+- **Common Weak Answer:** "TFunctionRef is faster."
+- **Follow-up Questions:** stored? async? captured UObject? delegate?
+- **Hands-on Verification Task:** Write a function that accidentally stores a function ref and repair it.
+- **Sources:** [SRC-CPP-018], [SRC-EPIC-029]
+- **Version Notes:** Unreal callable APIs vary.
+
+### Question: How do lambda captures create async lifetime bugs?
+
+- **Category:** C++ / Async
+- **Priority:** P1
+- **Expected Depth:** D4
+- **Short Answer:** Captured references or raw pointers may outlive their owners when the task/callback runs later.
+- **Strong 3-Year-Engineer Answer:** I capture values deliberately, use weak pointers for UObjects, check validity on the correct thread and cancel/unbind on teardown. Capturing `this` into latent/async work is a lifetime contract, not a convenience.
+- **Common Weak Answer:** "Capture by reference to avoid copies."
+- **Follow-up Questions:** UObject validity? thread affinity? cancellation? shared ownership?
+- **Hands-on Verification Task:** Trigger a callback after owner destruction and fix with weak capture/unbind.
+- **Sources:** [SRC-CPP-002], [SRC-CPP-026], [SRC-EPIC-009]
+- **Version Notes:** Async APIs and thread rules are branch-sensitive.
+
+### Question: How do you approach a standard C++ move bug in Unreal container code?
+
+- **Category:** C++ / Move Semantics
+- **Priority:** P1
+- **Expected Depth:** D3
+- **Short Answer:** Check moved-from validity, ownership transfer, container invalidation and Unreal relocation/copy expectations.
+- **Strong 3-Year-Engineer Answer:** `MoveTemp`/`std::move` casts; it does not by itself transfer correctly. I inspect special members, noexcept, resource ownership and container operation. For UObjects I avoid moving ownership the way I would with unique C++ objects and respect reflection/GC references.
+- **Common Weak Answer:** "Move makes it faster."
+- **Follow-up Questions:** moved-from state? noexcept? UObject? invalidation?
+- **Hands-on Verification Task:** Move a struct holding arrays/pointers through a container and verify invariants.
+- **Sources:** [SRC-CPP-003], [SRC-CPP-004], [SRC-CPP-005], [SRC-EPIC-024]
+- **Version Notes:** Standard C++ plus Unreal container details.
+
+### Question: How do you decide between `TArray`, `TSet` and `TMap`?
+
+- **Category:** UE C++ / Containers
+- **Priority:** P0
+- **Expected Depth:** D3
+- **Short Answer:** Choose by access pattern, ordering, uniqueness, key lookup, mutation frequency, memory and iteration cost.
+- **Strong 3-Year-Engineer Answer:** `TArray` is strong for dense ordered iteration and cache locality. `TSet` and `TMap` trade memory and order for hash lookup/uniqueness. I consider invalidation, stable handles, replication/serialisation, deterministic order and hot-path iteration before choosing.
+- **Common Weak Answer:** "Map for lookup, array for lists."
+- **Follow-up Questions:** order? invalidation? memory? determinism?
+- **Hands-on Verification Task:** Implement an inventory lookup three ways and profile iteration/lookup/memory.
+- **Sources:** [SRC-EPIC-024], [SRC-EPIC-025], [SRC-EPIC-026]
+- **Version Notes:** Container APIs stable conceptually.
+
+### Question: Why is `FText` not just a string?
+
+- **Category:** UE C++ / Localisation
+- **Priority:** P1
+- **Expected Depth:** D3
+- **Short Answer:** `FText` carries localisation/display semantics, while `FString` is mutable text data and `FName` is an identity/name key.
+- **Strong 3-Year-Engineer Answer:** I use `FText` for user-facing display, culture formatting and localisation; `FString` for string manipulation/storage; `FName` for case-insensitive-ish identifiers/tags/keys where appropriate. Converting casually can lose localisation history or create identity bugs.
+- **Common Weak Answer:** "FText is for UI."
+- **Follow-up Questions:** culture? invariant? FName? conversion?
+- **Hands-on Verification Task:** Localise an item name and show how bad conversion breaks display/history.
+- **Sources:** [SRC-EPIC-022], [SRC-EPIC-023]
+- **Version Notes:** Core semantics stable.
+
+### Question: How do you debug a soft reference that loads in editor but not package?
+
+- **Category:** Assets / Soft References
+- **Priority:** P1
+- **Expected Depth:** D3
+- **Short Answer:** Check cook inclusion, Asset Manager rules, Primary Assets, labels, redirectors and packaged path logs.
+- **Strong 3-Year-Engineer Answer:** A soft reference is an address, not a guarantee the asset is cooked or resident. Editor may find loose content that the package excludes. I prove Asset Manager/cook rules include the asset, then test async load in packaged runtime and handle failure gracefully.
+- **Common Weak Answer:** "Soft references are broken."
+- **Follow-up Questions:** Primary Asset? label? redirector? async failure?
+- **Hands-on Verification Task:** Package a soft-referenced cosmetic and fix missing cook inclusion.
+- **Sources:** [SRC-ASSET-001], [SRC-ASSET-003], [SRC-ASSET-005], [SRC-ASSET-006]
+- **Version Notes:** Cook settings are project-specific.
+
+### Question: What is the difference between Asset Registry and Asset Manager?
+
+- **Category:** Assets / Systems
+- **Priority:** P1
+- **Expected Depth:** D3
+- **Short Answer:** Asset Registry indexes asset metadata; Asset Manager adds project-level Primary Asset identity, loading, bundles and cook/chunk policy.
+- **Strong 3-Year-Engineer Answer:** The registry helps discover assets and metadata without fully loading everything. Asset Manager gives higher-level rules for game content identity and lifecycle. I do not use registry discovery as a substitute for cook/ownership rules.
+- **Common Weak Answer:** "Both find assets."
+- **Follow-up Questions:** Primary Asset? bundles? cook? metadata?
+- **Hands-on Verification Task:** Discover items through registry, then manage loading/cook through Asset Manager.
+- **Sources:** [SRC-ASSET-004], [SRC-ASSET-005]
+- **Version Notes:** Asset Manager rules are project-config sensitive.
+
+### Question: Why can async loading still hitch?
+
+- **Category:** Assets / Loading
+- **Priority:** P1
+- **Expected Depth:** D4
+- **Short Answer:** Async loading can still trigger game-thread registration, UObject creation, shader/PSO use, texture streaming, callbacks and dependency loads.
+- **Strong 3-Year-Engineer Answer:** Async request completion is not the same as fully hitch-free presentation. I profile load time, game-thread object registration, component creation, shader/material first use and memory pressure. The fix can be preload, staged activation, asset simplification or better dependency boundaries.
+- **Common Weak Answer:** "Async load avoids hitches."
+- **Follow-up Questions:** callback work? dependencies? shader? component registration?
+- **Hands-on Verification Task:** Async-load a complex actor class and measure completion versus spawn/registration hitch.
+- **Sources:** [SRC-ASSET-002], [SRC-ASSET-006], [SRC-PERF-003]
+- **Version Notes:** Async loading internals are branch-sensitive.
+
+### Question: How do you design a reproducible algorithm benchmark?
+
+- **Category:** Algorithms / Performance
+- **Priority:** P1
+- **Expected Depth:** D3
+- **Short Answer:** Fix input distribution, seed, workload, warm-up, measurement, correctness oracle and percentile reporting.
+- **Strong 3-Year-Engineer Answer:** Benchmarks lie when they use one random input or ignore correctness. I generate typical and adversarial cases, compare with a slow oracle, report P50/P95/worst and separate allocation/setup from query/update cost. For games, frame budget and distribution matter more than big-O alone.
+- **Common Weak Answer:** "Measure one large input."
+- **Follow-up Questions:** oracle? seed? distribution? allocation?
+- **Hands-on Verification Task:** Benchmark spatial hash queries against brute force across three distributions.
+- **Sources:** [SRC-ALG-001], [SRC-ALG-010], [SRC-PERF-003]
+- **Version Notes:** Method is engine-independent.
+
+### Question: What is an interview-safe way to discuss lock-free code?
+
+- **Category:** C++ / Concurrency
+- **Priority:** P2
+- **Expected Depth:** D4
+- **Short Answer:** Start with correctness and ownership; use lock-free only with a written memory-order/progress proof and measurement.
+- **Strong 3-Year-Engineer Answer:** Most gameplay systems do not need custom lock-free structures. I prefer message queues, task partitioning or mutex-protected invariants unless contention proves otherwise. If using atomics, I define publication, lifetime, ABA/destruction issues, memory order and tests on target platforms.
+- **Common Weak Answer:** "Lock-free is faster."
+- **Follow-up Questions:** ABA? reclamation? memory order? progress?
+- **Hands-on Verification Task:** Replace a broken atomic multi-field invariant with mutex or proven single-producer queue.
+- **Sources:** [SRC-CPP-020], [SRC-CPP-021], [SRC-CPP-022]
+- **Version Notes:** Standard C++11+; platform performance varies.
+
+### Question: How do you reason about false sharing in game code?
+
+- **Category:** C++ / Performance
+- **Priority:** P2
+- **Expected Depth:** D3
+- **Short Answer:** Multiple threads writing different data on the same cache line can fight over ownership and slow down.
+- **Strong 3-Year-Engineer Answer:** False sharing appears when worker outputs, counters or component data place hot writes adjacent in memory. I prove it with profiling/counters or controlled benchmarks, then use per-thread buffers, padding/alignment or data layout changes. I do not blindly pad every struct.
+- **Common Weak Answer:** "Cache lines only matter in engine code."
+- **Follow-up Questions:** per-thread output? padding? SoA? measurement?
+- **Hands-on Verification Task:** Benchmark per-thread counters adjacent versus padded/per-thread vectors.
+- **Sources:** [SRC-CPP-023], [SRC-CPP-020], [SRC-PERF-003]
+- **Version Notes:** Cache line constants and effects are platform-specific.
+
+### Question: How do you answer "inheritance or composition" in Unreal?
+
+- **Category:** Architecture / C++ Design
+- **Priority:** P0
+- **Expected Depth:** D3
+- **Short Answer:** Use inheritance for true substitutable type relationships; use components/composition for mixable behaviours, data and feature variation.
+- **Strong 3-Year-Engineer Answer:** Unreal encourages Actor/Component composition for gameplay features because it avoids deep hierarchies and improves reuse. Inheritance still fits engine framework types and stable specialisations. I also consider Blueprint authoring, replication, lifetime and performance.
+- **Common Weak Answer:** "Composition is always better."
+- **Follow-up Questions:** substitutability? component overhead? Blueprint? replication?
+- **Hands-on Verification Task:** Refactor a deep enemy class hierarchy into components and note trade-offs.
+- **Sources:** [SRC-ARCH-001], [SRC-EPIC-011], [SRC-EPIC-012], [SRC-CPP-001]
+- **Version Notes:** Principle stable; UE implementation varies.
+
+### Question: How do you design an interaction system that works with AI, player and multiplayer?
+
+- **Category:** Gameplay Architecture / Interaction
+- **Priority:** P1
+- **Expected Depth:** D4
+- **Short Answer:** Separate discoverability, eligibility, authority, execution, prediction/presentation and ownership of state.
+- **Strong 3-Year-Engineer Answer:** A player trace, AI Smart Object query and scripted use should converge on a common interaction contract. The server validates eligibility, state changes are durable/replicated, and clients show prediction/cosmetic feedback. I test contention, cancellation, stale interactables and streamed actors.
+- **Common Weak Answer:** "Line trace and call Use."
+- **Follow-up Questions:** AI? server? contention? streamed? UI prompt?
+- **Hands-on Verification Task:** Build a door/terminal interaction used by player and AI with server validation.
+- **Sources:** [SRC-ARCH-004], [SRC-AI-011], [SRC-NET-006]
+- **Version Notes:** Architecture is project-specific.
+
+### Question: How do you design equipment that grants abilities and UI state?
+
+- **Category:** Gameplay Architecture / Equipment
+- **Priority:** P2
+- **Expected Depth:** D4
+- **Short Answer:** Use definitions plus instance state, a grant ledger, authority validation and projection to UI/animation/audio.
+- **Strong 3-Year-Engineer Answer:** Equipment is not just attaching a mesh. It can change stats, abilities, input mapping, UI, animation layers and save state. I track source item instance, granted ability/effect handles, attachment state and cleanup on unequip/drop/death.
+- **Common Weak Answer:** "Attach weapon and add ability."
+- **Follow-up Questions:** cleanup? save? ASC? animation? prediction?
+- **Hands-on Verification Task:** Equip/unequip a weapon that grants an ability and prove cleanup after death.
+- **Sources:** [SRC-ARCH-009], [SRC-GAS-003], [SRC-ANIM-006]
+- **Version Notes:** Equipment architecture is project-specific.
+
+### Question: How do you prevent duplicate rewards?
+
+- **Category:** Gameplay Architecture / Idempotency
+- **Priority:** P1
+- **Expected Depth:** D4
+- **Short Answer:** Use authoritative operation IDs, durable completion state and idempotent application.
+- **Strong 3-Year-Engineer Answer:** Rewards can duplicate through retries, disconnects, rollback, save/load or repeated events. I store completion/operation IDs on the authoritative side and make reward application check prior commit. UI and audio can replay, but inventory/currency truth should not.
+- **Common Weak Answer:** "Disable the button."
+- **Follow-up Questions:** retry? save? network? analytics?
+- **Hands-on Verification Task:** Simulate reward RPC retry and prove inventory increments once.
+- **Sources:** [SRC-ARCH-014], [SRC-NET-001], [SRC-ASSET-006]
+- **Version Notes:** Pattern project-specific.
+
+### Question: What is a strong answer to "what did you optimise?"
+
+- **Category:** Interview Meta / Evidence
+- **Priority:** P0
+- **Expected Depth:** D3
+- **Short Answer:** State scenario, target, bottleneck evidence, change, before/after result, trade-off and recurrence guard.
+- **Strong 3-Year-Engineer Answer:** I avoid generic "I improved performance" claims. I say: on target X in scenario Y, P95 frame time was Z due to traced cause A. I changed B, verified correctness/visual quality, measured result C over repeated runs and added guard D. I also state what the evidence does not prove.
+- **Common Weak Answer:** "I reduced draw calls."
+- **Follow-up Questions:** target? metric? causal proof? trade-off?
+- **Hands-on Verification Task:** Rewrite a vague portfolio bullet into an evidence-based optimisation story.
+- **Sources:** [SRC-PERF-003], [SRC-PERF-009], [SRC-RENDER-019]
+- **Version Notes:** Interview framing role-dependent.
+
+### Question: How do you answer "tell me about a hard bug"?
+
+- **Category:** Interview Meta / Debugging
+- **Priority:** P0
+- **Expected Depth:** D3
+- **Short Answer:** Use a structured narrative: symptom, scope, hypotheses, evidence, root cause, fix, guard and lesson.
+- **Strong 3-Year-Engineer Answer:** A strong bug story is not a war story. I describe how I narrowed the system boundary, found first reliable evidence, rejected false leads, fixed root cause and added a test/tool/log/gate. The interviewer should hear judgement, not just persistence.
+- **Common Weak Answer:** "It was random but I eventually fixed it."
+- **Follow-up Questions:** false lead? reproduction? guard? team impact?
+- **Hands-on Verification Task:** Write a STAR-style debugging answer for one workbook scenario.
+- **Sources:** [SRC-PERF-003], [SRC-BUILD-017], [SRC-NET-010]
+- **Version Notes:** General interview skill.
+
+### Question: How do you evaluate whether a feature is production-ready?
+
+- **Category:** Interview Meta / Production Readiness
+- **Priority:** P0
+- **Expected Depth:** D4
+- **Short Answer:** Define requirements, target constraints, correctness tests, failure modes, performance evidence, tooling, ownership and rollback/guard strategy.
+- **Strong 3-Year-Engineer Answer:** Production readiness means the feature works under expected platforms, content scale, networking modes, save/load, packaging and failure conditions. I want evidence, not only a demo. I also define owner, metrics, debug tools and known risks.
+- **Common Weak Answer:** "QA passed it."
+- **Follow-up Questions:** scale? failure injection? package? ownership?
+- **Hands-on Verification Task:** Create a readiness checklist for one hands-on project.
+- **Sources:** [SRC-ARCH-014], [SRC-PERF-009], [SRC-BUILD-017]
+- **Version Notes:** Readiness bar depends on product stage.
+
+### Question: How do you decide what not to build?
+
+- **Category:** System Design / Scope
+- **Priority:** P1
+- **Expected Depth:** D3
+- **Short Answer:** Tie scope to product requirements, risk, implementation cost, testability, maintenance and evidence.
+- **Strong 3-Year-Engineer Answer:** A good system design answer includes exclusions. I state what is out of scope for the first version, what assumptions would trigger redesign and what instrumentation will tell us. This prevents vague mega-systems and shows production judgement.
+- **Common Weak Answer:** "Build it flexible for future features."
+- **Follow-up Questions:** milestone? extension point? risk? evidence?
+- **Hands-on Verification Task:** Add an "out of scope and trigger to revisit" section to a design memo.
+- **Sources:** [SRC-ARCH-014], [SRC-ARCH-012]
+- **Version Notes:** General architecture skill.
+
+### Question: How do you use failure injection in an Unreal project?
+
+- **Category:** Debugging / Verification
+- **Priority:** P1
+- **Expected Depth:** D4
+- **Short Answer:** Deliberately break expected dependencies or states to prove diagnostics and guards catch them.
+- **Strong 3-Year-Engineer Answer:** I inject missing cook assets, wrong device profile, latency/loss, stale HLOD, cancelled abilities, destroyed owners, partial OFPA submit or invalid save version. The point is not chaos for its own sake; it proves the system fails clearly and the recurrence guard works.
+- **Common Weak Answer:** "Test the happy path thoroughly."
+- **Follow-up Questions:** diagnostic clarity? owner? guard? rollback?
+- **Hands-on Verification Task:** Add three injected failures to one project extension and document expected evidence.
+- **Sources:** [SRC-BUILD-017], [SRC-PERF-011], [SRC-NET-016]
+- **Version Notes:** Failure hooks are project-specific.
+
+### Question: How do you choose a profiling tool under time pressure?
+
+- **Category:** Profiling / Workflow
+- **Priority:** P1
+- **Expected Depth:** D3
+- **Short Answer:** Pick the cheapest tool that answers the current question, then escalate only when the question requires more detail.
+- **Strong 3-Year-Engineer Answer:** Stats classify quickly, CSV tracks repeated automation, Insights explains CPU/task/loading/memory windows, GPU capture explains passes/resources and platform tools explain device/driver/thermal truth. Tool choice follows hypothesis and artifact cost.
+- **Common Weak Answer:** "Start with Unreal Insights for everything."
+- **Follow-up Questions:** overhead? automation? GPU? platform?
+- **Hands-on Verification Task:** Map five symptoms to the first and second profiler you would use.
+- **Sources:** [SRC-PERF-001], [SRC-PERF-003], [SRC-PERF-009]
+- **Version Notes:** Tool availability varies by branch/platform.
+
+### Question: How do you avoid overfitting an optimisation to one scene?
+
+- **Category:** Profiling / Validation
+- **Priority:** P1
+- **Expected Depth:** D3
+- **Short Answer:** Test representative scenarios, device tiers, content variations and quality settings, then state the evidence boundary.
+- **Strong 3-Year-Engineer Answer:** Optimising one capture can regress another scene. I validate against low/high device profiles, at least one typical and one stress scenario, and a visual/UX check. I record where the result applies and when the system should be reprofiled.
+- **Common Weak Answer:** "It got faster in the test map."
+- **Follow-up Questions:** other tier? visual quality? stress case? residual risk?
+- **Hands-on Verification Task:** Apply one render optimisation to two different maps and compare.
+- **Sources:** [SRC-PERF-007], [SRC-PERF-008], [SRC-RENDER-019]
+- **Version Notes:** Scenario coverage is product-specific.
+
+### Question: What is a good source-control policy for generated HLOD and PCG output?
+
+- **Category:** Pipeline / Generated Content
+- **Priority:** P2
+- **Expected Depth:** D4
+- **Short Answer:** Decide whether output is committed, archived or regenerated, then enforce freshness and reviewability.
+- **Strong 3-Year-Engineer Answer:** Generated output can be authored asset, derived build artifact or runtime-generated state. HLOD may need committed/reviewed proxies in some pipelines; PCG may regenerate from seeds. The policy must support clean builds, diffs, rollback, package inclusion and stale-output detection.
+- **Common Weak Answer:** "Generated files should not be committed."
+- **Follow-up Questions:** clean agent? visual review? archive? stale?
+- **Hands-on Verification Task:** Classify HLOD, PCG actors, DDC and cooked packages into commit/archive/ignore buckets.
+- **Sources:** [SRC-WORLD-003], [SRC-PCG-001], [SRC-BUILD-015]
+- **Version Notes:** Pipeline policy is studio-specific.
+
+### Question: How do you debug "works after opening editor once"?
+
+- **Category:** Build / Packaged Debugging
+- **Priority:** P1
+- **Expected Depth:** D4
+- **Short Answer:** Suspect generated files, local caches, cooked content, editor-loaded assets, source-control omissions or environment dependencies.
+- **Strong 3-Year-Engineer Answer:** The editor may generate assets, warm DDC, load loose content, fix redirectors or provide environment paths. I reproduce from a clean workspace/agent without editor side effects, inspect source-control changes and compare cook/stage logs. The fix becomes a clean-build or validation gate.
+- **Common Weak Answer:** "Open editor before building."
+- **Follow-up Questions:** DDC? generated asset? redirector? local DLL?
+- **Hands-on Verification Task:** Create an editor-generated asset dependency and catch it on clean package.
+- **Sources:** [SRC-BUILD-017], [SRC-ASSET-008], [SRC-WORLD-002]
+- **Version Notes:** Local environment issues are project-specific.
+
+### Question: How do you treat redirectors in a release pipeline?
+
+- **Category:** Assets / Source Control
+- **Priority:** P2
+- **Expected Depth:** D3
+- **Short Answer:** Fix and validate redirectors deliberately so moved assets do not hide stale references or cook/package surprises.
+- **Strong 3-Year-Engineer Answer:** Redirectors are useful during editing, but a release pipeline should validate/fix them under source control and confirm references resolve in clean cook/package. Bulk moves require review because redirector cleanup can touch many assets.
+- **Common Weak Answer:** "Ignore redirectors unless package fails."
+- **Follow-up Questions:** clean workspace? source control? soft paths? package?
+- **Hands-on Verification Task:** Move an asset, inspect redirector, fix it and verify clean package.
+- **Sources:** [SRC-ASSET-008], [SRC-BUILD-009], [SRC-BUILD-017]
+- **Version Notes:** Editor tooling may vary.
+
+### Question: How do you know a system design answer is too abstract?
+
+- **Category:** System Design / Interview
+- **Priority:** P1
+- **Expected Depth:** D3
+- **Short Answer:** It lacks ownership, lifecycle, failure modes, data flow, authority, performance and verification.
+- **Strong 3-Year-Engineer Answer:** I make design answers concrete by naming data structures, owner objects, network audience, save strategy, update path, debug/profiling hooks and first tests. Patterns are useful only if they reduce real complexity and can be operated by a team.
+- **Common Weak Answer:** "Use components, events and data-driven design."
+- **Follow-up Questions:** who owns state? how debug? how profile? what fails?
+- **Hands-on Verification Task:** Rewrite a vague inventory architecture into ownership/data-flow/testing sections.
+- **Sources:** [SRC-ARCH-014], [SRC-ARCH-001], [SRC-PERF-003]
+- **Version Notes:** General interview skill.
+
+### Question: What is a good "3-year engineer" depth for Unreal internals?
+
+- **Category:** Interview Meta / Depth
+- **Priority:** P0
+- **Expected Depth:** D3
+- **Short Answer:** Know the mental model, common failures, debugging route and when exact engine-source confirmation is needed.
+- **Strong 3-Year-Engineer Answer:** I do not need to recite every engine private function, but I should know enough to avoid wrong architecture and diagnose common failures. For branch-sensitive systems like Iris, NetworkPrediction, RDG or World Partition builders, I state the concept and then verify exact API/source before implementation.
+- **Common Weak Answer:** "I know the docs."
+- **Follow-up Questions:** source-sensitive? debug workflow? common bug? proof?
+- **Hands-on Verification Task:** Pick one branch-sensitive topic and write concept versus target-source proof notes.
+- **Sources:** [SRC-NET-020], [SRC-RENDER-019], [SRC-WORLD-003]
+- **Version Notes:** Depth expectations depend on role.
+
+### Question: How do you answer when you are uncertain about an Unreal API?
+
+- **Category:** Interview Meta / Accuracy
+- **Priority:** P0
+- **Expected Depth:** D3
+- **Short Answer:** State the concept confidently, mark exact names/version as uncertain, and describe how you would verify.
+- **Strong 3-Year-Engineer Answer:** For version-sensitive APIs I avoid inventing function names. I say the design shape, the source/document I would check, the compile or runtime proof I would run, and the risk if wrong. That is better than bluffing and shows production judgement.
+- **Common Weak Answer:** "I think the function is called X."
+- **Follow-up Questions:** source? compile proof? version? fallback?
+- **Hands-on Verification Task:** Take one schematic code sample and annotate which signatures need target verification.
+- **Sources:** [SRC-BUILD-017], [SRC-NET-020], [SRC-AI-016]
+- **Version Notes:** Particularly important for UE5.3-UE5.6 differences.
+
+### Question: How do you create a useful debugging log without spamming?
+
+- **Category:** Debugging / Observability
+- **Priority:** P1
+- **Expected Depth:** D3
+- **Short Answer:** Log structured scenario/state transitions, IDs, authority, timing and errors at boundaries, with categories/verbosity and artifact retention.
+- **Strong 3-Year-Engineer Answer:** Logs should answer "what state changed, for whom, when and why". I include build/scenario IDs, object IDs, net mode, owner, relevant state and error codes. High-frequency data belongs in counters/CSV/traces, not unbounded log spam.
+- **Common Weak Answer:** "Add more UE_LOGs."
+- **Follow-up Questions:** category? verbosity? ID? artifact?
+- **Hands-on Verification Task:** Add structured logs to a fast-travel readiness scenario.
+- **Sources:** [SRC-PERF-003], [SRC-NET-016], [SRC-BUILD-017]
+- **Version Notes:** Logging categories are project-specific.
+
+### Question: How do you build a regression guard from a bug fix?
+
+- **Category:** Debugging / Regression
+- **Priority:** P1
+- **Expected Depth:** D3
+- **Short Answer:** Convert the root cause into the smallest reliable test, validation rule, automation scenario or performance threshold.
+- **Strong 3-Year-Engineer Answer:** After a fix I ask what would have caught this earlier: unit test, automation map, commandlet validator, cook gate, CSV threshold, network latency test or content rule. The guard should fail for the original bug and avoid broad false positives.
+- **Common Weak Answer:** "Tell the team to be careful."
+- **Follow-up Questions:** smallest guard? false positive? owner? artifact?
+- **Hands-on Verification Task:** Turn one workbook injected failure into a CI/pre-submit check.
+- **Sources:** [SRC-PERF-011], [SRC-BUILD-009], [SRC-BUILD-017]
+- **Version Notes:** Automation support varies.
+
+### Question: How do you evaluate if an editor tool is safe?
+
+- **Category:** Editor Tools / Safety
+- **Priority:** P1
+- **Expected Depth:** D3
+- **Short Answer:** It supports dry-run, source-control awareness, validation, transactions/undo where appropriate, logging and recovery from partial failure.
+- **Strong 3-Year-Engineer Answer:** Batch tools can damage many assets quickly. I design them with preview, ownership filters, backups/source-control checkout, per-asset result logs, validation before/after and idempotent retry. UI polish is secondary to safe mutation.
+- **Common Weak Answer:** "It worked on my selected assets."
+- **Follow-up Questions:** dry run? undo? partial failure? CI?
+- **Hands-on Verification Task:** Add dry-run and per-asset report to a batch rename/migration tool.
+- **Sources:** [SRC-BUILD-008], [SRC-BUILD-009], [SRC-BUILD-011]
+- **Version Notes:** Editor APIs are branch-sensitive.
+
+### Question: How do you choose commandlet versus Editor Utility Widget?
+
+- **Category:** Editor Tools / Automation
+- **Priority:** P2
+- **Expected Depth:** D3
+- **Short Answer:** Commandlets fit headless repeatable automation; EUWs fit interactive editor workflows.
+- **Strong 3-Year-Engineer Answer:** If the task must run in CI, validate assets or process batches without UI, I prefer a commandlet or automation command. If a designer needs guided selection, preview and manual choices, an Editor Utility Widget may fit. I often share core logic underneath both.
+- **Common Weak Answer:** "Commandlets are for programmers, EUWs for designers."
+- **Follow-up Questions:** headless? dry-run? source control? shared core?
+- **Hands-on Verification Task:** Build a validation core called by both an EUW and commandlet.
+- **Sources:** [SRC-BUILD-008], [SRC-BUILD-011], [SRC-BUILD-012]
+- **Version Notes:** Tool APIs vary.
+
+### Question: How do you explain UHT versus UBT?
+
+- **Category:** Build / Foundations
+- **Priority:** P0
+- **Expected Depth:** D3
+- **Short Answer:** UHT parses reflected declarations and generates metadata/glue; UBT configures/builds targets/modules and invokes toolchains.
+- **Strong 3-Year-Engineer Answer:** UHT is part of the reflection/build pipeline for UCLASS/USTRUCT/UFUNCTION/UPROPERTY. UBT resolves targets/modules, dependencies, generated code, compile and link. Errors can come from UHT parsing/specifiers or C++ compiler/linker stages; I classify the stage before fixing.
+- **Common Weak Answer:** "Both are Unreal's build tools."
+- **Follow-up Questions:** generated header? Build.cs? target? reflection?
+- **Hands-on Verification Task:** Create one UHT specifier error and one linker error and classify both.
+- **Sources:** [SRC-EPIC-002], [SRC-BUILD-001], [SRC-BUILD-002]
+- **Version Notes:** Build pipeline stable; details vary.
+
+### Question: How do you diagnose Blueprint performance without blaming Blueprints broadly?
+
+- **Category:** Blueprint / Performance
+- **Priority:** P1
+- **Expected Depth:** D3
+- **Short Answer:** Profile specific Blueprint VM work, tick/bind frequency, allocations, object access and native boundary cost in context.
+- **Strong 3-Year-Engineer Answer:** Blueprints are not automatically too slow. I look for high-frequency tick/bind loops, expensive pure functions, dynamic casts, asset loads, repeated allocations and unbatched work. Then I move hot inner loops or stable services to C++ only when measurement supports it.
+- **Common Weak Answer:** "Rewrite Blueprints in C++."
+- **Follow-up Questions:** profiler? tick? pure binding? native boundary?
+- **Hands-on Verification Task:** Profile a Blueprint-heavy UI and move only the measured hot path.
+- **Sources:** [SRC-EPIC-031], [SRC-PERF-003], [SRC-PERF-005]
+- **Version Notes:** Blueprint tooling/performance varies by version.
+
+### Question: How do you design a deterministic replayable test scenario?
+
+- **Category:** Testing / Automation
+- **Priority:** P1
+- **Expected Depth:** D3
+- **Short Answer:** Fix seed, map, initial state, input path, timing boundaries, metrics and expected outputs.
+- **Strong 3-Year-Engineer Answer:** Reproducible tests need controlled random seeds, stable scenario data, readiness markers and output comparison. For gameplay/performance, I log scenario start/end, entity counts and target settings. For network tests, I add latency/loss settings and deterministic command scripts.
+- **Common Weak Answer:** "Record a video of the bug."
+- **Follow-up Questions:** seed? readiness? input? net emulation?
+- **Hands-on Verification Task:** Create a replayable combat peak scenario with fixed spawn seed.
+- **Sources:** [SRC-PERF-011], [SRC-PERF-009], [SRC-NET-016]
+- **Version Notes:** Automation features are branch-sensitive.
+
+### Question: What is the difference between correctness and presentation in prediction?
+
+- **Category:** Networking / Prediction
+- **Priority:** P1
+- **Expected Depth:** D4
+- **Short Answer:** Correctness is authoritative gameplay state; presentation is local responsiveness that may be corrected.
+- **Strong 3-Year-Engineer Answer:** Prediction improves feel by showing likely outcome early, but the server still owns gameplay truth. I separate predicted animation/VFX/movement from authoritative damage, inventory and cooldown. Reconciliation should repair state without duplicating side effects.
+- **Common Weak Answer:** "Prediction means client does it first."
+- **Follow-up Questions:** correction? side effects? server rejection? cues?
+- **Hands-on Verification Task:** Predict a dash visual locally and reject server-side cooldown.
+- **Sources:** [SRC-NET-009], [SRC-GAS-010], [SRC-NET-020]
+- **Version Notes:** Prediction mechanisms differ by system.
+
+### Question: How do you handle late join in a stateful multiplayer system?
+
+- **Category:** Networking / State
+- **Priority:** P1
+- **Expected Depth:** D4
+- **Short Answer:** Represent durable current state in replicated/snapshot systems, not only in transient RPC history.
+- **Strong 3-Year-Engineer Answer:** Late joiners need world, player, inventory, objective and ability state reconstructed from authoritative server state. I avoid relying on old multicast events. Replicated properties, Fast Arrays, initial state RPCs or custom snapshots should establish current truth when relevance/connection begins.
+- **Common Weak Answer:** "Replay the events."
+- **Follow-up Questions:** dormancy? Fast Array? GameState? snapshot?
+- **Hands-on Verification Task:** Join late after a door opened and inventory changed; prove correct state.
+- **Sources:** [SRC-NET-004], [SRC-NET-006], [SRC-NET-015]
+- **Version Notes:** Initial replication behaviour is branch-sensitive.
+
+### Question: How do you decide if a replicated property should be owner-only?
+
+- **Category:** Networking / Privacy and Bandwidth
+- **Priority:** P2
+- **Expected Depth:** D3
+- **Short Answer:** Owner-only fits private client state; public gameplay state belongs on broader replication channels.
+- **Strong 3-Year-Engineer Answer:** I classify state by audience: public, team, owner, server-only or cosmetic. Owner-only can save bandwidth and protect hidden information, but other clients and late joiners will not see it. UI convenience is not a reason to expose private data globally.
+- **Common Weak Answer:** "Owner-only is for inventory."
+- **Follow-up Questions:** spectators? team? cheating? UI?
+- **Hands-on Verification Task:** Split ammo reserve owner-only from visible weapon state public.
+- **Sources:** [SRC-NET-003], [SRC-NET-004], [SRC-NET-007]
+- **Version Notes:** Conditions and audience policy are project-sensitive.
+
+### Question: How do you debug replicated references that are unresolved on clients?
+
+- **Category:** Networking / Object References
+- **Priority:** P2
+- **Expected Depth:** D4
+- **Short Answer:** Check spawn/replication order, relevancy, ownership, NetGUID mapping, dormancy and whether the referenced object is replicated/cooked/loaded.
+- **Strong 3-Year-Engineer Answer:** A replicated pointer is only useful if the client can resolve the referenced object. I inspect actor/subobject replication, creation timing, relevancy, dormancy, unloaded streaming cells, and network debug CVars for unmapped references. Sometimes stable IDs are better than direct pointers.
+- **Common Weak Answer:** "Replicate the pointer."
+- **Follow-up Questions:** NetGUID? subobject? streaming? late join?
+- **Hands-on Verification Task:** Replicate a reference to a dynamically spawned actor before it is relevant and fix it.
+- **Sources:** [SRC-NET-004], [SRC-NET-012], [SRC-NET-016]
+- **Version Notes:** Debug CVars and replication internals are version-sensitive.
+
+### Question: How do you design combat hit validation?
+
+- **Category:** Gameplay / Networking
+- **Priority:** P1
+- **Expected Depth:** D4
+- **Short Answer:** Validate client intent on the server using timing, range, geometry, ability state and anti-cheat tolerance.
+- **Strong 3-Year-Engineer Answer:** A responsive client can predict swing traces or feedback, but the server validates montage/ability state, target, range, collision/history and cooldown. I include latency tolerance, replay windows if needed, and rejection feedback. Damage application remains authoritative and idempotent.
+- **Common Weak Answer:** "Client sends hit target to server."
+- **Follow-up Questions:** lag compensation? montage? cooldown? duplicate hit?
+- **Hands-on Verification Task:** Implement melee hit request with server-side range/timing validation.
+- **Sources:** [SRC-NET-001], [SRC-PHYS-003], [SRC-GAS-010]
+- **Version Notes:** Lag compensation design is project-specific.
+
+### Question: How do you explain deferred spawning?
+
+- **Category:** Gameplay Framework / Spawning
+- **Priority:** P1
+- **Expected Depth:** D3
+- **Short Answer:** It lets code configure spawned actor properties/components before construction completion/BeginPlay-style runtime use.
+- **Strong 3-Year-Engineer Answer:** Deferred spawning is useful when initial data affects construction or component setup. I use it to avoid "spawn then immediately mutate" races, especially for replicated actors or construction-sensitive setup. I still respect authority, ownership and lifecycle ordering.
+- **Common Weak Answer:** "It delays spawn."
+- **Follow-up Questions:** construction? replication? exposed-on-spawn? BeginPlay?
+- **Hands-on Verification Task:** Spawn a projectile with owner/team/damage configured before activation.
+- **Sources:** [SRC-EPIC-011], [SRC-EPIC-015]
+- **Version Notes:** Exact lifecycle ordering is branch-sensitive.
+
+### Question: How do you select a subsystem host?
+
+- **Category:** UE Architecture / Subsystems
+- **Priority:** P1
+- **Expected Depth:** D3
+- **Short Answer:** Match lifetime and scope: engine, editor, game instance, world or local player.
+- **Strong 3-Year-Engineer Answer:** World-specific gameplay services belong in WorldSubsystem or actors, player-specific UI/input services in LocalPlayerSubsystem, persistent session services in GameInstanceSubsystem and editor-only tooling in EditorSubsystem. The wrong host creates multiplayer, travel and teardown bugs.
+- **Common Weak Answer:** "GameInstanceSubsystem lasts longest."
+- **Follow-up Questions:** PIE worlds? split screen? travel? editor?
+- **Hands-on Verification Task:** Move a per-local-player input coordinator out of GameInstanceSubsystem.
+- **Sources:** [SRC-EPIC-017], [SRC-INPUT-004], [SRC-EPIC-018]
+- **Version Notes:** Subsystem API stable conceptually.
+
+### Question: How do Enhanced Input mapping contexts fail across UI/gameplay?
+
+- **Category:** Input / Enhanced Input
+- **Priority:** P2
+- **Expected Depth:** D3
+- **Short Answer:** Context priority/lifetime can leave stale gameplay actions active or block UI actions after mode changes.
+- **Strong 3-Year-Engineer Answer:** Mapping contexts should be owned by a local-player input coordinator with clear push/pop rules for gameplay, vehicle, menu and modal UI. I test possession, respawn, split-screen/local player and CommonUI transitions. Server receives intent, not raw UI state.
+- **Common Weak Answer:** "Add all contexts on BeginPlay."
+- **Follow-up Questions:** priority? local player? modal? respawn?
+- **Hands-on Verification Task:** Open a menu and prove fire/jump actions are blocked while UI navigation works.
+- **Sources:** [SRC-INPUT-001], [SRC-INPUT-003], [SRC-INPUT-004], [SRC-UI-012]
+- **Version Notes:** Enhanced Input is plugin/project-settings sensitive.
+
+### Question: How do Enhanced Input triggers and modifiers affect network design?
+
+- **Category:** Input / Networking
+- **Priority:** P2
+- **Expected Depth:** D3
+- **Short Answer:** They shape local semantic intent before networking; the server should validate gameplay actions rather than trust raw input meaning.
+- **Strong 3-Year-Engineer Answer:** Modifiers/triggers are great for local interpretation like hold, chord, dead zone or tap. Network code should send validated intent such as "request dash" with timestamp/context, not arbitrary client authority. I test remapping and device differences so action semantics remain consistent.
+- **Common Weak Answer:** "Replicate Input Actions."
+- **Follow-up Questions:** hold? remap? validation? cooldown?
+- **Hands-on Verification Task:** Implement hold-to-charge locally and server-validated release.
+- **Sources:** [SRC-INPUT-001], [SRC-INPUT-002], [SRC-NET-006]
+- **Version Notes:** Input plugin APIs vary.
+
+### Question: How do you design accessibility without treating it as polish only?
+
+- **Category:** UI / Accessibility
+- **Priority:** P2
+- **Expected Depth:** D3
+- **Short Answer:** Preserve readability, navigation, feedback and control options across device profiles, localisation and input modes.
+- **Strong 3-Year-Engineer Answer:** Accessibility intersects UI layout, input, audio/visual feedback, colour contrast, safe zones, font scaling and gameplay readability. I test pseudo-localisation, controller navigation, low settings and platform constraints. Performance settings must not remove critical feedback.
+- **Common Weak Answer:** "Add subtitles later."
+- **Follow-up Questions:** safe zones? contrast? input remap? low tier?
+- **Hands-on Verification Task:** Run pseudo-localised UI on low scalability and gamepad-only input.
+- **Sources:** [SRC-UI-013], [SRC-UI-014], [SRC-PERF-008]
+- **Version Notes:** Platform accessibility requirements vary.
+
+### Question: How do you classify "too many actors"?
+
+- **Category:** Performance / Gameplay Framework
+- **Priority:** P1
+- **Expected Depth:** D3
+- **Short Answer:** Separate ticking, components, rendering primitives, physics/collision, replication, GC and construction/registration costs.
+- **Strong 3-Year-Engineer Answer:** Actor count alone is not the root cause. I measure tick cost, component counts, render primitives/materials, collision bodies, replication channels, UObject count/GC and spawn/destruction churn. The fix could be pooling, batching, instancing, Mass, HLOD or simpler data.
+- **Common Weak Answer:** "Actors are expensive."
+- **Follow-up Questions:** tick? components? render? replication? GC?
+- **Hands-on Verification Task:** Spawn 10k simple actors and add costs one axis at a time.
+- **Sources:** [SRC-EPIC-011], [SRC-PERF-003], [SRC-MASS-001], [SRC-RENDER-015]
+- **Version Notes:** Costs are workload/branch/platform dependent.
+
+### Question: How do you debug GC hitches?
+
+- **Category:** UObject / Profiling
+- **Priority:** P1
+- **Expected Depth:** D4
+- **Short Answer:** Inspect object count, reference graph, churn, roots, destruction work and GC timing rather than only changing GC settings.
+- **Strong 3-Year-Engineer Answer:** GC hitches usually come from too many objects, too much churn, large reference graphs, destruction callbacks or bad lifetime policy. I profile GC timing/object counts, identify churn sources and reduce UObject allocation or retention before tuning collection intervals.
+- **Common Weak Answer:** "Run GC less often."
+- **Follow-up Questions:** object count? churn? roots? incremental GC?
+- **Hands-on Verification Task:** Create UObject churn and compare pooling/value-type redesign.
+- **Sources:** [SRC-EPIC-005], [SRC-PERF-003], [SRC-EPIC-009]
+- **Version Notes:** Incremental GC is version/experimental sensitive.
+
+### Question: How do you use Unreal Insights for task contention?
+
+- **Category:** Profiling / Tasks
+- **Priority:** P2
+- **Expected Depth:** D3
+- **Short Answer:** Inspect task launch, prerequisites, worker occupancy, waits, locks and game-thread merge points.
+- **Strong 3-Year-Engineer Answer:** A wait scope may show where the game thread blocked, not the root work source. I follow the dependency chain, worker task duration, scheduling granularity, lock contention and merge/copy-back cost. Then I adjust partitioning or ownership.
+- **Common Weak Answer:** "The wait is the expensive code."
+- **Follow-up Questions:** prerequisite? worker idle? lock? merge?
+- **Hands-on Verification Task:** Profile a ParallelFor workload with too-small chunks and a locked output vector.
+- **Sources:** [SRC-CPP-026], [SRC-PERF-003], [SRC-CPP-021]
+- **Version Notes:** Insights task tracks vary by branch.
+
+### Question: How do you decide between pooling and allocation reduction?
+
+- **Category:** Performance / Memory
+- **Priority:** P1
+- **Expected Depth:** D3
+- **Short Answer:** Pool only when reuse is safe and measured allocation/destruction churn is meaningful; otherwise reduce work or use value/batch data.
+- **Strong 3-Year-Engineer Answer:** Pooling adds lifetime, reset and stale-state risk. I first prove allocation/destruction churn or spawn cost is the bottleneck. Then I define reset invariants, owner teardown, memory cap and profiling evidence. Sometimes SoA/value arrays or fewer objects are better.
+- **Common Weak Answer:** "Pool expensive objects."
+- **Follow-up Questions:** reset? memory cap? owner destroyed? stale state?
+- **Hands-on Verification Task:** Pool projectiles and deliberately test stale damage/team/owner fields.
+- **Sources:** [SRC-PERF-003], [SRC-ARCH-014], [SRC-CPP-024]
+- **Version Notes:** Allocation cost and pooling APIs vary.
+
+### Question: How do you design a performance budget for a feature?
+
+- **Category:** Performance / Budgeting
+- **Priority:** P1
+- **Expected Depth:** D4
+- **Short Answer:** Allocate CPU/GPU/memory/loading/network budgets per scenario/tier and define measurement and owner.
+- **Strong 3-Year-Engineer Answer:** A budget needs target platform, scenario, peak counts, quality tier and metric thresholds. I decide whether the feature owns Game, Draw/RHI, GPU pass, memory, package size, bandwidth or load time. Then I add instrumentation so the budget can be enforced over time.
+- **Common Weak Answer:** "Keep it under 60 FPS."
+- **Follow-up Questions:** tier? memory? hitches? owner? tool?
+- **Hands-on Verification Task:** Budget an inventory UI, VFX burst or AI crowd feature.
+- **Sources:** [SRC-PERF-001], [SRC-PERF-009], [SRC-PERF-010]
+- **Version Notes:** Budgets are product/platform specific.
+
+### Question: How do you handle platform-specific feature fallback?
+
+- **Category:** Platform / Scalability
+- **Priority:** P2
+- **Expected Depth:** D3
+- **Short Answer:** Define capability detection, fallback content/settings, gameplay readability and target proof per platform tier.
+- **Strong 3-Year-Engineer Answer:** Platform fallback is not "turn it off". I decide what visual/gameplay signal must remain, then provide alternative materials, lighting, input, UI or simulation scale. I prove active fallback in packaged builds with screenshots/metrics and avoid changing gameplay rules by graphics tier.
+- **Common Weak Answer:** "Lower quality on weak platforms."
+- **Follow-up Questions:** readability? feature support? content variant? gameplay parity?
+- **Hands-on Verification Task:** Design fallback for expensive shadows or VFX on low mobile tier.
+- **Sources:** [SRC-PLAT-005], [SRC-PLAT-006], [SRC-PERF-008]
+- **Version Notes:** Platform feature support changes.
+
+### Question: How do you debug package-size growth?
+
+- **Category:** Build / Assets
+- **Priority:** P2
+- **Expected Depth:** D3
+- **Short Answer:** Compare cooked/staged manifests, asset dependencies, chunks/containers, maps, shader/PSO data and platform files by build ID.
+- **Strong 3-Year-Engineer Answer:** Package size growth is an artifact problem, not a guess. I diff manifests, find new roots or dependency chains, inspect textures/audio/shaders/plugins and check accidental cook-all or duplicate content. The fix should be an ownership/cook rule change, content budget or asset optimisation.
+- **Common Weak Answer:** "Compress it more."
+- **Follow-up Questions:** manifest diff? dependency root? plugin? shader library?
+- **Hands-on Verification Task:** Add one large soft-referenced asset and trace why it entered the package.
+- **Sources:** [SRC-ASSET-006], [SRC-BUILD-017], [SRC-RENDER-013]
+- **Version Notes:** Container formats/platform packaging vary.
+
+### Question: How do you prove a loading-screen improvement?
+
+- **Category:** Loading / Performance
+- **Priority:** P2
+- **Expected Depth:** D3
+- **Short Answer:** Measure cold and warm first-interactive time, loading phases, I/O, asset dependency changes, memory and user-visible readiness.
+- **Strong 3-Year-Engineer Answer:** I define first interactive, not just map-open complete. Then I capture cold/warm package runs, load traces, asset lists, async loading, shader/PSO first-use and memory peaks. A loading screen that ends before collision/UI/gameplay readiness is a bug.
+- **Common Weak Answer:** "The bar finishes faster."
+- **Follow-up Questions:** cold cache? readiness? async? first interactive?
+- **Hands-on Verification Task:** Add markers for load start, map loaded, playable ready and compare before/after.
+- **Sources:** [SRC-ASSET-006], [SRC-PERF-003], [SRC-PERF-009]
+- **Version Notes:** Loading tool channels vary by branch.
+
+### Question: What is a good "source-sensitive" caveat?
+
+- **Category:** Interview Meta / Source Discipline
+- **Priority:** P1
+- **Expected Depth:** D3
+- **Short Answer:** It names which part is stable concept, which part is branch/API sensitive, and how to verify implementation.
+- **Strong 3-Year-Engineer Answer:** I might say: "The design shape is stable, but exact `UAISense` signatures and NetworkPrediction model hooks need target branch source confirmation." That is useful because it preserves the concept without pretending public docs are a drop-in implementation guide.
+- **Common Weak Answer:** "It depends."
+- **Follow-up Questions:** what depends? source? compile proof? fallback?
+- **Hands-on Verification Task:** Add caveats to three schematic code snippets in the curriculum.
+- **Sources:** [SRC-AI-016], [SRC-NET-020], [SRC-WORLD-003]
+- **Version Notes:** Applies heavily to UE5.3-UE5.6 specialist systems.
+
+### Question: How do you make a handoff report actionable?
+
+- **Category:** Team Workflow / Debugging
+- **Priority:** P1
+- **Expected Depth:** D3
+- **Short Answer:** Include symptom, reproduction, artifact identity, evidence, root-cause classification, owner, fix/guard and residual risk.
+- **Strong 3-Year-Engineer Answer:** A report should let the next engineer act without replaying your investigation. I link logs/traces/CSV/package, identify first failing phase or scenario window, explain what was ruled out and assign an owner with the smallest recurrence guard.
+- **Common Weak Answer:** "It crashes sometimes; see logs."
+- **Follow-up Questions:** first cause? artifact? owner? guard?
+- **Hands-on Verification Task:** Rewrite a vague CI failure note into an actionable handoff.
+- **Sources:** [SRC-BUILD-017], [SRC-PERF-003], [SRC-PERF-011]
+- **Version Notes:** Team conventions vary.
+
+### Question: How do you design a rollback-safe gameplay cue key?
+
+- **Category:** Networking / Rollback
+- **Priority:** P3
+- **Expected Depth:** D4
+- **Short Answer:** Use a deterministic event identity tied to simulation tick, source, predicted action and effect type so replay does not duplicate presentation.
+- **Strong 3-Year-Engineer Answer:** Rollback/resimulation can execute the same logical event multiple times. A cue key lets presentation decide whether it is new, replayed or corrected. I include enough state to dedupe without suppressing legitimate repeated events, and I keep gameplay authority outside the cue.
+- **Common Weak Answer:** "Do not play cues during rollback."
+- **Follow-up Questions:** tick? source ID? repeated dash? correction?
+- **Hands-on Verification Task:** Force two corrections and prove one dash trail cue per logical dash.
+- **Sources:** [SRC-NET-020], [SRC-GAS-008], [SRC-ARCH-014]
+- **Version Notes:** Cue systems are plugin/branch sensitive.
+
+### Question: How would you test NetworkPrediction smoothing?
+
+- **Category:** Networking / NetworkPrediction
+- **Priority:** P3
+- **Expected Depth:** D4
+- **Short Answer:** Compare visual interpolation/smoothing against authoritative state under forced corrections, packet loss and latency.
+- **Strong 3-Year-Engineer Answer:** I run a deterministic movement scenario with controlled net emulation, force reconcile events and record raw authoritative state versus smoothed presentation. Good smoothing hides correction visually without masking gameplay truth or adding unacceptable input delay.
+- **Common Weak Answer:** "If it looks smooth, it works."
+- **Follow-up Questions:** correction? input latency? cue timing? authority?
+- **Hands-on Verification Task:** Toggle smoothing on/off for a rollback dash and capture before/after video/logs.
+- **Sources:** [SRC-NET-020], [SRC-NET-009], [SRC-NET-016]
+- **Version Notes:** Exact smoothing services require target source.
+
+### Question: What makes an automation threshold maintainable?
+
+- **Category:** Automation / Performance Gates
+- **Priority:** P1
+- **Expected Depth:** D3
+- **Short Answer:** It is tied to scenario, metric, owner, tolerance, baseline policy and artifact evidence.
+- **Strong 3-Year-Engineer Answer:** A maintainable threshold is not a magic number. It has a reason, target device/profile, enough repetitions, false-positive policy and owner. It should catch meaningful regressions without punishing unrelated noise or encouraging teams to bypass the gate.
+- **Common Weak Answer:** "Set a hard FPS threshold."
+- **Follow-up Questions:** rolling baseline? tolerance? owner? reporting-only?
+- **Hands-on Verification Task:** Convert a noisy CSV metric into warning/blocking levels.
+- **Sources:** [SRC-PERF-009], [SRC-PERF-011]
+- **Version Notes:** CI policy is project-specific.
+
+### Question: How do you prove a build graph did not use stale artifacts?
+
+- **Category:** Build / BuildGraph
+- **Priority:** P2
+- **Expected Depth:** D4
+- **Short Answer:** Bind every artifact to build ID/input revision and make downstream nodes consume declared outputs, not ambient paths.
+- **Strong 3-Year-Engineer Answer:** I include build ID in artifact paths, clean outputs or validate freshness, and record producer node metadata. Downstream package/performance/crash nodes must depend on the producing node. Otherwise a green graph may test yesterday's package or symbols.
+- **Common Weak Answer:** "The node ran successfully."
+- **Follow-up Questions:** output path? build ID? dependency? clean agent?
+- **Hands-on Verification Task:** Intentionally point a perf node at an old package and add a build-ID guard.
+- **Sources:** [SRC-BUILD-015], [SRC-BUILD-017], [SRC-BUILD-018]
+- **Version Notes:** Artifact systems vary by CI.
+
+### Question: How do you handle shader cache and DDC in performance proof?
+
+- **Category:** Rendering / Build Artifacts
+- **Priority:** P2
+- **Expected Depth:** D4
+- **Short Answer:** Declare cache state, test cold/warm paths where relevant, and distinguish build-time cache from shipped first-use behaviour.
+- **Strong 3-Year-Engineer Answer:** Warm DDC can hide local shader/asset processing, but shipped users care about packaged shader libraries, PSO coverage and first-use state creation. I record cache policy and run at least one cold-cache or clean-package path for first-use hitch features.
+- **Common Weak Answer:** "Warm the cache before benchmarking."
+- **Follow-up Questions:** DDC? PSO? shader library? shipped user?
+- **Hands-on Verification Task:** Compare first-run effect hitch with warm and cold local caches.
+- **Sources:** [SRC-ASSET-008], [SRC-RENDER-014], [SRC-BUILD-017]
+- **Version Notes:** Cache systems are branch/platform sensitive.
+
+### Question: How do you check World Partition package inclusion?
+
+- **Category:** World Partition / Packaging
+- **Priority:** P2
+- **Expected Depth:** D4
+- **Short Answer:** Verify representative maps, external actors, Data Layers, HLOD artifacts and generated content through cook/stage logs and packaged traversal.
+- **Strong 3-Year-Engineer Answer:** Editor visibility is not package inclusion. I check cook roots, external actor files, Runtime Data Layer content, HLOD proxies, Level Instances and PCG/generated assets. Then I run a packaged route that exercises those cells and logs readiness.
+- **Common Weak Answer:** "The map opens in editor."
+- **Follow-up Questions:** external actors? HLOD? Runtime Data Layer? traversal?
+- **Hands-on Verification Task:** Omit a generated/HLOD artifact and show how package traversal detects it.
+- **Sources:** [SRC-ASSET-010], [SRC-WORLD-003], [SRC-BUILD-017]
+- **Version Notes:** Package layout varies by platform.
+
+### Question: How would you interview-answer "we have a one-frame network correction pop"?
+
+- **Category:** Networking / Debugging
+- **Priority:** P1
+- **Expected Depth:** D4
+- **Short Answer:** Capture movement prediction data, input/saved moves, server correction, smoothing and gameplay state around the pop.
+- **Strong 3-Year-Engineer Answer:** I would reproduce with fixed latency/loss, log client input/saved moves, server authoritative movement, correction size/time and smoothing. Then I check custom movement flags, move combining, non-deterministic client logic and whether a gameplay system changes movement outside prediction.
+- **Common Weak Answer:** "Increase smoothing."
+- **Follow-up Questions:** saved move? combine? non-determinism? server correction?
+- **Hands-on Verification Task:** Inject a client-only speed multiplier and diagnose the correction.
+- **Sources:** [SRC-NET-009], [SRC-NET-018], [SRC-NET-019]
+- **Version Notes:** Movement internals are branch-sensitive.
+
+### Question: How do you avoid double-applying costs in predicted abilities?
+
+- **Category:** GAS / Prediction
+- **Priority:** P2
+- **Expected Depth:** D4
+- **Short Answer:** Use prediction-aware commit paths, authoritative server validation and reconciliation-safe UI/cue handling.
+- **Strong 3-Year-Engineer Answer:** Costs/cooldowns should not be blindly applied once locally and again from server without prediction reconciliation. I track prediction keys, ability commit, rejected activation and UI rollback. The server owns truth; the client presents provisional state.
+- **Common Weak Answer:** "Apply cost on both sides."
+- **Follow-up Questions:** prediction key? rollback? UI? rejection?
+- **Hands-on Verification Task:** Force server rejection after local predicted cost and repair UI/state.
+- **Sources:** [SRC-GAS-010], [SRC-GAS-006], [SRC-NET-001]
+- **Version Notes:** GAS prediction setup is project-sensitive.
+
+### Question: How do you decide if an ability should be instanced?
+
+- **Category:** GAS / Ability Instances
+- **Priority:** P3
+- **Expected Depth:** D3
+- **Short Answer:** Choose based on per-activation state, concurrency, tasks, memory, cancellation and shared/default data.
+- **Strong 3-Year-Engineer Answer:** Instancing policy affects where mutable ability state can live and how concurrent activations behave. If an ability uses tasks or per-activation state, instancing may be needed. Stateless abilities can avoid instance overhead, but only if they truly keep no activation-specific state.
+- **Common Weak Answer:** "Instance abilities that are complex."
+- **Follow-up Questions:** concurrent activation? tasks? mutable fields? memory?
+- **Hands-on Verification Task:** Build a charge ability with mutable state and test two simultaneous activations.
+- **Sources:** [SRC-GAS-003], [SRC-GAS-009]
+- **Version Notes:** Exact policies are GAS/branch sensitive.
+
+### Question: How do you debug a Behaviour Tree that thrashes between branches?
+
+- **Category:** AI / Behaviour Tree
+- **Priority:** P1
+- **Expected Depth:** D3
+- **Short Answer:** Inspect Blackboard changes, decorator observers/aborts, service frequency, task result timing and cooldown/hysteresis.
+- **Strong 3-Year-Engineer Answer:** Thrashing usually means decision inputs change too often or aborts are too broad. I use BT debugger/Visual Logger, log Blackboard key transitions and add hysteresis/cooldowns or better state ownership. The fix is not always "lower service tick"; it is stabilising decision conditions.
+- **Common Weak Answer:** "Observer aborts are bugged."
+- **Follow-up Questions:** Blackboard? service frequency? hysteresis? task finish?
+- **Hands-on Verification Task:** Create a chase/flee BT that oscillates at range threshold and add hysteresis.
+- **Sources:** [SRC-AI-002], [SRC-AI-008], [SRC-AI-009]
+- **Version Notes:** BT debugging UI varies by branch.
+
+### Question: How do you budget EQS?
+
+- **Category:** AI / EQS
+- **Priority:** P2
+- **Expected Depth:** D3
+- **Short Answer:** Control query frequency, candidate count, test cost, run mode, agent count and caching.
+- **Strong 3-Year-Engineer Answer:** EQS cost is multiplicative: agents times candidates times tests times frequency. I profile real query load, use cheap filters early, reduce frequency, cache context where valid and avoid using EQS as a per-frame reflex for every NPC.
+- **Common Weak Answer:** "EQS is expensive."
+- **Follow-up Questions:** candidate count? test order? run mode? frequency?
+- **Hands-on Verification Task:** Run the same query with 10, 100 and 1000 candidates and profile.
+- **Sources:** [SRC-AI-005], [SRC-AI-008], [SRC-PERF-003]
+- **Version Notes:** EQS tooling/behaviour is project-sensitive.
+
+### Question: How do you decide between RVO and Detour Crowd?
+
+- **Category:** AI / Avoidance
+- **Priority:** P2
+- **Expected Depth:** D3
+- **Short Answer:** Compare avoidance needs, NavMesh/path integration, agent count, movement component support and debugging requirements.
+- **Strong 3-Year-Engineer Answer:** Avoidance is different from pathfinding. RVO and Detour Crowd have different integration and trade-offs, and Epic guidance warns against using both at once. I test with representative density, bottlenecks and movement constraints.
+- **Common Weak Answer:** "Use both for better avoidance."
+- **Follow-up Questions:** path following? density? debug? movement component?
+- **Hands-on Verification Task:** Build a corridor crowd test with RVO, Detour Crowd and neither.
+- **Sources:** [SRC-AI-007], [SRC-AI-006], [SRC-AI-008]
+- **Version Notes:** Avoidance setup varies.
+
+### Question: How do you validate a reusable POI in a large world?
+
+- **Category:** World Building / POI
+- **Priority:** P2
+- **Expected Depth:** D3
+- **Short Answer:** Test authoring mode, source-control files, runtime identity, Data Layer/HLOD/cook inclusion and packaged traversal.
+- **Strong 3-Year-Engineer Answer:** A reusable POI is not just a visual prefab. I decide Level Instance/Packed Level Blueprint/actors, verify OFPA/source-control behaviour, assign Data Layer/HLOD policy, preserve unique gameplay IDs and package it. Then I stream into and out of it in a target build.
+- **Common Weak Answer:** "Make a Level Instance."
+- **Follow-up Questions:** mutable state? OFPA? HLOD? package?
+- **Hands-on Verification Task:** Place one POI twice and verify save IDs and HLOD/cook behaviour.
+- **Sources:** [SRC-WORLD-004], [SRC-WORLD-002], [SRC-WORLD-003]
+- **Version Notes:** POI workflow is project-specific.
+
+### Question: How do you keep UI async asset loads safe?
+
+- **Category:** UI / Async Assets
+- **Priority:** P2
+- **Expected Depth:** D3
+- **Short Answer:** Track request identity, widget/model lifetime and cancellation or stale-result rejection.
+- **Strong 3-Year-Engineer Answer:** Async icons/previews can return after a list entry is recycled or widget is destroyed. I store request tokens or expected item IDs, use weak widget/model references, cancel where possible and ignore stale completion. This is especially important in virtualised lists.
+- **Common Weak Answer:** "Check IsValid in callback."
+- **Follow-up Questions:** recycled entry? request token? cancellation? soft ref?
+- **Hands-on Verification Task:** Rapid-scroll a list with async icons and prove no stale icon appears.
+- **Sources:** [SRC-UI-005], [SRC-ASSET-002], [SRC-ASSET-004]
+- **Version Notes:** Async APIs vary by branch.
+
+### Question: How do you design local-player scoped UI/input in split-screen?
+
+- **Category:** UI / Local Player
+- **Priority:** P2
+- **Expected Depth:** D3
+- **Short Answer:** Scope widgets, input contexts and view models to the correct LocalPlayer/PlayerController.
+- **Strong 3-Year-Engineer Answer:** Split-screen breaks global UI assumptions. I store local UI/input services in LocalPlayer scope, avoid global singleton focus state, and test each player's menus, prompts, remapping and owner-only replicated data independently.
+- **Common Weak Answer:** "Use GetPlayerController(0)."
+- **Follow-up Questions:** LocalPlayerSubsystem? focus? owner-only? input context?
+- **Hands-on Verification Task:** Open inventory for player 2 without changing player 1 focus/input.
+- **Sources:** [SRC-UI-001], [SRC-INPUT-004], [SRC-NET-003]
+- **Version Notes:** Local multiplayer setup is project-specific.
+
+### Question: How do you debug a Physics Asset ragdoll recovery issue?
+
+- **Category:** Physics / Animation
+- **Priority:** P2
+- **Expected Depth:** D4
+- **Short Answer:** Inspect physics bodies/constraints, collision profiles, pose handoff, authority, sleep state and animation blend recovery.
+- **Strong 3-Year-Engineer Answer:** Ragdoll recovery sits across animation, physics and gameplay. I verify Physics Asset bodies, constraint frames/drives, collision responses, server authority, component transform, blend-to-animation and gameplay state. Networked ragdoll needs explicit audience/authority policy.
+- **Common Weak Answer:** "Tune the ragdoll asset."
+- **Follow-up Questions:** constraint frame? collision? server? blend?
+- **Hands-on Verification Task:** Knock down a character, recover to animation and test under dedicated server.
+- **Sources:** [SRC-PHYS-007], [SRC-ANIM-010], [SRC-NET-001]
+- **Version Notes:** Chaos/animation behaviour varies by branch.
+
+### Question: How do you analyse a constraint instability bug?
+
+- **Category:** Physics / Constraints
+- **Priority:** P2
+- **Expected Depth:** D4
+- **Short Answer:** Check mass ratios, frames, limits, drives, damping, timestep/substeps, collision and solver cost.
+- **Strong 3-Year-Engineer Answer:** Constraints fail when physical setup is unrealistic or under-resolved. I visualise frames, test simple shapes, tune mass/damping/limits, consider substepping/CCD where appropriate and profile physics time. The fix is rarely one magic stiffness number.
+- **Common Weak Answer:** "Increase solver iterations."
+- **Follow-up Questions:** frame? mass ratio? substep? collision?
+- **Hands-on Verification Task:** Build a swinging door/chain and tune from unstable to stable with evidence.
+- **Sources:** [SRC-PHYS-006], [SRC-PHYS-005], [SRC-PERF-003]
+- **Version Notes:** Chaos solver details vary.
+
+### Question: How do you decide whether a render target should update every frame?
+
+- **Category:** Rendering / Render Targets
+- **Priority:** P2
+- **Expected Depth:** D3
+- **Short Answer:** Tie cadence to visual requirement and measure memory/bandwidth/view cost against alternatives.
+- **Strong 3-Year-Engineer Answer:** Every-frame render targets are expensive when they imply extra views, resolves, mips or UI copies. I ask whether the content changes, whether event/manual cadence suffices and whether lower resolution/format/show flags preserve quality. Then I profile Draw/GPU and memory.
+- **Common Weak Answer:** "It looks smoother every frame."
+- **Follow-up Questions:** manual update? format? scene capture? mips?
+- **Hands-on Verification Task:** Change an inventory preview from every-frame to on-demand and compare.
+- **Sources:** [SRC-RENDER-016], [SRC-RENDER-017], [SRC-PERF-003]
+- **Version Notes:** RHI/platform costs vary.
+
+### Question: How do you debug a material that is cheap in shader complexity but expensive in game?
+
+- **Category:** Rendering / Materials
+- **Priority:** P2
+- **Expected Depth:** D4
+- **Short Answer:** Check pass participation, overdraw, shadows, WPO, texture bandwidth, permutations, render targets and scene coverage.
+- **Strong 3-Year-Engineer Answer:** Shader complexity view is one clue, not full truth. A material may affect depth, base, shadow, velocity, translucency or custom depth and be used across large screen area or many instances. I use GPU capture/pass timing and material usage context.
+- **Common Weak Answer:** "Shader complexity is green."
+- **Follow-up Questions:** overdraw? shadow pass? WPO? screen coverage?
+- **Hands-on Verification Task:** Compare an opaque and translucent material with equal node count but different overdraw.
+- **Sources:** [SRC-RENDER-004], [SRC-RENDER-005], [SRC-RENDER-019]
+- **Version Notes:** Visualisers and pass costs are RHI-specific.
+
+### Question: How do you prove a content LOD change did not break gameplay readability?
+
+- **Category:** Rendering / Scalability
+- **Priority:** P2
+- **Expected Depth:** D3
+- **Short Answer:** Compare visual/gameplay cues, target device profiles, performance metrics and accessibility/readability constraints.
+- **Strong 3-Year-Engineer Answer:** Performance gains are invalid if players lose enemy silhouettes, interactable cues or UI readability. I capture before/after on low/high tiers, include gameplay-critical views and record frame/memory savings. Quality sign-off is part of the proof.
+- **Common Weak Answer:** "LOD saves performance."
+- **Follow-up Questions:** silhouette? cues? low tier? accessibility?
+- **Hands-on Verification Task:** Reduce enemy material/LOD quality and run a readability checklist plus CSV.
+- **Sources:** [SRC-PERF-008], [SRC-RENDER-008], [SRC-UI-013]
+- **Version Notes:** Product readability standards vary.
+
+### Question: How do you design a debug overlay without harming performance?
+
+- **Category:** Tools / Runtime Debugging
+- **Priority:** P2
+- **Expected Depth:** D3
+- **Short Answer:** Gate it by build/config/CVar, batch data, limit drawing/text, and measure overhead.
+- **Strong 3-Year-Engineer Answer:** Debug overlays can add text layout, line drawing, UObject lookups and allocations. I expose targeted categories, sample rates and distance filters, and make sure Shipping policy is respected. For high-volume data, logs/CSV/Insights may be better.
+- **Common Weak Answer:** "Only developers enable it."
+- **Follow-up Questions:** CVar? allocation? shipping? distance filter?
+- **Hands-on Verification Task:** Add an AI/perception overlay and measure with 100 agents.
+- **Sources:** [SRC-AI-008], [SRC-PERF-003], [SRC-BUILD-007]
+- **Version Notes:** Debug draw APIs vary.
+
+### Question: How do you handle privacy in crash/performance artifacts?
+
+- **Category:** Build / Operations
+- **Priority:** P2
+- **Expected Depth:** D3
+- **Short Answer:** Retain enough diagnostic context while redacting or avoiding personal/sensitive data according to platform/studio policy.
+- **Strong 3-Year-Engineer Answer:** Crash and telemetry artifacts can include user paths, account IDs, chat, device data or internal filenames. I define approved context keys, retention, access control and redaction. Diagnostic value does not override privacy and platform requirements.
+- **Common Weak Answer:** "More logs are better."
+- **Follow-up Questions:** PII? retention? platform policy? access?
+- **Hands-on Verification Task:** Review a crash context payload and remove unsafe fields while preserving triage value.
+- **Sources:** [SRC-BUILD-018], [SRC-PLAT-024]
+- **Version Notes:** Policies vary by studio/platform.
+
+### Question: How do you explain a trade-off you chose under production pressure?
+
+- **Category:** Interview Meta / Judgement
+- **Priority:** P0
+- **Expected Depth:** D3
+- **Short Answer:** Name the constraint, options, evidence, chosen compromise, risk and follow-up guard.
+- **Strong 3-Year-Engineer Answer:** I avoid heroic narratives. I explain the deadline/platform/quality constraint, what options I evaluated, what evidence supported the decision, what risk remained and what monitoring/test was added. This shows judgement and accountability.
+- **Common Weak Answer:** "We picked the faster fix."
+- **Follow-up Questions:** alternatives? evidence? risk? follow-up?
+- **Hands-on Verification Task:** Write a production decision memo for a performance or networking compromise.
+- **Sources:** [SRC-ARCH-014], [SRC-PERF-003], [SRC-BUILD-017]
+- **Version Notes:** General interview skill.
+
+### Question: How do you prepare a five-minute specialist deep-dive answer?
+
+- **Category:** Interview Meta / Communication
+- **Priority:** P0
+- **Expected Depth:** D3
+- **Short Answer:** Use problem, constraints, design, implementation, debugging, measurement, failure case and lesson.
+- **Strong 3-Year-Engineer Answer:** I choose one system and tell it with evidence. I include why the system existed, the architecture, one hard bug, one measurement or proof packet, and what I would improve. That beats listing many technologies without depth.
+- **Common Weak Answer:** "Describe every feature I touched."
+- **Follow-up Questions:** evidence? failure? trade-off? lesson?
+- **Hands-on Verification Task:** Prepare a five-minute answer from the unified target-proof packet.
+- **Sources:** [SRC-PERF-009], [SRC-BUILD-015], [SRC-NET-020]
+- **Version Notes:** Tailor depth to role.
+
+### Question: How do you answer "what would you check in engine source?"
+
+- **Category:** Interview Meta / Engine Source
+- **Priority:** P1
+- **Expected Depth:** D4
+- **Short Answer:** Identify the branch-sensitive seam: virtual hooks, replication path, builder commandlet, plugin API or renderer/task internals.
+- **Strong 3-Year-Engineer Answer:** I would not browse source aimlessly. For saved moves I check CharacterMovement headers/cpp; for subobjects/Iris I check replication registration/fragments; for HLOD I check builder commandlet behaviour; for RDG I check pass/resource APIs. Then I make a compile or runtime proof.
+- **Common Weak Answer:** "Read the engine source."
+- **Follow-up Questions:** which file? why? compile proof? risk?
+- **Hands-on Verification Task:** Pick a schematic sample and list exact engine files/classes to verify.
+- **Sources:** [SRC-NET-017], [SRC-NET-018], [SRC-WORLD-003], [SRC-RENDER-019]
+- **Version Notes:** Source layout differs by branch.
+
+### Question: How do you handle a feature that cannot be proven in the current branch?
+
+- **Category:** Production Readiness / Scope
+- **Priority:** P1
+- **Expected Depth:** D3
+- **Short Answer:** Document rejection or unsupported status with evidence, fallback design and future verification trigger.
+- **Strong 3-Year-Engineer Answer:** If Iris, NetworkPrediction, a platform profiler or a builder command is unavailable, I do not leave a silent gap. I record target branch evidence, explain fallback, mark risk and define what would need to change before adoption. This preserves scope without pretending support exists.
+- **Common Weak Answer:** "Skip it."
+- **Follow-up Questions:** fallback? risk? future trigger? evidence?
+- **Hands-on Verification Task:** Write a rejection memo for one unsupported target-branch feature.
+- **Sources:** [SRC-NET-014], [SRC-NET-020], [SRC-BUILD-017]
+- **Version Notes:** Version-sensitive systems need explicit support checks.

@@ -665,3 +665,5 @@ A useful build-farm or release-failure report should include:
 6. smallest recurrence guard: Build.cs fix, cook rule, staging rule, graph dependency, smoke test or crash-proof gate.
 
 This makes the report actionable for another engineer without replaying your whole investigation.
+
+For a combined target-branch packet that ties BuildGraph/RunUAT artifacts to packaged performance gates, World Partition/HLOD builder output and forced-crash evidence, use [Packaged Performance, BuildGraph, and World Partition Proof](ue_packaged_performance_build_worldpartition_proof.md) and `practice/ue_packaged_performance_build_worldpartition_workbook.md`.
