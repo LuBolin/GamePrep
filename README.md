@@ -4,15 +4,7 @@ GamePrep is a source-traceable, interview-oriented curriculum for a roughly thre
 
 ## Start here
 
-1. Read [the learning plan](curriculum/ue_interview_learning_plan.md) for priorities and learning order.
-2. Use [the master execution roadmap](curriculum/master_execution_roadmap.md) for long-horizon waves and completion gates.
-3. Choose a cadence from [the study schedules](curriculum/ue_study_schedule.md).
-4. Use [the gap analysis](curriculum/ue_gap_analysis.md) to pick repairs and role-specific deep dives.
-5. Rehearse with [the synthesis lists](curriculum/ue_interview_synthesis_lists.md) after each topic block.
-6. Study the chapters in `topics/`.
-7. Retrieve and rehearse with `practice/` rather than merely rereading.
-8. Use `data/ue_topic_source_index.md` to audit claims and continue research.
-9. Use `data/ue_interview_knowledge_graph.json` for machine analysis of dependencies and coverage.
+Open [[STUDY_GUIDE]] — it explains the vault structure, learning order, and how to use every file.
 
 `.codex/research.md` remains the master scope. `.codex/STATUS.md` is the living checkpoint and coverage map.
 
