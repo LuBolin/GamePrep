@@ -1,5 +1,7 @@
 # GAS Specialist Workbook
 
+See also: [[ue_gas_specialist_depth]], [[ue_gameplay_ability_system]], [[ue_networking_and_replication]], [[ue_hands_on_projects]].
+
 These drills extend Project 9 and the GAS specialist chapter. Each lab should run on a dedicated server with one owning client and one simulated proxy unless the lab explicitly says otherwise.
 
 Source anchors: [SRC-GAS-001] [SRC-GAS-002] [SRC-GAS-003] [SRC-GAS-004] [SRC-GAS-005] [SRC-GAS-006] [SRC-GAS-009] [SRC-GAS-011] [SRC-GAS-012] [SRC-GAS-013]

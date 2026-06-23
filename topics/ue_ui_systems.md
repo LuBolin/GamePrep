@@ -1,5 +1,7 @@
 # Unreal UI Systems for Interviews
 
+See also: [[ue_runtime_presentation_target_proof]], [[ue_enhanced_input]], [[ue_audio_systems]], [[ue_hands_on_projects]].
+
 Unreal UI is not merely a collection of Widget Blueprints. It is a local presentation system built over Slate, fed by gameplay state, driven by a particular local user, and constrained by CPU traversal, layout, paint, draw submission, texture memory and overdraw. Strong engineers define those boundaries before choosing a widget or optimisation switch.
 
 Version target: **UE5.3–UE5.6**. UMG and Slate fundamentals are stable. CommonUI and Model-View-ViewModel (MVVM) are **plugin-dependent**; MVVM is documented as **Beta**, and CommonUI/Enhanced Input integration is version-sensitive. Maintained UE5.7 optimisation pages are used for concepts, not as unqualified UE5.3–UE5.6 API guarantees.

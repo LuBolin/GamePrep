@@ -1,6 +1,8 @@
 # World Partition Debugging Workbook
 
-Version target: **UE5.3-UE5.6**. This workbook is a practice companion to `topics/ue_world_partition_large_world_pipeline.md`. Exact commandlets, debug views, Data Layer C++ APIs and builder flags must be verified in the target branch. [SRC-ASSET-010] [SRC-WORLD-001] [SRC-WORLD-002] [SRC-WORLD-003] [SRC-WORLD-004]
+See also: [[ue_world_partition_large_world_pipeline]], [[ue_packaged_performance_build_worldpartition_proof]], [[ue_pcg_procedural_content]], [[ue_assets_loading_cooking]].
+
+Version target: **UE5.3-UE5.6**. This workbook is a practice companion to [[ue_world_partition_large_world_pipeline]]. Exact commandlets, debug views, Data Layer C++ APIs and builder flags must be verified in the target branch. [SRC-ASSET-010] [SRC-WORLD-001] [SRC-WORLD-002] [SRC-WORLD-003] [SRC-WORLD-004]
 
 ## How To Use This Workbook
 

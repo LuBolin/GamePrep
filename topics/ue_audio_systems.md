@@ -1,5 +1,7 @@
 # Unreal Audio Systems for Interviews
 
+See also: [[ue_runtime_presentation_target_proof]], [[ue_niagara_vfx]], [[ue_ui_systems]], [[ue_hands_on_projects]].
+
 Game audio is a real-time resource-allocation and signal-routing system, not a collection of `Play Sound` calls. A strong Unreal engineer can choose the right source abstraction, predict source lifetime, spatialise for the correct listener, control concurrency and voice stealing, route categories through mixes/submix DSP, budget compressed/decompressed data, and prove whether a missing sound was never requested, rejected, virtualised, stolen, inaudible or starved.
 
 Version target: **UE5.3–UE5.6**. Sound Waves, Sound Cues, Audio Components, attenuation, concurrency, classes and submix concepts are core. MetaSounds is UE5 and its graph/runtime details evolve. Quartz, maintained Audio Stream Cache and console-command pages currently surface as UE5.7; they are labelled specialist/version-sensitive unless target APIs are verified.

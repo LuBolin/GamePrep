@@ -1,5 +1,7 @@
 # Game Programming Patterns in Unreal
 
+See also: [[game_architecture_patterns]], [[ue_cpp_idioms]], [[ue_massentity_ecs]], [[advanced_gameplay_patterns_specialist]], [[ue_hands_on_projects]].
+
 Patterns are a vocabulary for recurring design forces. They are useful when they make ownership, change, lifetime, authority, data flow, or performance clearer. They are harmful when they add indirection in anticipation of requirements that never arrive.
 
 This chapter targets **D3–D4** interview depth for a three-year Unreal engineer: recognise a pattern in production code, explain its cost, map it to Unreal mechanisms, debug its failure modes, and choose a simpler alternative when appropriate. [SRC-ARCH-001]

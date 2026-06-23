@@ -1,5 +1,7 @@
 # NetworkPrediction Rollback Proof Workbook
 
+See also: [[ue_network_prediction_rollback_proof]], [[ue_networking_and_replication]], [[ue_networking_target_branch_proof]], [[ue_hands_on_projects]].
+
 Use this workbook only with a pinned UE branch. The public API page gives enough vocabulary for study, but exact plugin integration must be proven in the target engine source. [SRC-NET-020]
 
 ## Lab 1 - Target Branch Evidence Packet

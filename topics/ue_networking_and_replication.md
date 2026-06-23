@@ -1,5 +1,7 @@
 # Unreal Engine Networking and Replication
 
+See also: [[ue_networking_target_branch_proof]], [[ue_network_prediction_rollback_proof]], [[ue_gameplay_ability_system]], [[ue_enhanced_input]], [[ue_hands_on_projects]].
+
 ## Cluster 1 — Authority, Ownership, Properties, RPCs, Relevancy, and Dormancy
 
 **Priority:** P0  
@@ -54,6 +56,8 @@ Ownership matters because it determines:
 
 The common “Server RPC silently does nothing” bug is usually: the Actor does not replicate, the caller does not own it through a valid owning connection, the call is made too early, or the RPC contract/signature is wrong.
 
+See also: [[game_architecture_patterns]], [[ue_cpp_idioms]], [[ue_enhanced_input]].
+
 ### Model intent, validation, and result separately
 
 A secure gameplay flow is:
@@ -69,6 +73,8 @@ Owning client gathers input
 ```
 
 Do not send “I dealt 100 damage” when the server can derive whether a shot hit and how much damage applies. Send compact intent/evidence appropriate to the game's prediction and anti-cheat model. Server authority does not mean accepting client parameters because the function executed on the server.
+
+See also: [[ue_gameplay_ability_system]], [[advanced_gameplay_patterns_specialist]], [[ue_network_prediction_rollback_proof]].
 
 ### Actor and component replication setup
 
@@ -194,6 +200,8 @@ For a player Character:
 
 At three-year breadth, explain prediction, authoritative validation, correction, replay, and smoothing. Extending `FSavedMove_Character`/packed move data is specialist depth.
 
+See also: [[ue_networking_target_branch_proof]], [[ue_network_prediction_rollback_proof]], [[ue_runtime_presentation_target_proof]].
+
 ### Generic replication, Replication Graph, and Iris
 
 UE5.6 documentation presents generic replication, Replication Graph, and Iris as available replication systems. Generic replication remains the baseline for this chapter. Replication Graph is a scalable relevance-routing architecture for many Actors/connections. Iris is a newer replication framework with different descriptors/filtering/serialisation architecture and version/plugin/configuration considerations. Do not claim Iris is automatically used merely because the project is UE5. [SRC-NET-001]
@@ -203,6 +211,8 @@ Interview breadth:
 - Know why Replication Graph exists: avoid naïve per-Actor/per-connection scaling through graph nodes/spatial routing.
 - Know Iris exists and may be project/version dependent.
 - Be honest if you have not shipped either; explain the baseline concepts they still solve—state serialisation, filtering, prioritisation, and bandwidth.
+
+See also: [[ue_networking_target_branch_proof]], [[ue_profiling_optimisation]], [[ue_device_lab_automation]].
 
 ### Debugging workflow: “it works on server but not client”
 
@@ -280,7 +290,7 @@ You should reason correctly about authority versus ownership, know why Server RP
 
 ### Hands-on verification
 
-Complete Project 3 in `practice/ue_hands_on_projects.md`. Every feature must include an authority/audience/state-event table and at least one intentionally broken ownership, relevancy, dormancy, or reliability case.
+Complete Project 3 in [[ue_hands_on_projects]]. Every feature must include an authority/audience/state-event table and at least one intentionally broken ownership, relevancy, dormancy, or reliability case.
 
 ### Conflict and uncertainty notes
 
@@ -1046,5 +1056,5 @@ Evidence required:
 - `SRC-NET-017`, `SRC-NET-018` and `SRC-NET-019` are API anchors. The Epic API site can be dynamically rendered and exact signatures/packed move internals must be checked in target source.
 - Lag compensation/history-buffer design in this section is synthesis from UE networking authority/RPC principles plus standard data-structure/performance reasoning. It is not presented as a one-size-fits-all Epic subsystem.
 - Full rollback networking is specialist architecture beyond baseline UE generic replication. Label any project-specific Network Prediction plugin or custom rollback implementation separately before making implementation claims.
-- For plugin-specific rollback proof, use [NetworkPrediction plugin and full rollback proof](ue_network_prediction_rollback_proof.md) plus the workbook in `practice/ue_network_prediction_rollback_workbook.md`.
-- For a branch-pinned proof packet that ties saved moves, subobjects, Fast Array, RepGraph, Iris and NetworkPrediction together, use [Networking target-branch implementation proof](ue_networking_target_branch_proof.md) and `practice/ue_networking_target_branch_proof_workbook.md`.
+- For plugin-specific rollback proof, use [[ue_network_prediction_rollback_proof|NetworkPrediction plugin and full rollback proof]] plus the workbook in [[ue_network_prediction_rollback_workbook]].
+- For a branch-pinned proof packet that ties saved moves, subobjects, Fast Array, RepGraph, Iris and NetworkPrediction together, use [[ue_networking_target_branch_proof|Networking target-branch implementation proof]] and [[ue_networking_target_branch_proof_workbook]].

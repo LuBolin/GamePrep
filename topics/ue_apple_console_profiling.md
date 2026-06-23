@@ -1,5 +1,7 @@
 # Apple and Console Profiling for Unreal Interviews
 
+See also: [[ue_platform_constraints]], [[ue_device_lab_automation]], [[ue_profiling_optimisation]], [[ue_apple_console_profiling_workbook]].
+
 This chapter covers public Apple/Xcode profiling workflows and source-sensitive console profiling interview patterns. It complements the general profiling chapter, Android profiler workbook, rendering specialist pass, target performance gate and device-lab automation work.
 
 Version scope: **UE5.3-UE5.6**, public Apple documentation accessed 2026-06-23, and confidential console details deliberately excluded. Apple tooling is sensitive to Xcode, OS, device, GPU family, build configuration and provisioning. Console SDK tools and certification rules must come from authorised platform-holder documentation in a real project. [SRC-PLAT-002] [SRC-PLAT-008] [SRC-PLAT-018] [SRC-PLAT-021] [SRC-PLAT-022] [SRC-PLAT-023]

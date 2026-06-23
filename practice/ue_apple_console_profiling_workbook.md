@@ -1,5 +1,7 @@
 # Apple and Console Profiling Workbook
 
+See also: [[ue_apple_console_profiling]], [[ue_platform_constraints]], [[ue_device_lab_automation]], [[ue_profiling_optimisation]].
+
 Use this workbook only with public Apple tooling or authorised console tooling. Do not place confidential console counters, screenshots, commands, SDK names or certification text into public study artifacts.
 
 Source anchors: [SRC-PLAT-018] [SRC-PLAT-019] [SRC-PLAT-020] [SRC-PLAT-021] [SRC-PLAT-022] [SRC-PLAT-023] [SRC-PLAT-024] [SRC-PERF-003] [SRC-PERF-006] [SRC-PERF-009] [SRC-RENDER-019]

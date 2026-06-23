@@ -1,11 +1,13 @@
 # Game Architecture Patterns
 
+See also: [[game_programming_patterns]], [[ue_cpp_idioms]], [[ue_networking_and_replication]], [[ue_hands_on_projects]], [[ue_interview_question_bank]].
+
 ## Cluster 1 — Gameplay Framework, Lifecycle, and Responsibility Placement
 
 **Priority:** P0  
 **Expected depth:** D4 for gameplay/generalist roles  
 **Version scope:** Stable UE4/UE5 concepts, confirmed against UE5.6 framework/API material. The detailed lifecycle sequence source is labelled **UE4-era** and used only where current APIs still corroborate it.  
-**Prerequisites:** UObject/reflection/lifetime cluster in `ue_cpp_idioms.md`.
+**Prerequisites:** UObject/reflection/lifetime cluster in [[ue_cpp_idioms]].
 
 ### Architecture begins with lifetime and audience
 

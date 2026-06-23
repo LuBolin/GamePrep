@@ -1,5 +1,7 @@
 # Advanced Gameplay Patterns Specialist Pass
 
+See also: [[game_architecture_patterns]], [[game_programming_patterns]], [[ue_networking_and_replication]], [[ue_gameplay_ability_system]], [[ue_hands_on_projects]], [[ue_interview_question_bank]].
+
 This chapter deepens the first-pass architecture/patterns material. It focuses on the practical contracts that make gameplay systems survive multiplayer, save/load, UI prediction, content iteration and production debugging.
 
 Source scope: game-pattern references, UE framework/components/subsystems/delegates, Data Assets/Asset Manager/Data Validation, property specifiers and networking references already in the source index. [SRC-ARCH-001] [SRC-ARCH-003] [SRC-ARCH-004] [SRC-ARCH-006] [SRC-ARCH-007] [SRC-ARCH-009] [SRC-ARCH-011] [SRC-ARCH-012] [SRC-EPIC-012] [SRC-EPIC-017] [SRC-EPIC-028] [SRC-EPIC-035] [SRC-NET-001] [SRC-NET-004]

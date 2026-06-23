@@ -1,5 +1,7 @@
 # Networking Target-Branch Proof Workbook
 
+See also: [[ue_networking_target_branch_proof]], [[ue_networking_and_replication]], [[ue_network_prediction_rollback_proof]], [[ue_hands_on_projects]].
+
 Use this workbook inside a real UE5.3-UE5.6 project branch. If the branch does not expose a feature, the correct output is a sourced rejection/status memo, not invented code.
 
 ## Lab 1 - Source and Config Audit

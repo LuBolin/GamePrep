@@ -1,5 +1,7 @@
 # World Partition and Large-World Production Pipeline
 
+See also: [[ue_packaged_performance_build_worldpartition_proof]], [[ue_assets_loading_cooking]], [[ue_pcg_procedural_content]], [[ue_world_partition_debugging_workbook]], [[ue_hands_on_projects]].
+
 Version target: **UE5.3-UE5.6**. World Partition, runtime hash behavior, builder commandlets, HLOD settings, Data Layer APIs, Level Instance modes and cook output are version-sensitive. Treat this chapter as a production mental model and validation checklist; compile exact C++ calls and command lines against the target engine branch. [SRC-ASSET-010] [SRC-WORLD-001] [SRC-WORLD-002] [SRC-WORLD-003] [SRC-WORLD-004]
 
 ## Scope
@@ -682,9 +684,9 @@ Build a small "large world pipeline" proof map or prototype project:
 11. Inject failures: missing runtime layer activation, partial OFPA submit, bad hard reference keeping a region loaded, stale HLOD, and fast travel without readiness.
 12. Write a five-minute interview memo: requirements, grid/layer/source policy, durable-state design, validation gates, profiler evidence and remaining risks.
 
-For scenario practice, use `practice/ue_world_partition_debugging_workbook.md`. It contains packaged-world debugging cases for fast travel, Data Layers, OFPA, Level Instances, HLOD, PCG output, cook inclusion and validation gates.
+For scenario practice, use [[ue_world_partition_debugging_workbook]]. It contains packaged-world debugging cases for fast travel, Data Layers, OFPA, Level Instances, HLOD, PCG output, cook inclusion and validation gates.
 
-For a broader release-quality proof that combines World Partition/HLOD builder output with BuildGraph/RunUAT packaging, packaged CSV gates, symbols and forced-crash evidence, use [Packaged Performance, BuildGraph, and World Partition Proof](ue_packaged_performance_build_worldpartition_proof.md) and `practice/ue_packaged_performance_build_worldpartition_workbook.md`.
+For a broader release-quality proof that combines World Partition/HLOD builder output with BuildGraph/RunUAT packaging, packaged CSV gates, symbols and forced-crash evidence, use [[ue_packaged_performance_build_worldpartition_proof|Packaged Performance, BuildGraph, and World Partition Proof]] and [[ue_packaged_performance_build_worldpartition_workbook]].
 
 ## Source Notes
 

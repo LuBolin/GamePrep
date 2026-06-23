@@ -11,10 +11,10 @@ GamePrep is a source-traceable, interview-oriented curriculum for a roughly thre
 5. Rehearse with [the synthesis lists](curriculum/ue_interview_synthesis_lists.md) after each topic block.
 6. Study the chapters in `topics/`.
 7. Retrieve and rehearse with `practice/` rather than merely rereading.
-8. Use `sources/ue_topic_source_index.md` to audit claims and continue research.
+8. Use `data/ue_topic_source_index.md` to audit claims and continue research.
 9. Use `data/ue_interview_knowledge_graph.json` for machine analysis of dependencies and coverage.
 
-`research.md` remains the master scope. `STATUS.md` is the living checkpoint and coverage map.
+`.codex/research.md` remains the master scope. `.codex/STATUS.md` is the living checkpoint and coverage map.
 
 ## Current substantive chapters
 
@@ -60,7 +60,7 @@ GamePrep is a source-traceable, interview-oriented curriculum for a roughly thre
 | `curriculum/` | Read-through curriculum, schedules, gap analysis, and synthesis lists | `ue_interview_learning_plan.md`, `ue_study_schedule.md`, `ue_gap_analysis.md`, `ue_interview_synthesis_lists.md` |
 | `topics/` | Substantive reference chapters | C++, UE idioms, patterns, architecture, algorithms, maths, Lua/C# |
 | `practice/` | Questions, flashcards, design prompts, and projects | Four banks, flashcards, projects |
-| `sources/` | Human-readable, canonical source ledger | `ue_topic_source_index.md` |
+| `data/` | Data files and human-readable canonical source ledger | `ue_topic_source_index.md` plus existing data files |
 | `data/` | Machine-readable graph and source/crawl data | knowledge graph, source index, manifest JSON |
 
 Files are created when they contain useful material; grouped chapters preserve the master scope without keeping empty scaffolds.

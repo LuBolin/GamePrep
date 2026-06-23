@@ -1,5 +1,7 @@
 # Unreal Platform Constraints, Mobile, and Certification-Ready Release Thinking
 
+See also: [[ue_device_lab_automation]], [[ue_android_platform_profiling_workbook]], [[ue_apple_console_profiling]], [[ue_profiling_optimisation]], [[ue_packaged_performance_build_worldpartition_proof]].
+
 ## Cluster scope
 
 **Priority:** P2 for engine generalists, build/release, performance, mobile/console and senior gameplay roles; P3 for narrow gameplay roles unless the team ships on constrained platforms.  
@@ -148,9 +150,9 @@ For Android, pair Unreal evidence with Android device evidence:
 5. Use Android vitals/LMK evidence for field memory pressure, but reproduce locally with lifecycle and Unreal memory checkpoints.
 6. Treat ADPF and the Unreal ADPF plugin as sustained-performance adaptation tools that require a no-adaptation baseline and visible quality/scalability logging.
 
-The Android profiling workbook in `practice/ue_android_platform_profiling_workbook.md` contains the detailed drills. Keep the scope Android-specific unless Apple or console tooling is available in the target environment. [SRC-PLAT-010] [SRC-PLAT-012] [SRC-PLAT-013] [SRC-PLAT-015] [SRC-PLAT-016] [SRC-PLAT-017]
+The Android profiling workbook in [[ue_android_platform_profiling_workbook]] contains the detailed drills. Keep the scope Android-specific unless Apple or console tooling is available in the target environment. [SRC-PLAT-010] [SRC-PLAT-012] [SRC-PLAT-013] [SRC-PLAT-015] [SRC-PLAT-016] [SRC-PLAT-017]
 
-The companion chapter `topics/ue_apple_console_profiling.md` covers public Apple/Xcode/Metal profiling workflows and source-sensitive console profiler answer patterns. Use it when the target is iOS, iPadOS, tvOS, macOS or an authorised console environment. [SRC-PLAT-018] [SRC-PLAT-021] [SRC-PLAT-022] [SRC-PLAT-024]
+The companion chapter [[ue_apple_console_profiling]] covers public Apple/Xcode/Metal profiling workflows and source-sensitive console profiler answer patterns. Use it when the target is iOS, iPadOS, tvOS, macOS or an authorised console environment. [SRC-PLAT-018] [SRC-PLAT-021] [SRC-PLAT-022] [SRC-PLAT-024]
 
 ## Common bugs and misconceptions
 

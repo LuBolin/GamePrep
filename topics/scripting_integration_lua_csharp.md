@@ -1,5 +1,7 @@
 # Lua and C# Integration for Unreal-Adjacent Interviews
 
+See also: [[cpp_for_unreal_interviews]], [[ue_cpp_idioms]], [[ue_build_modules_plugins_tools]], [[ue_hands_on_projects]], [[cpp_interview_question_bank]].
+
 Lua and C# are not first-class gameplay languages built into Unreal Engine in the way C++ and Blueprint are. They appear through third-party runtime plugins, studio-owned embedders, editor/build tools, services and cross-engine teams. The interview skill is therefore not memorising one plugin API: it is designing and debugging a boundary among two runtimes, two object models, two garbage collectors, generated/reflected bindings, platform packaging and gameplay authority.
 
 Version target: **UE5.3–UE5.6**. Every runtime path in this chapter is **plugin-dependent** and must be pinned to an exact engine/plugin/runtime commit. UnLua and sluaunreal describe UE4/UE5 Lua integration; UnrealCLR describes a .NET 6/C# 10 integration snapshot. Puerts' Unreal path is **JavaScript/TypeScript**, not Lua or C#; it is included only as an adjacent generated/reflection binding comparison. No third-party README is treated as an Epic support guarantee.

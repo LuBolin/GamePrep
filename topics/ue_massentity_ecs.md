@@ -1,5 +1,7 @@
 # ECS and MassEntity for Unreal Interviews
 
+See also: [[ue_ai_custom_senses_massai]], [[ue_smart_objects_statetree]], [[game_programming_patterns]], [[ue_hands_on_projects]].
+
 MassEntity is Unreal Engine 5's data-oriented entity framework. A broad three-year engineer should understand why it exists, its data/execution model, when an Actor is better, and how to profile/debug a hybrid system. Exact API fluency is specialist and highly branch-sensitive.
 
 Version target: **UE5.3–UE5.6**. MassEntity/MassGameplay features are plugin- and version-sensitive; maintained Epic pages often display UE5.7 APIs.

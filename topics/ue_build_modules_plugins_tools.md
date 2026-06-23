@@ -1,5 +1,7 @@
 # Unreal Build Systems, Modules, Plugins, and Editor Tools
 
+See also: [[ue_assets_loading_cooking]], [[ue_packaged_performance_build_worldpartition_proof]], [[ue_device_lab_automation]], [[ue_build_farm_failure_workbook]], [[ue_hands_on_projects]].
+
 This chapter targets a three-year Unreal engineer who should be able to design clean runtime/editor boundaries, diagnose compile/link/load/package failures, and build safe content tooling. Specialist depth begins with custom build infrastructure, complex third-party/platform integration, BuildGraph/CI at scale, and deep editor framework extensions.
 
 Version target: **UE5.3–UE5.6**. Build-rule properties, descriptor fields, module host types/loading phases, Live Coding, editor APIs, Python and utility features are version-sensitive.
@@ -574,7 +576,7 @@ Extend Project 6:
 7. Force a packaged crash and verify symbolicated crash report with build metadata.
 8. Document which steps are pre-submit, nightly and release-candidate jobs and why.
 
-For failure-drill practice, use `practice/ue_build_farm_failure_workbook.md`. It covers RunUAT first-cause analysis, BuildGraph dependency mistakes, clean-agent failures, editor-only Shipping leaks, third-party staging, missing cooked content, symbol mismatch, cache masking, smoke-map coverage, Android toolchain drift and telemetry artifact loss.
+For failure-drill practice, use [[ue_build_farm_failure_workbook]]. It covers RunUAT first-cause analysis, BuildGraph dependency mistakes, clean-agent failures, editor-only Shipping leaks, third-party staging, missing cooked content, symbol mismatch, cache masking, smoke-map coverage, Android toolchain drift and telemetry artifact loss.
 
 ### Specialist source caveats
 
@@ -666,4 +668,4 @@ A useful build-farm or release-failure report should include:
 
 This makes the report actionable for another engineer without replaying your whole investigation.
 
-For a combined target-branch packet that ties BuildGraph/RunUAT artifacts to packaged performance gates, World Partition/HLOD builder output and forced-crash evidence, use [Packaged Performance, BuildGraph, and World Partition Proof](ue_packaged_performance_build_worldpartition_proof.md) and `practice/ue_packaged_performance_build_worldpartition_workbook.md`.
+For a combined target-branch packet that ties BuildGraph/RunUAT artifacts to packaged performance gates, World Partition/HLOD builder output and forced-crash evidence, use [[ue_packaged_performance_build_worldpartition_proof|Packaged Performance, BuildGraph, and World Partition Proof]] and [[ue_packaged_performance_build_worldpartition_workbook]].

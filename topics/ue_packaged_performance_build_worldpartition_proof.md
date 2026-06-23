@@ -1,5 +1,7 @@
 # Packaged Performance, BuildGraph, and World Partition Proof
 
+See also: [[ue_profiling_optimisation]], [[ue_build_modules_plugins_tools]], [[ue_world_partition_large_world_pipeline]], [[ue_device_lab_automation]], [[ue_packaged_performance_build_worldpartition_workbook]].
+
 Version target: **UE5.3-UE5.6**. This chapter is source- and branch-sensitive. It does not claim that the current repository contains a runnable Unreal project or engine branch. It defines the proof packet a candidate or team should produce on a real target branch for packaged performance gates, BuildGraph/RunUAT release automation, and World Partition/HLOD builder output. Verify command names, flags, trace channels, builder classes, artifact locations and platform behaviour against the installed engine and project automation. [SRC-PERF-003] [SRC-PERF-009] [SRC-PERF-010] [SRC-BUILD-015] [SRC-BUILD-016] [SRC-BUILD-017] [SRC-WORLD-003]
 
 ## Scope
@@ -11,6 +13,8 @@ This chapter connects three areas that are often studied separately:
 - large-world automation using World Partition builder commandlets, HLOD output, cook/package proof and packaged traversal.
 
 The goal is not to memorise commands. The goal is to prove that a branch can build, cook, package, launch, traverse a representative world, measure target performance, catch known regressions, and produce enough evidence for another engineer to reproduce the result. [SRC-BUILD-015] [SRC-BUILD-016] [SRC-BUILD-017] [SRC-ASSET-010]
+
+See also: [[ue_profiling_optimisation]], [[ue_build_modules_plugins_tools]], [[ue_world_partition_large_world_pipeline]], [[ue_device_lab_automation]].
 
 ## Proof Packet Overview
 
@@ -139,6 +143,8 @@ The proof has four layers:
 2. **Signal:** stable lightweight metrics, usually CSV plus logs.
 3. **Cause:** short targeted Insights, Memory Insights, GPU/platform capture, or LLM evidence only when the signal fails.
 4. **Decision:** thresholds, owners, tolerance bands and the artifact needed to act.
+
+See also: [[ue_rendering_graphics_performance]], [[ue_platform_constraints]], [[ue_android_platform_profiling_workbook]], [[ue_apple_console_profiling_workbook]].
 
 ### Scenario Shape
 
@@ -555,4 +561,3 @@ Build a compact proof packet on any UE5 project with one representative map:
 - `SRC-BUILD-018` supports crash-reporting and symbolication as a release-quality gate.
 - `SRC-ASSET-010` and `SRC-WORLD-003` support World Partition, builder commandlet and HLOD workflow concepts.
 - `SRC-PERF-007`, `SRC-PERF-008` and `SRC-PLAT-005` connect target proof to device profiles, scalability and platform constraints.
-

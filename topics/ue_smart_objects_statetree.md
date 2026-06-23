@@ -1,5 +1,7 @@
 # Unreal Smart Objects and StateTree Gameplay Integration
 
+See also: [[ue_ai_navigation]], [[ue_ai_custom_senses_massai]], [[ue_massentity_ecs]], [[ue_hands_on_projects]].
+
 ## Cluster scope
 
 **Priority:** P2 for general gameplay engineers; P1 for AI, open-world, systemic gameplay, crowd, and activity-system roles.  

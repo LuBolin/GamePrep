@@ -1,5 +1,7 @@
 # Unreal Engine Profiling and Optimisation
 
+See also: [[ue_rendering_graphics_performance]], [[ue_platform_constraints]], [[ue_device_lab_automation]], [[ue_packaged_performance_build_worldpartition_proof]], [[ue_hands_on_projects]].
+
 ## Cluster 1 — Frame Budgets, Bottleneck Classification, Insights, Memory, and Regression
 
 **Priority:** P1 (P0 as a cross-cutting interview skill)  
@@ -459,7 +461,7 @@ Extend Project 4:
 6. Create one intentional regression in CPU, memory and GPU; prove the CSV/device matrix catches each.
 7. Write a performance gate proposal with metric, threshold, artifact, owner and false-positive mitigation.
 
-For a deeper target-branch proof that combines this gate with release automation and World Partition/HLOD builder evidence, use [Packaged Performance, BuildGraph, and World Partition Proof](ue_packaged_performance_build_worldpartition_proof.md) and `practice/ue_packaged_performance_build_worldpartition_workbook.md`.
+For a deeper target-branch proof that combines this gate with release automation and World Partition/HLOD builder evidence, use [[ue_packaged_performance_build_worldpartition_proof|Packaged Performance, BuildGraph, and World Partition Proof]] and [[ue_packaged_performance_build_worldpartition_workbook]].
 
 ### Specialist common bugs
 

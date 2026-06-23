@@ -1,5 +1,7 @@
 # AI Custom Senses and MassAI Workbook
 
+See also: [[ue_ai_custom_senses_massai]], [[ue_ai_navigation]], [[ue_smart_objects_statetree]], [[ue_massentity_ecs]], [[ue_hands_on_projects]].
+
 This workbook turns the specialist AI chapter into repeatable evidence. The goal is not to memorise APIs; it is to prove that perception, memory, Mass simulation, representation and rich interactions are separable and measurable.
 
 **Target projects:** Project 2 AI Combat Sandbox and Project 5 MassEntity Crowd Prototype  

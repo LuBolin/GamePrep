@@ -1,5 +1,7 @@
 # Unreal Engine Hands-On Projects
 
+See also: [[ue_interview_question_bank]], [[ue_flashcards]], [[cpp_for_unreal_interviews]], [[ue_networking_and_replication]], [[ue_profiling_optimisation]].
+
 ## Project 7A: UObject Lifetime and Reference Graph Lab
 
 **Goal:** Build a minimal, repeatable experiment that turns UObject lifetime and pointer choice from memorised rules into observed behaviour.  
@@ -378,7 +380,7 @@ Add a UE visual playground that draws vector/dot-cone/projection/reflection/cros
 7. Add one shared activity such as kiosk queue, bench rest or hazard flee. Store durable activity/claim state in fragments or equivalent data, not transient task locals.
 8. Bridge the crowd activity to a Smart Object lifecycle: candidate, claim, reach, use, release. Capture a 20-agent/5-slot race.
 9. Promote one nearby entity to an Actor for rich interaction. Inject and then fix a dual-writer transform bug.
-10. Produce the final evidence packet from `practice/ue_ai_senses_massai_workbook.md`.
+10. Produce the final evidence packet from [[ue_ai_senses_massai_workbook]].
 
 **Debugging Exercises:** sense never fires; source destroyed before update; wrong World; affiliation filter rejects everything; failed sight clears all evidence; event flood causes traces spike; entity found candidate but failed claim; Mass entity stuck in lane; StateTree waits forever after movement; Actor promotion jitter from dual transform ownership.  
 **Performance Checks:** custom sense events/s, discarded/merged events, listeners considered, traces/s, callbacks/s, memory projections/s, Mass processor time, structural commands, lane density, representation counts, Actor promotions/demotions, Game/Draw/GPU split.  
@@ -674,7 +676,7 @@ Replace only the weapon/ability branch with an evidence-backed GAS implementatio
 
 ### Project 9 GAS specialist evidence extension
 
-Use `practice/ue_gas_specialist_workbook.md` as the acceptance suite for the GAS branch. The extension is complete only when the evidence proves production failure handling rather than happy-path ability use.
+Use [[ue_gas_specialist_workbook]] as the acceptance suite for the GAS branch. The extension is complete only when the evidence proves production failure handling rather than happy-path ability use.
 
 1. Add a trace row shared by activation, target validation, effect application, task lifecycle, cue execution and UI update.
 2. Produce an ASC lifetime decision table for Pawn-owned versus PlayerState-owned state across death, respawn and possession.
@@ -867,7 +869,7 @@ Plugins/GamePrepTools/
 **Debugging Exercises:** notify applies damage after cancel; simulated proxy foot-slide; start-penetrating sweep misread; stale virtualised list entry; UI focus remains on closed modal; hit sound plays twice; pooled effect keeps old colour/target; VFX bounds cull impact early; ragdoll collision profile not restored; packaged audio/effect missing due to cook rules.  
 **Performance Checks:** animation update/evaluate cost, physics query/constraint time, widget rebuild/invalidation/list count, audio voice/concurrency pressure, Niagara system/emitter/render cost, render overdraw, memory, P95/P99 frame time and worst-frame trace.  
 **Interview Questions Unlocked:** animation notify authority, root-motion networking, collision matrix, recycled UI entry, audio dedupe, VFX pooling/bounds, cross-system failure injection, presentation versus gameplay truth.  
-**Version / Plugin Caveats:** montage/notify APIs, Chaos physics details, CommonUI/MVVM/ListView behaviour, audio concurrency/MetaSound, Niagara debug/profiling tools and target package support are branch/platform/plugin sensitive. Verify exact UE5.3-UE5.6 behaviour and use `practice/ue_runtime_presentation_target_proof_workbook.md`. [SRC-ANIM-003] [SRC-ANIM-006] [SRC-PHYS-003] [SRC-UI-005] [SRC-AUDIO-004] [SRC-FX-001] [SRC-PERF-003] [SRC-NET-006]
+**Version / Plugin Caveats:** montage/notify APIs, Chaos physics details, CommonUI/MVVM/ListView behaviour, audio concurrency/MetaSound, Niagara debug/profiling tools and target package support are branch/platform/plugin sensitive. Verify exact UE5.3-UE5.6 behaviour and use [[ue_runtime_presentation_target_proof_workbook]]. [SRC-ANIM-003] [SRC-ANIM-006] [SRC-PHYS-003] [SRC-UI-005] [SRC-AUDIO-004] [SRC-FX-001] [SRC-PERF-003] [SRC-NET-006]
 
 ## Project 5: MassEntity Crowd Prototype
 

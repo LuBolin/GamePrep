@@ -1,5 +1,7 @@
 # Unreal Engine AI and Navigation
 
+See also: [[ue_ai_custom_senses_massai]], [[ue_smart_objects_statetree]], [[game_algorithms_and_data_structures]], [[ue_hands_on_projects]], [[ue_interview_question_bank]].
+
 ## Cluster 1 — Decision Architecture, Perception, EQS, Navigation, and Debugging
 
 **Priority:** P1 (P0 for AI/gameplay roles)  

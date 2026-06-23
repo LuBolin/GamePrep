@@ -1,5 +1,7 @@
 # Networking Target-Branch Implementation Proof
 
+See also: [[ue_networking_and_replication]], [[ue_network_prediction_rollback_proof]], [[ue_networking_target_branch_proof_workbook]], [[ue_hands_on_projects]], [[ue_interview_question_bank]].
+
 **Version scope:** UE5.3-UE5.6 target. This chapter is deliberately **source-sensitive**. It does not claim that the curriculum repository contains a UE source checkout or a compilable game project. Its purpose is to define the implementation proof packet a candidate/team should produce inside the real target branch before claiming saved moves, Fast Array, Replication Graph, Iris or NetworkPrediction production readiness.
 
 **Prerequisites:** baseline authority/RPC/property replication, replicated subobjects, Fast Array concepts, CharacterMovement prediction, lag compensation and NetworkPrediction rollback vocabulary. [SRC-NET-001] [SRC-NET-003] [SRC-NET-004] [SRC-NET-006] [SRC-NET-009] [SRC-NET-012] [SRC-NET-015] [SRC-NET-020]

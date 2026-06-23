@@ -1,5 +1,7 @@
 # Unreal Animation Systems for Interviews
 
+See also: [[ue_runtime_presentation_target_proof]], [[ue_physics_collision]], [[ue_gameplay_ability_system]], [[ue_hands_on_projects]].
+
 Animation in Unreal is a runtime pose pipeline layered over imported skeletal assets and driven by gameplay/movement state. A strong engineer can separate gameplay truth from visual pose, choose state machine versus montage versus procedural layer, diagnose timing/space/thread failures, and scale many characters without turning the Animation Blueprint into a second gameplay framework.
 
 Version target: **UE5.3–UE5.6**. Core concepts are stable, but maintained Epic pages often display UE5.7. IK Rig, Control Rig, Motion Warping, Pose Search/Motion Matching and budget/debug tooling evolve quickly and must be checked in the target branch.

@@ -1,5 +1,7 @@
 # NetworkPrediction Plugin and Full Rollback Proof
 
+See also: [[ue_networking_and_replication]], [[ue_networking_target_branch_proof]], [[ue_gameplay_ability_system]], [[ue_network_prediction_rollback_workbook]], [[ue_hands_on_projects]].
+
 **Version scope:** UE5.3-UE5.6 target, but this chapter is deliberately labelled **plugin-dependent** and **source-sensitive**. The public Epic API page available during this run is a maintained page observed as UE5.8; it proves the existence and vocabulary of the runtime `NetworkPrediction` plugin module, services, state buffers, cue traits and debug CVars, but exact implementation signatures must be checked in the target engine source before writing production code. [SRC-NET-020]
 
 **Audience:** gameplay/network engineer who already understands authority, ownership, RPCs, replicated properties, CharacterMovement prediction, server rewind and the difference between prediction, reconciliation, interpolation and rollback. [SRC-NET-001] [SRC-NET-005] [SRC-NET-006] [SRC-NET-009]

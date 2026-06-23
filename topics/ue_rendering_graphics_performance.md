@@ -1,5 +1,7 @@
 # Unreal Rendering and GPU Performance
 
+See also: [[ue_profiling_optimisation]], [[ue_niagara_vfx]], [[ue_platform_constraints]], [[ue_packaged_performance_build_worldpartition_proof]], [[ue_hands_on_projects]].
+
 This chapter targets a gameplay or engine programmer with roughly three years of experience. The expected standard is not “write a renderer from memory”. It is: explain how a frame reaches the GPU, separate different kinds of rendering cost, identify the expensive pass with evidence, and collaborate intelligently with rendering engineers and technical artists.
 
 Version target: **UE5.3–UE5.6**. Nanite, Lumen, Virtual Shadow Maps (VSMs), Substrate, renderer feature support, and profiling UI are version- and platform-sensitive. Re-test on the exact engine branch and target hardware. [SRC-RENDER-001] [SRC-RENDER-005] [SRC-RENDER-006]
@@ -13,7 +15,7 @@ A useful frame model has several lanes:
 3. The **RHI thread**, where enabled, translates or submits lower-level command work for the platform graphics API.
 4. The **GPU** executes graphics and compute work: geometry processing, rasterisation, pixel/compute shading, copies, resolves, and presentation.
 
-These lanes overlap. Their displayed times are not additive. A 10 ms Game time, 8 ms Draw time, and 11 ms GPU time do not imply a 29 ms frame; the slowest dependency chain normally limits throughput. Synchronisation, queue starvation, buffered frames, VSync, frame caps, and async compute complicate the picture. Begin with the frame-budget method in `ue_profiling_optimisation.md`, then descend into GPU passes. [SRC-PERF-001] [SRC-PERF-003]
+These lanes overlap. Their displayed times are not additive. A 10 ms Game time, 8 ms Draw time, and 11 ms GPU time do not imply a 29 ms frame; the slowest dependency chain normally limits throughput. Synchronisation, queue starvation, buffered frames, VSync, frame caps, and async compute complicate the picture. Begin with the frame-budget method in [[ue_profiling_optimisation]], then descend into GPU passes. [SRC-PERF-001] [SRC-PERF-003]
 
 The **RHI** is Unreal's abstraction over APIs such as Direct3D, Vulkan, and Metal. It exposes resources, pipelines, command lists, transitions, and draw/dispatch operations without making high-level renderer code identical to a particular API. The RHI does not erase platform differences; capability checks and platform-specific paths still matter.
 

@@ -4,7 +4,7 @@
 
 This repository is a long-running research, synthesis, and curriculum-building project for game development and Unreal Engine interview preparation.
 
-`research.md` is the master scope.
+`.codex/research.md` is the master scope.
 
 The agent’s job is to turn that scope into a useful, structured learning package.
 
@@ -18,9 +18,9 @@ Do not silently narrow the scope.
 
 Before doing work, read:
 
-1. `research.md`
+1. `.codex/research.md`
 2. `AGENTS.md`
-3. `STATUS.md`
+3. `.codex/STATUS.md`
 4. existing source index or source notes if present
 
 
@@ -50,7 +50,7 @@ Metadata exists to support the curriculum. Metadata is not the product.
 
 ## Scope Preservation
 
-The final project must eventually cover the full scope of `research.md`, including:
+The final project must eventually cover the full scope of `.codex/research.md`, including:
 
 * Unreal Engine core systems
 * standard C++
@@ -76,7 +76,7 @@ The final project must eventually cover the full scope of `research.md`, includi
 
 The agent may merge, split, rename, or rearrange topics, but must preserve all meaningful scope.
 
-If restructuring changes the mapping from `research.md` to output files, update `STATUS.md` with the new mapping.
+If restructuring changes the mapping from `.codex/research.md` to output files, update `.codex/STATUS.md` with the new mapping.
 
 ---
 
@@ -120,7 +120,7 @@ For each bounded topic cluster:
 4. Write useful synthesis before moving to unrelated lower-priority clusters.
 5. Add interview questions, answer patterns, flashcards, and hands-on tasks.
 6. Update source notes only enough to support traceability.
-7. Update `STATUS.md`.
+7. Update `.codex/STATUS.md`.
 8. Stop at a clean checkpoint.
 
 Do not collect sources for the entire project before writing.
@@ -228,7 +228,7 @@ Do not let graph maintenance block useful writing.
 
 ## STATUS.md
 
-Use `STATUS.md` as a lightweight project memory.
+Use `.codex/STATUS.md` as a lightweight project memory.
 
 It should track:
 
@@ -259,7 +259,7 @@ For each run:
 3. Prefer producing real content.
 4. Collect only the sources needed for that unit.
 5. Update relevant files.
-6. Update `STATUS.md`.
+6. Update `.codex/STATUS.md`.
 7. Stop at a clean checkpoint.
 
 A run may be a reorganisation run, but only when structure is actively blocking progress.
@@ -274,7 +274,7 @@ If approaching context, output, tool-call, execution, or Codex usage limits:
 
 1. Stop early.
 2. Save partial work.
-3. Update `STATUS.md`.
+3. Update `.codex/STATUS.md`.
 4. State the next recommended step.
 
 Prefer a clean checkpoint over an unfinished large section.
@@ -287,7 +287,7 @@ Do not start a large new section if there may not be enough budget to finish and
 
 Do not claim the project is complete unless:
 
-* all major scope areas in `research.md` are covered
+* all major scope areas in `.codex/research.md` are covered
 * the output structure is coherent and navigable
 * topic files contain real content, not just scaffolds
 * major claims are source-traceable
@@ -297,4 +297,4 @@ Do not claim the project is complete unless:
 * study schedules exist
 * gap analysis exists
 * version-sensitive, deprecated, experimental, and plugin-dependent items are labelled
-* `STATUS.md` confirms full cov
+* `.codex/STATUS.md` confirms full cov

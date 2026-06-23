@@ -1,5 +1,7 @@
 # C++ for Unreal Interviews
 
+See also: [[ue_cpp_idioms]], [[game_architecture_patterns]], [[cpp_interview_question_bank]], [[ue_flashcards]], [[ue_hands_on_projects]].
+
 ## Cluster 1 — Object Lifetime, Value Semantics, RAII, and Ownership
 
 **Priority:** P0  
@@ -273,7 +275,7 @@ You should explain object lifetime versus storage, implement ordinary RAII, pref
 
 ### Hands-on verification
 
-Complete Project 7B in `practice/ue_hands_on_projects.md`. Instrument constructors, copies, moves, destructors, allocations, and invalidated handles. Predictions must be written before execution.
+Complete Project 7B in [[ue_hands_on_projects]]. Instrument constructors, copies, moves, destructors, allocations, and invalidated handles. Predictions must be written before execution.
 
 ### Conflict and uncertainty notes
 

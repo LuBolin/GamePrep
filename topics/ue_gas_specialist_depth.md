@@ -1,5 +1,7 @@
 # GAS Specialist Depth: Prediction, Effects, Tasks and Debugging
 
+See also: [[ue_gameplay_ability_system]], [[ue_network_prediction_rollback_proof]], [[ue_networking_and_replication]], [[ue_gas_specialist_workbook]], [[ue_interview_question_bank]].
+
 This is the second-pass GAS chapter. The baseline chapter explains the framework shape; this file focuses on the implementation questions that distinguish "I have used GAS" from "I can debug and design a production GAS slice."
 
 Version target: **UE5.3-UE5.6**. GAS is plugin-dependent and API details are branch-sensitive. Code below is intentionally schematic where exact signatures differ; verify names and helper macros in the target engine branch before copying. [SRC-GAS-001] [SRC-GAS-002] [SRC-GAS-003]

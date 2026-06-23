@@ -1,5 +1,7 @@
 # Unreal Niagara and VFX Systems for Interviews
 
+See also: [[ue_runtime_presentation_target_proof]], [[ue_rendering_graphics_performance]], [[ue_audio_systems]], [[ue_hands_on_projects]].
+
 Niagara is a programmable simulation-to-render pipeline, not merely a particle editor. A strong engineer can explain where System, Emitter and Particle scripts run; choose CPU versus GPU simulation from data-flow and workload constraints; expose stable gameplay parameters without making VFX authoritative; own Component lifetime and pooling; design correct bounds and scalable Effect Types; and separate simulation, Game Thread, Render Thread, GPU-compute and translucent-pixel costs.
 
 Version target: **UE5.3–UE5.6**. Niagara is an engine plugin. Core stack, debugger and scalability material is pinned where possible to UE5.6. Lightweight/stateless emitters were introduced in **UE5.4** and later maintained documentation has evolved. GPU ray-tracing collision is **experimental** in maintained later documentation. These are labelled rather than silently treated as identical baseline features.

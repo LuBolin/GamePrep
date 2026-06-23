@@ -1,5 +1,7 @@
 # Game Maths for Unreal Interviews
 
+See also: [[game_algorithms_and_data_structures]], [[ue_physics_collision]], [[ue_rendering_graphics_performance]], [[ue_animation_systems]], [[ue_hands_on_projects]].
+
 Game-maths interviews test whether you can translate geometry into stable code and explain spaces, assumptions and edge cases. Memorised formulas are less valuable than deriving them from vectors, drawing the configuration and verifying it visually.
 
 Version target: **UE5.3–UE5.6**. Unreal's mathematical conventions and API types matter; maintained docs may display UE5.7, so exact overloads/types should be checked in the target branch.

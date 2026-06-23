@@ -1,5 +1,7 @@
 # Packaged Performance, BuildGraph, and World Partition Proof Workbook
 
+See also: [[ue_packaged_performance_build_worldpartition_proof]], [[ue_profiling_optimisation]], [[ue_build_modules_plugins_tools]], [[ue_world_partition_large_world_pipeline]].
+
 Use this workbook to turn the proof chapter into hands-on evidence. Each lab should produce a small artifact. The goal is not to complete a massive release pipeline; it is to learn how to prove target behaviour with clean, reproducible evidence.
 
 Sources: [SRC-PERF-003] [SRC-PERF-009] [SRC-PERF-010] [SRC-BUILD-015] [SRC-BUILD-016] [SRC-BUILD-017] [SRC-BUILD-018] [SRC-ASSET-010] [SRC-WORLD-003]

@@ -1,5 +1,7 @@
 # UE C++ Idioms
 
+See also: [[cpp_for_unreal_interviews]], [[game_architecture_patterns]], [[ue_assets_loading_cooking]], [[ue_hands_on_projects]], [[ue_interview_question_bank]].
+
 ## Cluster 1 — Reflection, UObject Lifetime, and Pointer Selection
 
 **Priority:** P0  
@@ -127,7 +129,7 @@ Example: “This is a persistent member on a UObject owner and the target must s
 
 ### Hands-on verification
 
-Complete Project 7A in `practice/ue_hands_on_projects.md`. The proof is not that it compiles; it is a table of predicted and observed outcomes under forced collection, including one prediction you initially got wrong and the corrected model.
+Complete Project 7A in [[ue_hands_on_projects]]. The proof is not that it compiles; it is a table of predicted and observed outcomes under forced collection, including one prediction you initially got wrong and the corrected model.
 
 ### Conflict and uncertainty notes
 
@@ -759,7 +761,7 @@ For an async/lambda/thread question:
 
 ### Hands-on verification
 
-Extend Project 7A with the "UE C++ Specialist Contract Lab" in `practice/ue_hands_on_projects.md`. The expected output is not a giant code sample; it is a table that predicts, observes and explains how specifier choices change editor visibility, Blueprint API, config/save persistence, duplication, async proxy lifetime, log/assert diagnostics and GC retention.
+Extend Project 7A with the "UE C++ Specialist Contract Lab" in [[ue_hands_on_projects]]. The expected output is not a giant code sample; it is a table that predicts, observes and explains how specifier choices change editor visibility, Blueprint API, config/save persistence, duplication, async proxy lifetime, log/assert diagnostics and GC retention.
 
 ### Conflict and uncertainty notes
 

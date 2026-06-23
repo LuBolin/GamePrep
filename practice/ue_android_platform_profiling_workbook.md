@@ -1,5 +1,7 @@
 # Android Platform Profiling Workbook For Unreal
 
+See also: [[ue_platform_constraints]], [[ue_profiling_optimisation]], [[ue_device_lab_automation]], [[ue_packaged_performance_build_worldpartition_proof]].
+
 Version target: **UE5.3-UE5.6 plus current Android tooling**. Android profiler support depends on device, GPU vendor, driver, OS version, capture tool release, graphics API and packaged build configuration. Treat this workbook as a workflow and interview-practice guide, not a guarantee that every capture pane exists on every device. [SRC-PLAT-010] [SRC-PLAT-011] [SRC-PLAT-012] [SRC-PLAT-013] [SRC-PLAT-014]
 
 ## Scope

@@ -1,9 +1,11 @@
 # Custom AI Senses and MassAI Specialist Pass
 
+See also: [[ue_ai_navigation]], [[ue_smart_objects_statetree]], [[ue_massentity_ecs]], [[ue_ai_senses_massai_workbook]], [[ue_hands_on_projects]].
+
 **Priority:** P2 for broad gameplay roles, P1 for AI/gameplay roles  
 **Expected depth:** D4 specialist implementation awareness  
 **Version scope:** UE5.3-UE5.6 preferred. AI Perception is core AIModule territory; custom sense APIs, StateTree, Smart Objects, MassEntity, ZoneGraph and Mass Crowd are version-, module- and plugin-sensitive.  
-**Prerequisites:** [AI and navigation](ue_ai_navigation.md), [Smart Objects and StateTree](ue_smart_objects_statetree.md), [ECS and MassEntity](ue_massentity_ecs.md), gameplay framework, event-driven design, navigation/pathfinding, profiling.
+**Prerequisites:** [[ue_ai_navigation|AI and navigation]], [[ue_smart_objects_statetree|Smart Objects and StateTree]], [[ue_massentity_ecs|ECS and MassEntity]], gameplay framework, event-driven design, navigation/pathfinding, profiling.
 
 This chapter deepens the two AI gaps left by the first pass:
 
@@ -443,7 +445,7 @@ Specialist depth includes exact `UAISense` API implementation, custom listener/s
 
 ## Hands-on verification
 
-Use the companion [AI custom senses and MassAI workbook](../practice/ue_ai_senses_massai_workbook.md).
+Use the companion [[ue_ai_senses_massai_workbook|AI custom senses and MassAI workbook]].
 
 Minimum evidence packet:
 

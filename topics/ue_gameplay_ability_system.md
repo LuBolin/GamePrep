@@ -1,10 +1,12 @@
 # Gameplay Ability System for Unreal Interviews
 
+See also: [[ue_gas_specialist_depth]], [[ue_enhanced_input]], [[ue_networking_and_replication]], [[ue_gas_specialist_workbook]], [[ue_hands_on_projects]].
+
 The Gameplay Ability System (GAS) is Unreal's plugin-based framework for abilities, attributes, gameplay effects, tags, asynchronous ability work, cosmetic cues and multiplayer prediction. It is valuable when a project has many interacting abilities and status rules; it is not an automatic upgrade over a small, well-bounded gameplay Component.
 
 Version target: **UE5.3–UE5.6**. GAS is plugin-dependent and several maintained Epic pages now display UE5.7. Concepts are comparatively stable, but exact APIs, replication behaviour and prediction support must be checked against the project's engine branch.
 
-For a second-pass implementation/debugging treatment, use `topics/ue_gas_specialist_depth.md` and `practice/ue_gas_specialist_workbook.md` after this baseline chapter.
+For a second-pass implementation/debugging treatment, use [[ue_gas_specialist_depth]] and [[ue_gas_specialist_workbook]] after this baseline chapter.
 
 ## 1. When GAS earns its complexity
 
@@ -370,6 +372,8 @@ Optimise the measured layer: reduce unnecessary periodic effects, aggregate equi
 ### Predicting an ability
 
 > The owning client may activate a Local Predicted ability and apply supported provisional effects/cues under a prediction key while sending the request/target data. The server validates ownership, tags, cost, cooldown and target evidence, then confirms or rejects. I keep authoritative damage and irreversible custom side effects on the server, design rollback for provisional state, and test dedicated-server lag, rejection and cancellation with correlated prediction keys.
+
+See also: [[ue_gas_specialist_depth]], [[ue_networking_and_replication]], [[ue_network_prediction_rollback_proof]].
 
 ## 18. Hands-on verification
 

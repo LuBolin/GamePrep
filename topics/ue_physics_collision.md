@@ -1,5 +1,7 @@
 # Unreal Physics and Collision for Interviews
 
+See also: [[ue_runtime_presentation_target_proof]], [[game_math_for_interviews]], [[ue_animation_systems]], [[ue_hands_on_projects]].
+
 Unreal physics work begins with collision semantics, not with “turn on Simulate Physics”. A strong engineer can predict filtering and query results, distinguish movement sweeps from rigid-body simulation, choose simple/complex shapes, reason about forces/timestep/network authority, and reconstruct failures from recorded scene-query/contact/constraint evidence.
 
 Version target: **UE5.3–UE5.6**. Chaos is the UE5 physics engine. Collision fundamentals are target-documented, but networked physics modes and Chaos Visual Debugger capabilities evolve rapidly; maintained UE5.7 pages are specialist awareness unless confirmed in the target branch.

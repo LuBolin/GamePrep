@@ -1,5 +1,7 @@
 # Unreal Enhanced Input Architecture
 
+See also: [[ue_gameplay_ability_system]], [[ue_networking_and_replication]], [[ue_ui_systems]], [[ue_hands_on_projects]].
+
 ## Cluster scope
 
 **Priority:** P1 for modern UE gameplay engineers; P2/P3 for UI, tools, networking and GAS follow-up depth.  

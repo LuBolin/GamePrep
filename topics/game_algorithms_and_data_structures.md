@@ -1,5 +1,7 @@
 # Algorithms and Data Structures for Game Interviews
 
+See also: [[game_math_for_interviews]], [[ue_ai_navigation]], [[ue_networking_and_replication]], [[ue_hands_on_projects]], [[ue_interview_question_bank]].
+
 Algorithm interviews test whether you can turn an ambiguous requirement into a correct, bounded and explainable solution. For a three-year game engineer, the strongest signal is not reciting every exotic structure: it is choosing a simple representation, stating invariants, deriving time/space cost, handling edge cases and connecting the result to game workloads.
 
 ## 1. The interview-solving loop

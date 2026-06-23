@@ -1,5 +1,7 @@
 # Runtime Presentation Target-Proof: Animation, Physics, UI, Audio, and VFX
 
+See also: [[ue_animation_systems]], [[ue_physics_collision]], [[ue_ui_systems]], [[ue_audio_systems]], [[ue_niagara_vfx]], [[ue_runtime_presentation_target_proof_workbook]].
+
 Version target: **UE5.3-UE5.6**. This chapter is a specialist proof layer for systems that often look correct in editor demos but fail under target runtime conditions: animation authority, physics/collision, UI lifecycle, audio concurrency and Niagara/VFX. Exact console commands, profiler panels, notify/task APIs, Chaos settings, CommonUI/MVVM surfaces, MetaSound/Niagara features and platform support must be verified against the target branch and project plugins. [SRC-ANIM-001] [SRC-PHYS-001] [SRC-UI-001] [SRC-AUDIO-001] [SRC-FX-001] [SRC-PERF-003]
 
 ## Why This Exists
@@ -16,6 +18,8 @@ gameplay truth
 ```
 
 The core question is not "does it look good once?" It is "does the system behave correctly when owners die, widgets recycle, abilities cancel, clients correct, packages load cold, platform budgets apply and hundreds of instances run?"
+
+See also: [[ue_animation_systems]], [[ue_physics_collision]], [[ue_ui_systems]], [[ue_audio_systems]], [[ue_niagara_vfx]].
 
 ## Unified Presentation Proof Packet
 
@@ -302,6 +306,8 @@ Build one scenario that touches all five systems:
 | Networking | operation ID, server validation, correction/rejection |
 | Profiling | CSV plus targeted trace for worst frame |
 
+See also: [[ue_networking_and_replication]], [[advanced_gameplay_patterns_specialist]], [[ue_profiling_optimisation]], [[ue_runtime_presentation_target_proof_workbook]].
+
 ## Interview Answer Patterns
 
 ### "How do you prove a hit effect stack is production-ready?"
@@ -339,4 +345,3 @@ Create a "presentation proof arena":
 - Audio event/routing/concurrency/profiling: `SRC-AUDIO-001`, `SRC-AUDIO-004`, `SRC-AUDIO-007`, `SRC-AUDIO-009`.
 - Niagara/VFX lifetime, bounds, scalability and profiling: `SRC-FX-001`, `SRC-FX-006`, `SRC-FX-007`, `SRC-FX-009`.
 - Target profiling and networking connections: `SRC-PERF-003`, `SRC-PERF-009`, `SRC-NET-001`, `SRC-NET-006`.
-
