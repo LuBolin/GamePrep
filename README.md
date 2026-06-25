@@ -49,11 +49,10 @@ Open [[STUDY_GUIDE]] — it explains the vault structure, learning order, and ho
 
 | Area | Purpose | Planned required deliverables |
 |---|---|---|
-| `curriculum/` | Read-through curriculum, schedules, gap analysis, and synthesis lists | `ue_interview_learning_plan.md`, `ue_study_schedule.md`, `ue_gap_analysis.md`, `ue_interview_synthesis_lists.md` |
+| `curriculum/` | Read-through curriculum, schedules, gap analysis, and synthesis lists | `ue_study_schedule.md`, `ue_gap_analysis.md`, `ue_interview_synthesis_lists.md` |
 | `topics/` | Substantive reference chapters | C++, UE idioms, patterns, architecture, algorithms, maths, Lua/C# |
 | `practice/` | Questions, flashcards, design prompts, and projects | Four banks, flashcards, projects |
-| `data/` | Data files and human-readable canonical source ledger | `ue_topic_source_index.md` plus existing data files |
-| `data/` | Machine-readable graph and source/crawl data | knowledge graph, source index, manifest JSON |
+| `data/` | Knowledge graph canvas, source index, and structured knowledge data | `ue_knowledge_graph.canvas`, `ue_knowledge_graph_reading.canvas`, `ue_interview_knowledge_graph.json`, `ue_interview_knowledge_graph.md`, `ue_topic_source_index.md` |
 
 Files are created when they contain useful material; grouped chapters preserve the master scope without keeping empty scaffolds.
 
