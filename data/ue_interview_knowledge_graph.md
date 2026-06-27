@@ -414,4 +414,19 @@ flowchart TD
     PTR --> UEGCBRIDGE
     CPPTASK --> UEGCBRIDGE
     CPPSYNC --> UEGCBRIDGE
+    CPP --> CPPABI["C++ ABI, references, OOP, and allocation families"]
+    CPPLAYOUT --> CPPABI
+    CPPODR --> CPPABI
+    CPPABI --> SYSMEM["OS virtual memory, processes, IPC, and shared memory"]
+    CPPSYNC --> SYSMEM
+    CPPTASK --> SYSMEM
+    AUTH --> NETSYNC["TCP/UDP and state/frame/rollback sync models"]
+    NETTERMS --> NETSYNC
+    NETSYNC --> NETSEC["TLS, HTTPS, MITM, and replay resistance"]
+    TX --> NETSEC
+    NETSEC --> ANTICHEAT["Defensive anti-cheat and client trust boundaries"]
+    REL --> ANTICHEAT
+    SYSMEM -.-> ANTICHEAT
+    ALG --> RBTREE["Ordered trees, RB vs AVL, and STL ordered containers"]
+    CONT -.-> RBTREE
 ```

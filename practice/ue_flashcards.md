@@ -15149,3 +15149,190 @@ Q: What is the curriculum's bias for target-sensitive topics?
 A: Teach the mental model, then require target-branch/source/capture proof before implementation claims.
 Category: Study Strategy / Versioning
 Priority: P1
+
+## Systems C++, OS, Networking Security, and Anti-Cheat Cards
+
+Q: What is the safest wording for references at assembly level?
+A: References are language-level aliases that are often represented as addresses when storage or parameter passing requires it; they are not simply pointers in the C++ semantic model.
+Category: Standard C++
+Priority: P0
+
+Q: What is the key semantic difference between pointer and reference?
+A: A pointer is an object value that can be null and reseated; a reference is bound as an alias and does not imply ownership.
+Category: Standard C++
+Priority: P0
+
+Q: What does `new T` do that `malloc` does not?
+A: It obtains storage and constructs a `T`; `malloc` only provides raw storage.
+Category: Standard C++
+Priority: P0
+
+Q: What does `delete` do that `free` does not?
+A: It destroys the object before releasing matching storage; `free` releases raw storage without running C++ destructors.
+Category: Standard C++
+Priority: P0
+
+Q: What is placement `new`?
+A: Construction of an object in storage that has already been provided, with destruction and storage release handled separately.
+Category: Standard C++
+Priority: P1
+
+Q: Why not `new UObject`?
+A: UObjects need Unreal creation/lifetime systems such as `NewObject`, `CreateDefaultSubobject` or `SpawnActor`, plus reflection, Outer, flags and GC integration.
+Category: UE C++
+Priority: P0
+
+Q: What is a vtable?
+A: A common ABI mechanism for C++ virtual dispatch, not a layout mandated by the C++ standard.
+Category: Standard C++
+Priority: P1
+
+Q: How does Unreal add to ordinary C++ OOP?
+A: It adds generated reflection metadata, UObject lifetime/GC, serialisation/editor/Blueprint integration and reflection-based calls alongside native C++ virtual dispatch.
+Category: UE C++
+Priority: P0
+
+Q: What are `brk`, `mmap` and `VirtualAlloc`?
+A: OS-level virtual memory/address-range APIs below ordinary C++ allocators and object lifetimes.
+Category: Systems Programming
+Priority: P1
+
+Q: What does reserve versus commit mean for virtual memory?
+A: Reserve claims virtual address space; commit provides backing/charge so pages can be accessed, often with physical allocation on first touch.
+Category: Systems Programming
+Priority: P1
+
+Q: What is a page fault?
+A: A CPU/OS event when a virtual page access needs translation, backing, permission handling or faults due to invalid/protected access.
+Category: Systems Programming
+Priority: P1
+
+Q: Why is a major page fault dangerous for frame time?
+A: It often requires storage I/O to satisfy the page, which can hitch loading or gameplay.
+Category: Systems Programming
+Priority: P2
+
+Q: What does `static` not automatically mean?
+A: It does not always mean "global"; it can refer to storage duration, linkage, class membership or block-local persistence depending on context.
+Category: Standard C++
+Priority: P0
+
+Q: What is `inline` mainly about in C++?
+A: ODR/linkage rules allowing matching definitions across translation units, not a guarantee of machine-code inlining.
+Category: Standard C++
+Priority: P0
+
+Q: Why are macros risky compared with inline functions?
+A: Macros are token substitution before C++ type checking, scope, overload resolution and normal debugging boundaries.
+Category: Standard C++
+Priority: P1
+
+Q: What is the difference between a process and a thread?
+A: A process owns an isolated address space/resources; a thread is an OS-scheduled execution stream sharing its process memory.
+Category: Systems Programming
+Priority: P1
+
+Q: What is a task in a game job system?
+A: A scheduler-managed unit of work that runs on worker threads and should have explicit dependencies and safe captured data.
+Category: Concurrency
+Priority: P1
+
+Q: Why can more threads make code slower?
+A: Scheduling, contention, false sharing, memory bandwidth and serial merge/wait points can dominate useful parallel work.
+Category: Concurrency
+Priority: P1
+
+Q: How does shared memory work at a high level?
+A: The OS maps the same shared object/pages into multiple processes; the program defines layout and synchronisation.
+Category: IPC
+Priority: P2
+
+Q: Why avoid raw pointers inside shared memory?
+A: Each process may map the same pages at different virtual addresses, so offsets/indices are safer.
+Category: IPC
+Priority: P2
+
+Q: What is deadlock?
+A: A wait cycle where participants hold resources while waiting for resources held by each other.
+Category: Concurrency
+Priority: P1
+
+Q: What should deadlock diagnosis capture?
+A: Thread/task stacks, held locks, waited locks, owner IDs and the minimal wait cycle.
+Category: Concurrency
+Priority: P1
+
+Q: What does TCP provide?
+A: A reliable ordered byte stream with congestion control.
+Category: Networking
+Priority: P1
+
+Q: What does UDP not provide?
+A: Built-in delivery, ordering or duplicate protection.
+Category: Networking
+Priority: P1
+
+Q: What is state synchronisation?
+A: Sending selected current state or snapshots so clients converge, interpolate, predict and correct.
+Category: Networking
+Priority: P1
+
+Q: What is frame/input synchronisation?
+A: Exchanging inputs per tick/frame so deterministic simulations advance from the same inputs.
+Category: Networking
+Priority: P2
+
+Q: What does rollback require?
+A: Deterministic state capture, input logs, restore/resimulate support and side-effect deduplication.
+Category: Networking
+Priority: P2
+
+Q: What does HTTPS not solve?
+A: It does not make a malicious client honest, validate gameplay rules or prevent application-level replay by itself.
+Category: Network Security
+Priority: P1
+
+Q: What is a replay attack?
+A: Reuse of a previously valid message/action so it is accepted again outside its intended context.
+Category: Network Security
+Priority: P1
+
+Q: What defends against replay in gameplay commands?
+A: Identity binding, sequence or operation IDs, freshness windows, idempotency and server-side state validation.
+Category: Network Security
+Priority: P1
+
+Q: What is the main defence against Cheat Engine-style health editing?
+A: Make health server-authoritative and treat client health as prediction/presentation, not truth.
+Category: Defensive Anti-Cheat
+Priority: P1
+
+Q: Why does encryption of a client variable not solve cheating?
+A: A determined local attacker can inspect/tamper with the client; consequential state must be validated and owned server-side.
+Category: Defensive Anti-Cheat
+Priority: P1
+
+Q: What is the first anti-ESP design question?
+A: Does this client truly need this information now, at this precision and for this duration?
+Category: Defensive Anti-Cheat
+Priority: P2
+
+Q: What is a realistic ESP defence goal?
+A: Reduce unnecessary information exposure, validate actions server-side and collect reviewable evidence, not promise perfect hiding once rendering is required.
+Category: Defensive Anti-Cheat
+Priority: P2
+
+Q: What should server-side aimbot defence validate first?
+A: Hits, ammo, rate, cooldown, visibility, range, target state and weapon rules before applying damage.
+Category: Defensive Anti-Cheat
+Priority: P2
+
+Q: Why are single-threshold aimbot detections risky?
+A: False positives are costly and player hardware/accessibility/network conditions vary; use evidence over time and review.
+Category: Defensive Anti-Cheat
+Priority: P2
+
+Q: What is a DLL in defensive anti-cheat discussion?
+A: A dynamically loaded module; unexpected modules/load paths can become an integrity/tamper signal but do not replace server authority.
+Category: Defensive Anti-Cheat
+Priority: P2

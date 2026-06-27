@@ -11,6 +11,7 @@ Use these source families as anchors:
 | Area                             | Primary source anchors                                                                                                                                                                                                                               |
 | -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Standard C++                     | Core Guidelines and C++ references for lifetime, ownership, templates, memory model and sanitizers [SRC-CPP-001] [SRC-CPP-002] [SRC-CPP-020] [SRC-CPP-030]                                                                                           |
+| Systems C++ / OS / security      | Reference/pointer implementation caveats, allocation families, virtual memory/page APIs, process/thread/task, IPC/shared memory, TCP/UDP, TLS/replay and defensive anti-cheat [SRC-CPP-033] [SRC-CPP-034] [SRC-SYS-001] [SRC-SYS-003] [SRC-SEC-001] [SRC-SEC-003] |
 | UE object model and C++          | Reflection, UHT, UObject, pointers, specifiers, interfaces, logging/asserts and async proxy APIs [SRC-EPIC-001] [SRC-EPIC-002] [SRC-EPIC-003] [SRC-EPIC-009] [SRC-EPIC-032] [SRC-EPIC-037] [SRC-EPIC-038] [SRC-EPIC-039] [SRC-EPIC-044]              |
 | Gameplay framework               | Actor/Component, GameMode/GameState/PlayerState and subsystem roles [SRC-EPIC-010] [SRC-EPIC-011] [SRC-EPIC-012] [SRC-EPIC-013] [SRC-EPIC-017]                                                                                                       |
 | Networking and AI                | Replication authority, RPC/property ordering, movement prediction, Behaviour Trees, StateTree, Perception, EQS and nav debugging [SRC-NET-001] [SRC-NET-005] [SRC-NET-006] [SRC-NET-009] [SRC-AI-002] [SRC-AI-003] [SRC-AI-004] [SRC-AI-008]         |
@@ -32,13 +33,14 @@ Use these source families as anchors:
 Recommended dependency order:
 
 1. Standard C++ lifetime and ownership
-2. UE C++ object model and reflection
-3. Gameplay framework and architecture
-4. Networking and AI
-5. Profiling, rendering and assets
-6. GAS, Mass, animation, physics, UI, audio and VFX breadth
-7. Build/tools and scripting integration
-8. Mock loops, portfolio stories and gap repair
+2. Systems C++ / OS memory / process / IPC awareness
+3. UE C++ object model and reflection
+4. Gameplay framework and architecture
+5. Networking, AI and network-security foundations
+6. Profiling, rendering and assets
+7. GAS, Mass, animation, physics, UI, audio and VFX breadth
+8. Build/tools and scripting integration
+9. Mock loops, portfolio stories and gap repair
 
 ## Role Overlay Graphic
 
@@ -47,6 +49,7 @@ Role overlays should be applied on top of the same P0 base: C++, UObject, gamepl
 - Gameplay role: architecture, Blueprint API, networking, GAS
 - AI role: BT/StateTree, Perception, EQS, navigation, profiling
 - Network role: authority, ownership, RPC/property ordering, prediction, bandwidth
+- Security-aware network role: replay resistance, TLS boundaries, relevancy/information exposure, server-side validation, anti-cheat evidence
 - Tools role: modules, plugins, assets/cooking, editor automation, validation
 - Rendering role: maths, GPU pipeline, RDG, profiling, asset cost
 - Technical art/design: Blueprint, UI, animation, Niagara, audio, data assets
@@ -81,6 +84,7 @@ By the end of the main preparation pass, collect a folder or document with:
 | Gameplay | GAS or system design portfolio | Networking prediction/lag compensation awareness |
 | AI/gameplay | StateTree/EQS/Smart Objects | MassAI or scalable perception |
 | Networking | Fast Array/subobjects/RepGraph/Iris | Character movement prediction and lag compensation |
+| Security/networking | Project 3 Security and Anti-Cheat Extension | TCP/UDP sync models, replay resistance, ESP/aimbot defence boundaries |
 | Engine/tools | Build modules/plugins/editor commandlets | Asset Manager/cook/package/validation pipeline |
 | Rendering/graphics | RDG/shaders/PSOs/platform captures | Nanite/Lumen/VSM limits and profiling |
 | Technical art/design | Blueprint API, UI, animation and Niagara | Asset pipeline, data validation and performance budgets |
@@ -93,6 +97,8 @@ Do not keep reading if any of these are still failing:
 - You cannot explain why `TSharedPtr` does not keep a UObject alive.
 - You cannot place GameMode/GameState/PlayerController/PlayerState responsibilities.
 - You cannot debug a client RPC that never arrives.
+- You cannot distinguish TCP/UDP transport guarantees from state-sync, frame-sync and rollback design.
+- You cannot explain why HTTPS does not make a malicious client trustworthy or prevent application-level replay by itself.
 - You cannot classify a frame spike as Game Thread, Render Thread, GPU, loading, GC or network evidence.
 - You cannot describe one packaged-only asset/build failure.
 - You cannot give one concrete bug story with logs/traces and a prevention rule.

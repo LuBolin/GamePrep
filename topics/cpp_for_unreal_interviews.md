@@ -1,6 +1,6 @@
 # C++ for Unreal Interviews
 
-See also: [[ue_cpp_idioms]], [[game_architecture_patterns]], [[cpp_interview_question_bank]], [[ue_flashcards]], [[ue_hands_on_projects]].
+See also: [[ue_cpp_idioms]], [[systems_programming_for_game_interviews]], [[game_architecture_patterns]], [[cpp_interview_question_bank]], [[ue_flashcards]], [[ue_hands_on_projects]].
 
 ## Cluster 1 — Object Lifetime, Value Semantics, RAII, and Ownership
 
@@ -728,3 +728,37 @@ Extend Project 7B with a C++ Systems Lab:
 - allocators/PMR: [SRC-CPP-024]
 - Unreal C++/tasks policy: [SRC-CPP-025] [SRC-CPP-026]
 - sanitizers: [SRC-CPP-030] [SRC-CPP-031] [SRC-CPP-032]
+
+## Cluster 3 - ABI, Allocation Families, and OS Boundary Awareness
+
+The systems chapter owns the full OS/process/security treatment, but a C++ interview answer should connect language rules to the generated program.
+
+### Pointer versus reference at implementation level
+
+A pointer is an object value that can hold an address-like value, be null, be reseated and be stored independently. A reference is a language-level alias that is initialised to refer to an existing object or function; references themselves are not objects in the standard model. [SRC-CPP-033]
+
+In many ABIs a by-reference parameter is passed as an address, so unoptimised assembly for `void f(int&)` can look similar to `void f(int*)`. That is an implementation strategy, not the whole contract. Optimised code may remove the indirection, keep the value in a register, or materialise storage only when the observable semantics require it. The safe interview phrasing is: "references are often implemented with addresses when they need representation, but their C++ semantics are aliasing and binding rules, not pointer syntax." [SRC-CPP-033] [SRC-CPP-019]
+
+### OOP in C++ and UE C++
+
+C++ dynamic polymorphism is specified through virtual functions and final overriders, commonly implemented by compiler ABIs with hidden vptr/vtable structures. The standard does not require one exact vtable layout. [SRC-CPP-037]
+
+Unreal adds reflection metadata and generated code around `UCLASS`, `USTRUCT`, `UFUNCTION` and related macros. Native virtual dispatch, UObject reflection, Blueprint events, `Cast<>`, serialisation and GC are related parts of UE C++ programming but not the same mechanism. Use native virtuals for ordinary C++ extension points, reflected interfaces/events where Blueprint/editor/serialisation integration matters, and composition where object lifetime or responsibilities do not fit inheritance. [SRC-EPIC-001] [SRC-EPIC-002] [SRC-EPIC-009]
+
+### `new`/`delete` versus `malloc`/`free`
+
+`new` obtains storage and constructs an object; `delete` destroys the object and releases matching storage. `malloc` returns raw storage and `free` releases it; constructors and destructors are not involved. Placement `new` constructs an object in already-provided storage, so explicit destruction and storage-owner policy become the programmer's responsibility. [SRC-CPP-034] [SRC-CPP-035] [SRC-CPP-036]
+
+In Unreal, do not use ordinary `new` for UObjects or Actors. `NewObject`, `CreateDefaultSubobject` and `SpawnActor` connect the object to Unreal's class, Outer, flags, construction, reflection, GC and Actor lifecycle systems. [SRC-EPIC-003] [SRC-EPIC-004]
+
+### Static, inline and macros in build reality
+
+`static` can mean static storage duration, internal linkage, class-level data/function membership or block-local persistent state depending on context. Scope, lifetime, linkage and storage duration are different axes; a strong answer names the axis being discussed. [SRC-CPP-028]
+
+`inline` is chiefly an ODR/linkage facility that permits matching definitions across translation units; it is not an optimisation command. `#define` is preprocessor token substitution before C++ type checking and scope rules. Macro-dependent inline/template definitions can therefore create configuration-sensitive ODR bugs across modules or unity/non-unity builds. [SRC-CPP-027] [SRC-CPP-038] [SRC-CPP-039]
+
+### Low-level allocation awareness
+
+OS APIs such as `VirtualAlloc`, `mmap` and `brk` operate on virtual address ranges/pages. Allocators sit above them and carve those ranges into program allocations; containers and objects sit above allocators and manage C++ lifetimes. Do not blur page mapping, heap allocation and object lifetime into one "heap memory" bucket. [SRC-SYS-001] [SRC-SYS-005] [SRC-SYS-006]
+
+See [[systems_programming_for_game_interviews]] for the full process/thread/IPC/shared-memory/page-fault treatment.

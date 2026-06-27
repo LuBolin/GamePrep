@@ -356,3 +356,96 @@ See also: [[cpp_for_unreal_interviews]], [[ue_cpp_idioms]], [[ue_flashcards]], [
 - **Hands-on Verification Task:** Trigger one authentic finding for each supported sanitizer and document coverage/overhead/blind spot.
 - **Sources:** [SRC-CPP-030], [SRC-CPP-031], [SRC-CPP-032]
 - **Version Notes:** Clang/platform/Unreal integration varies.
+
+## Systems C++, ABI, OS Memory, and IPC
+
+### Question: Reference versus pointer: are references just pointers in assembly?
+
+- **Category:** Standard C++ / ABI / Language Semantics
+- **Priority:** P0
+- **Expected Depth:** D3
+- **Short Answer:** A reference is a language-level alias with binding rules; implementations often pass or store it as an address when needed, but that is not the full semantic contract.
+- **Strong 3-Year-Engineer Answer:** A pointer is an object value that can be null, copied, reseated and stored. A reference is bound to an object/function and then acts as an alias. In unoptimised assembly, a by-reference parameter often looks like a pointer because the callee receives an address. But the optimiser may remove the indirection, keep values in registers or materialise storage only when needed. So I would say references are often implemented with addresses, not that they are simply pointers.
+- **Common Weak Answer:** “A reference is a safer pointer.”
+- **Follow-up Questions:** When would you choose a pointer parameter? Can a reference dangle? What does “reference is not an object” mean?
+- **Hands-on Verification Task:** Compile pointer and reference parameter examples at `-O0` and optimised settings, then explain the assembly differences without changing the source-level semantics.
+- **Sources:** [SRC-CPP-033], [SRC-CPP-019]
+- **Version Notes:** C++ semantics stable; ABI/assembly is compiler, platform and optimisation-level specific.
+
+### Question: How are virtual functions usually implemented, and how is UE C++ OOP different?
+
+- **Category:** Standard C++ / UE C++ / Object Model
+- **Priority:** P0
+- **Expected Depth:** D3
+- **Short Answer:** C++ specifies virtual dispatch behaviour; ABIs commonly implement it with vptr/vtable structures. Unreal adds generated reflection metadata and UObject systems on top.
+- **Strong 3-Year-Engineer Answer:** In ordinary C++, dynamic dispatch happens when a virtual function is called through a base pointer or reference and the final overrider for the dynamic type is selected. Most compilers implement that with a hidden vptr and vtables, but exact layout is ABI-specific. In Unreal, `UCLASS`, `UFUNCTION`, reflection, `Cast<>`, Blueprint events, GC and serialisation are separate engine systems. I use native virtuals for normal C++ extension points and reflected interfaces/events where Blueprint/editor/serialisation integration matters.
+- **Common Weak Answer:** “Unreal OOP is just vtables plus macros.”
+- **Follow-up Questions:** Why is a BlueprintImplementableEvent not the same as a native virtual? When is composition better than inheritance? Why does UObject lifetime matter to OOP design?
+- **Hands-on Verification Task:** Build a native virtual hierarchy and a reflected interface/Blueprint event example; compare call paths, tooling and lifetime constraints.
+- **Sources:** [SRC-CPP-037], [SRC-CPP-019], [SRC-EPIC-001], [SRC-EPIC-002]
+- **Version Notes:** C++ virtual semantics stable; UE generated-code details are target-branch sensitive.
+
+### Question: Compare `new`/`delete` with `malloc`/`free`.
+
+- **Category:** Standard C++ / Memory Allocation
+- **Priority:** P0
+- **Expected Depth:** D3
+- **Short Answer:** `new`/`delete` combine storage allocation with construction/destruction; `malloc`/`free` manage raw storage only.
+- **Strong 3-Year-Engineer Answer:** `new T` obtains suitable storage and constructs a `T`; `delete` calls the destructor and releases matching storage. `malloc` gives raw storage and does not start a C++ object lifetime by itself; `free` does not run destructors. Placement `new` constructs into storage you already own, so you must explicitly destroy the object and release the storage through the correct owner. Mixing allocation families is undefined behaviour territory. In UE, UObjects and Actors must go through engine creation APIs like `NewObject` and `SpawnActor`, not ordinary `new`.
+- **Common Weak Answer:** “`new` is C++ malloc.”
+- **Follow-up Questions:** What does placement `new` do? Why is `delete[]` different? Why not `new UObject`?
+- **Hands-on Verification Task:** Add constructor/destructor counters to `new`, `malloc`, placement `new` and arena cases; prove which paths construct and destroy.
+- **Sources:** [SRC-CPP-034], [SRC-CPP-035], [SRC-CPP-036], [SRC-EPIC-003], [SRC-EPIC-004]
+- **Version Notes:** C++ semantics stable; Unreal factory details must match target branch.
+
+### Question: What are `brk`, `mmap` and `VirtualAlloc` relative to C++ allocators?
+
+- **Category:** Systems Programming / OS Memory / C++
+- **Priority:** P1
+- **Expected Depth:** D3
+- **Short Answer:** They are OS virtual-memory/page APIs below general allocators; they manage address ranges and backing, not C++ object lifetimes.
+- **Strong 3-Year-Engineer Answer:** `VirtualAlloc` can reserve and commit virtual address ranges on Windows. `mmap` maps files or anonymous memory into a process address space on Linux/POSIX systems. `brk` moves the program break, historically related to heap growth. A general allocator may request large regions from OS APIs and then suballocate, but C++ containers and `new` operate at object/allocation level above that. I separate virtual address reservation, committed backing, physical residency, allocator bookkeeping and object lifetime when diagnosing memory hitches.
+- **Common Weak Answer:** “They are all ways to malloc memory.”
+- **Follow-up Questions:** What is reserve versus commit? What is a page fault? Why should application code avoid calling `brk` directly?
+- **Hands-on Verification Task:** Reserve/commit/touch pages and record first-touch cost/page-fault counters; compare with a normal allocator path.
+- **Sources:** [SRC-SYS-001], [SRC-SYS-005], [SRC-SYS-006], [SRC-SYS-007]
+- **Version Notes:** OS-specific APIs; behaviour and counters need target-platform confirmation.
+
+### Question: Process versus thread versus task?
+
+- **Category:** Systems Programming / Concurrency
+- **Priority:** P1
+- **Expected Depth:** D3
+- **Short Answer:** A process owns an address space and resources; a thread is an OS-scheduled execution stream within a process; a task is scheduler-managed work that runs on threads.
+- **Strong 3-Year-Engineer Answer:** Processes are isolated by virtual address spaces, so ordinary pointers do not cross process boundaries. Threads in one process share memory, which makes communication cheap but introduces races and lifetime hazards. A task/job is a work item scheduled onto worker threads. For games, I split independent work, snapshot inputs, avoid shared mutable writes, and merge deterministically. I also measure wait time and memory bandwidth because more threads can increase contention or move the bottleneck.
+- **Common Weak Answer:** “Threads are lightweight processes.”
+- **Follow-up Questions:** Why do two processes need IPC? Why can multithreading slow code down? What should not be captured in a UE task?
+- **Hands-on Verification Task:** Build a fork-join task pipeline and profile execution, queueing and merge time while proving captured data lifetime.
+- **Sources:** [SRC-SYS-003], [SRC-CPP-026]
+- **Version Notes:** OS scheduler and Unreal task details are platform/engine-version sensitive.
+
+### Question: How is shared memory achieved safely?
+
+- **Category:** Systems Programming / IPC
+- **Priority:** P2
+- **Expected Depth:** D3
+- **Short Answer:** The OS maps the same shared object/pages into multiple process address spaces; the program must define layout, synchronisation and lifetime.
+- **Strong 3-Year-Engineer Answer:** On Windows this can be done with file-mapping objects and mapped views; on POSIX systems shared memory objects are typically mapped with `mmap`. Each process may see the shared pages at different virtual addresses, so the layout should use offsets/indices, not raw pointers. I would add a versioned header, fixed capacity or explicit allocator, ownership state per slot, semaphores/events or atomics with a memory-order proof, permission policy and crash recovery.
+- **Common Weak Answer:** “Just put a pointer in shared memory.”
+- **Follow-up Questions:** How do you signal producer/consumer state? What happens if a writer crashes? Why can a raw pointer be invalid in the other process?
+- **Hands-on Verification Task:** Implement a shared-memory ring buffer with offsets, version header and overrun counters between two test processes.
+- **Sources:** [SRC-SYS-002], [SRC-SYS-005], [SRC-SYS-008]
+- **Version Notes:** API names and permissions are OS-specific.
+
+### Question: What is deadlock and how do you debug it?
+
+- **Category:** Systems Programming / Concurrency
+- **Priority:** P1
+- **Expected Depth:** D3
+- **Short Answer:** Deadlock is a wait cycle where threads/tasks hold resources while waiting for each other; break mutual exclusion, hold-and-wait, no-preemption or circular wait.
+- **Strong 3-Year-Engineer Answer:** I first capture thread stacks and the lock/task wait graph. The goal is to name the cycle, such as thread A holds X and waits for Y while thread B holds Y and waits for X. Prevention is mostly design: one lock per invariant, documented lock ordering, acquire multiple locks together with deadlock-aware helpers, and avoid calling arbitrary code while holding locks. Timeouts can help diagnose, but they do not fix a broken invariant by themselves.
+- **Common Weak Answer:** “Use atomics instead.”
+- **Follow-up Questions:** Why can delegates under a lock be dangerous? What does `std::scoped_lock` help with? How is livelock different?
+- **Hands-on Verification Task:** Create a two-lock deadlock, capture the wait graph, then fix it with lock ordering or `std::scoped_lock`.
+- **Sources:** [SRC-CPP-021], [SRC-CPP-022]
+- **Version Notes:** General C++ concept; platform debugging tools differ.

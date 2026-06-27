@@ -27,6 +27,7 @@ This gap analysis compares what the current source pack covers well against what
 | Profiling workflow | Stat commands, Insights and performance intro material support evidence-first diagnosis [SRC-PERF-001] [SRC-PERF-002] [SRC-PERF-003] | Interviews expect the candidate to choose the next capture and avoid FPS-only reasoning. |
 | Build/modules/plugins | UBT, modules, plugin docs and Live Coding docs are good anchors [SRC-BUILD-001] [SRC-BUILD-002] [SRC-BUILD-005] [SRC-BUILD-006] | Real failures often involve dependency leakage, editor-only code, package differences and local build settings. |
 | Assets/loading/cooking | Hard/soft reference, Asset Manager, packaging, chunks, DDC and World Partition docs are strong enough for a first pass [SRC-ASSET-001] [SRC-ASSET-003] [SRC-ASSET-005] [SRC-ASSET-008] [SRC-ASSET-010] | Candidates need packaged-build evidence and dependency-closure thinking, not only editor success. |
+| Standard C++ and OS references | Cppreference, Microsoft docs, Linux man-pages, RFCs and OWASP material are strong for language, OS, transport and crypto/TLS facts [SRC-CPP-033] [SRC-SYS-001] [SRC-SYS-005] [SRC-SEC-001] [SRC-SEC-003] [SRC-SEC-004] | The hard part is connecting those facts to Unreal architecture, target-platform evidence and defensive game-security design. |
 
 ## Topics Official Docs Explain Poorly or Incompletely
 
@@ -40,6 +41,7 @@ This gap analysis compares what the current source pack covers well against what
 | Renderer internals | RDG docs are strong but not enough for shader compilation, PSO caches, mesh draw commands and platform-capture interpretation [SRC-RENDER-003] | Rendering chapter gives first-pass cost dimensions and flags shaders/PSOs as specialist follow-ons. |
 | UI lifetime | UMG/Slate/CommonUI docs are spread across architecture, API and plugin pages [SRC-UI-001] [SRC-UI-002] [SRC-UI-009] [SRC-UI-010] | UI chapter separates UObject widget, Slate widget and activation/input lifetime. |
 | Animation thread boundaries | Animation docs mention worker-thread and property-access concerns, but implementation safety is graph/project-specific [SRC-ANIM-004] [SRC-ANIM-015] | Animation chapter frames runtime data as snapshots, not arbitrary Actor reads from animation evaluation. |
+| Anti-cheat and client trust | Public anti-cheat information is intentionally incomplete and dual-use; platform/commercial details require authorised sources | The curriculum keeps Cheat Engine, DLL/module tamper, ESP and aimbot topics defensive: threat model, server authority, relevancy, validation, telemetry, privacy and review. |
 
 ## Topics Commonly Asked in Interviews but Hard to Learn From Docs Alone
 
@@ -52,6 +54,8 @@ This gap analysis compares what the current source pack covers well against what
 | "Blueprint or C++?" | Blueprint docs explain exposure; production answers require API design, designer iteration, perf, authority, testing and invariant placement [SRC-EPIC-030] [SRC-EPIC-031] | Blueprint for orchestration/authoring, C++ for stable invariants/hot paths/authority, with profiling caveats. |
 | "Actor crowd or MassEntity crowd?" | Mass docs describe entities/fragments/processors, but the choice depends on representation, ownership, content workflow, interaction richness and debugging cost [SRC-MASS-001] [SRC-MASS-002] | A workload threshold, hybrid bridge plan and "do not use Mass when Actors are enough" answer. |
 | "GAS or custom ability system?" | GAS docs are extensive, but interviews want adoption judgment and lifecycle traps [SRC-GAS-001] [SRC-GAS-002] [SRC-GAS-003] | Compare tag/effect/prediction requirements to complexity, team skill and debugging burden. |
+| "References are just pointers, right?" | Standard docs define semantics, but assembly/ABI examples can mislead candidates into overclaiming | Explain the language contract first, then say many ABIs represent references as addresses when representation is needed [SRC-CPP-033] [SRC-CPP-019]. |
+| "How would you stop Cheat Engine / ESP / aimbots?" | Public docs do not provide a complete defensive stack and exploit details are inappropriate for study notes | Use server authority, information minimisation, validation matrices, telemetry and review; avoid operational cheating/bypass recipes [SRC-NET-001] [SRC-SEC-007]. |
 
 ## Topics Where Blogs Are Often Outdated
 
@@ -92,6 +96,7 @@ This section is intentionally conservative because the repository has not yet bu
 | GAS | Many roles ask about it even if the studio uses a custom system | Give adoption criteria and lifecycle traps rather than pretending every game should use GAS. |
 | MassEntity | Increasingly fashionable but not universal | Explain data-oriented benefits and debugging/content costs; do not force ECS into small Actor-rich features. |
 | Lua/C# | Asked by studios with scripting layers or tools teams, but plugin-specific | State that Unreal core is C++/Blueprint and discuss integration boundaries plus plugin proof. |
+| Low-level OS/security topics | Less common in ordinary gameplay work but a strong differentiator for engine, networking, tools and anti-cheat interviews | Keep answers scoped: explain the mental model, source sensitivity and what target evidence would prove. |
 
 ## Underrepresented in Docs Relative to Interview Relevance
 
@@ -134,6 +139,11 @@ This section is intentionally conservative because the repository has not yet bu
 | Blueprint event vs delegate | Both can call script/user logic | Blueprint events are overridable/reflected API points; delegates are callable lists/events with static/dynamic/lifetime binding choices [SRC-EPIC-028] [SRC-EPIC-031] | Using dynamic delegates everywhere or events for internal multicast state. |
 | Lua GC vs UE GC | Both collect unreachable objects | Lua collects Lua objects/closures/tables; Unreal traces UObjects through its own graph; bindings must bridge invalidation explicitly [SRC-SCRIPT-001] [SRC-EPIC-005] | Assuming one GC sees the other's references automatically. |
 | C# managed lifetime vs native lifetime | Both can wrap resources | .NET GC controls managed objects; native/UObject resources need explicit wrappers, handles and deterministic cleanup where required [SRC-SCRIPT-006] [SRC-SCRIPT-008] | Letting a C# finalizer decide UObject lifetime. |
+| Pointer vs reference | Both can access an object indirectly | A pointer is an object value that may be null/reseated; a reference is a bound alias whose representation is implementation-dependent [SRC-CPP-033] | Saying "a reference is just a pointer." |
+| `new`/`delete` vs `malloc`/`free` | Both can obtain/release storage | `new`/`delete` also construct/destroy C++ objects; `malloc`/`free` manage raw storage only [SRC-CPP-034] [SRC-CPP-035] [SRC-CPP-036] | Mixing allocation families or forgetting constructors/destructors. |
+| TCP vs UDP | Both move data between endpoints | TCP is a reliable ordered byte stream; UDP is datagrams without built-in delivery/order guarantees [SRC-SEC-001] [SRC-SEC-002] | "UDP is just faster TCP." |
+| HTTPS/TLS vs game authority | Both are security-related | TLS protects the channel; server authority validates gameplay/economy semantics and replay resistance [SRC-SEC-003] [SRC-SEC-004] | Saying HTTPS prevents cheating. |
+| Red-black tree vs AVL tree | Both are balanced BST families | AVL is stricter balance; red-black is looser and common for ordered associative containers, but STL does not mandate the exact tree [SRC-CPP-041] [SRC-CPP-042] | Saying `std::map` is guaranteed to be a red-black tree. |
 
 ## Misconceptions and Red-Flag Advice
 
@@ -149,6 +159,7 @@ This section is intentionally conservative because the repository has not yet bu
 | "Use Mass for performance." | Use Mass when data shape and scale justify it; conversion, representation, debugging and gameplay interaction are real costs. |
 | "Metadata controls runtime behaviour." | Metadata is primarily editor/Blueprint-node/tooling guidance. Runtime rules belong in code/data consumed at runtime [SRC-EPIC-036]. |
 | "A plugin doc means the feature is core." | Record plugin status, target-version support and project adoption requirements. |
+| "Encrypt client values to stop memory editing." | Do not trust client memory for durable outcomes. Server-authoritative state, validation and telemetry matter more than hiding a local cache. |
 
 ## Role-Specific Gaps
 
@@ -157,6 +168,7 @@ This section is intentionally conservative because the repository has not yet bu
 | Gameplay engineer | Weak state placement and UObject lifetime | Build Project 1 plus Project 7A; rehearse framework, GC and Blueprint API questions. |
 | AI/gameplay engineer | Treating BT/EQS/Nav/avoidance as one black box | Implement Project 2 and explain decision, query, path and local steering separately. |
 | Networking engineer | Knowing terms but not diagnosis order | Run Project 3 failure matrix and produce Net Profiler/Insights evidence. |
+| Security-aware networking engineer | Treating TLS, anti-cheat and server authority as the same layer | Run Project 3 Security and Anti-Cheat Extension; produce replay, relevancy and validation evidence. |
 | Rendering/graphics engineer | Saying "GPU bound" without pass/cost evidence | Run Project 4 render matrix and learn RDG/render-pass vocabulary. |
 | Engine/tools engineer | Ignoring module/editor/runtime/package boundaries | Build Project 6 with runtime/editor modules, commandlet and packaged proof. |
 | Technical artist/designer | Owning gameplay truth in presentation systems | Build UI/animation/Niagara/audio extensions with authority and lifetime notes. |
@@ -170,7 +182,7 @@ This section is intentionally conservative because the repository has not yet bu
 | Interview anecdote corpus | Needed to compare public interview traps with source-backed curriculum | Add only as supplementary S8 evidence and label stale/low-confidence claims. |
 | Engine-source branch checks | Needed for exact UE5.3-UE5.6 API and order claims | Pick a target branch and verify UHT/generated code, UObject threading, replication internals, Live Coding and specialist plugin APIs. |
 | Official talks | Useful for renderer/network/Mass/GAS architectural intent | Add source records for current Epic talks and avoid treating talk demos as universal production defaults. |
-| Specialist networking | Fast Array, replicated subobjects, RepGraph, Iris and lag compensation need deeper treatment | Create a bounded networking-specialist cluster with source/API evidence and Project 3 extensions. |
+| Target networking/security proof | Fast Array, subobjects, RepGraph, Iris, lag compensation, replay resistance and anti-cheat validation need target evidence | Execute Project 3 specialist and Security/Anti-Cheat extensions against a real branch/package with packet, replay and telemetry evidence. |
 | Rendering specialist | Shader compilation, PSO caches, mesh draw commands and platform captures need deeper treatment | Create a rendering-specialist cluster after final P0/P1 synthesis. |
 | Final quantitative banks | Research target requires many more questions by area | Expand banks by distinct models and failure workflows, not trivia padding. |
 

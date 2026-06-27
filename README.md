@@ -11,11 +11,13 @@ Open [[STUDY_GUIDE]] — it explains the vault structure, learning order, and ho
 ## Current substantive chapters
 
 - [Standard C++ for Unreal interviews](topics/cpp_for_unreal_interviews.md)
+- [Systems programming for game interviews](topics/systems_programming_for_game_interviews.md)
 - [UE C++ idioms, reflection, UObject lifetime, and Blueprint boundary](topics/ue_cpp_idioms.md)
 - [Gameplay framework and system design](topics/game_architecture_patterns.md)
 - [Game programming patterns](topics/game_programming_patterns.md)
 - [Advanced gameplay patterns specialist pass](topics/advanced_gameplay_patterns_specialist.md)
 - [Networking and replication](topics/ue_networking_and_replication.md)
+- [Game security and defensive anti-cheat](topics/game_security_anticheat.md)
 - [Networking target-branch implementation proof](topics/ue_networking_target_branch_proof.md)
 - [NetworkPrediction plugin and full rollback proof](topics/ue_network_prediction_rollback_proof.md)
 - [AI and navigation](topics/ue_ai_navigation.md)
@@ -44,6 +46,7 @@ Open [[STUDY_GUIDE]] — it explains the vault structure, learning order, and ho
 - [Unreal Niagara and VFX systems](topics/ue_niagara_vfx.md)
 - [Runtime presentation target-proof](topics/ue_runtime_presentation_target_proof.md)
 - [Lua and C# integration](topics/scripting_integration_lua_csharp.md)
+- [Systems C++, OS, networking, and game-security gap plan](curriculum/systems_cpp_security_gap_plan.md)
 
 ## Repository map
 

@@ -139,7 +139,24 @@ For a dense bounded integer domain, direct-index array or bitset can be faster a
 
 ### Ordered tree map/set
 
-An ordered associative tree commonly offers `O(log n)` lookup/insert/erase, sorted iteration and range queries. Choose it when ordering/predecessor/successor/range behaviour matters, not merely because worst-case complexity looks safer. Node allocation and pointer traversal can dominate small hot sets.
+An ordered associative tree commonly offers `O(log n)` lookup/insert/erase, sorted iteration and range queries. In the C++ standard library, `std::map`, `std::multimap`, `std::set` and `std::multiset` are ordered associative containers with logarithmic lookup/insertion/removal complexity; the standard specifies the behaviour and complexity, not the exact tree type. Many mainstream implementations use red-black trees, but interview answers should phrase that as implementation practice rather than a language guarantee. [SRC-CPP-041] [SRC-CPP-042]
+
+Red-black trees and AVL trees are both self-balancing binary-search trees. AVL trees keep stricter height balance, so lookups can be slightly shallower but rotations/rebalancing on updates can be more frequent. Red-black trees allow looser balance, often making insertion/removal cheaper in practice while preserving logarithmic height. For game code, the more important choice is usually whether ordered range/predecessor traversal is needed at all. A sorted vector, hash map, sparse set or custom dense-index structure can beat any node tree in hot small data.
+
+Choose an ordered tree when you need:
+
+- sorted iteration;
+- nearest predecessor/successor;
+- range queries such as `[lower_bound, upper_bound)`;
+- stable node references under non-erasing inserts;
+- predictable logarithmic operations without hashing assumptions.
+
+Avoid it when:
+
+- iteration locality is the hot path;
+- the data is mostly static and can be sorted once;
+- keys are dense integer IDs;
+- deterministic order can be provided by sorting an array at frame/end-of-build time.
 
 ### Trie awareness
 

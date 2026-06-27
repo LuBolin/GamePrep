@@ -10208,3 +10208,96 @@ See also: [[ue_flashcards]], [[cpp_interview_question_bank]], [[ue_hands_on_proj
 - **Hands-on Verification Task:** Write a rejection memo for one unsupported target-branch feature.
 - **Sources:** [SRC-NET-014], [SRC-NET-020], [SRC-BUILD-017]
 - **Version Notes:** Version-sensitive systems need explicit support checks.
+
+## Network Security, Transport, and Defensive Anti-Cheat
+
+### Question: TCP versus UDP for realtime games?
+
+- **Category:** Networking / Transport
+- **Priority:** P1
+- **Expected Depth:** D3
+- **Short Answer:** TCP gives reliable ordered byte streams; UDP gives datagrams with no built-in delivery/order guarantees, so games can build priority and partial reliability above it.
+- **Strong 3-Year-Engineer Answer:** TCP is appropriate for backend APIs, login, patching, chat or low-frequency reliable service messages. Realtime gameplay often uses UDP or an engine protocol above UDP because an old lost update should not always block newer state. But UDP is not magic speed; the game must define sequence numbers, loss handling, prioritisation, congestion behaviour and which data is reliable or superseded. Unreal replication abstracts much of this, but the design questions still apply.
+- **Common Weak Answer:** “UDP is faster, TCP is reliable.”
+- **Follow-up Questions:** What is head-of-line blocking? Which gameplay data should be reliable? How does state convergence differ from event delivery?
+- **Hands-on Verification Task:** Classify each Project 3 message as durable state, reliable event, unreliable/superseded update or backend transaction.
+- **Sources:** [SRC-SEC-001], [SRC-SEC-002], [SRC-NET-001]
+- **Version Notes:** Transport and engine replication details are implementation/version sensitive.
+
+### Question: State synchronisation versus frame/input synchronisation versus rollback?
+
+- **Category:** Networking / Simulation Model
+- **Priority:** P1
+- **Expected Depth:** D4
+- **Short Answer:** State sync sends selected authoritative state; input/frame sync exchanges inputs for deterministic simulation; rollback restores past state and resimulates after late input.
+- **Strong 3-Year-Engineer Answer:** UE's normal replication is closer to state convergence: server state is selected by relevancy/priority and clients interpolate, predict or correct. Input/frame sync is common in lockstep designs where every client simulates the same ticks from the same inputs. Rollback predicts local inputs, accepts late remote inputs, restores an older state and resimulates. Rollback needs deterministic state capture, side-effect control and replayable inputs; I would not call ordinary CharacterMovement correction a generic rollback system.
+- **Common Weak Answer:** “Rollback means better prediction.”
+- **Follow-up Questions:** Why is determinism hard in Unreal? What side effects must be deduped? How do late joiners work?
+- **Hands-on Verification Task:** Write a one-page design memo choosing state sync, input sync or rollback for shooter, RTS and fighting-game scenarios.
+- **Sources:** [SRC-SEC-006], [SRC-NET-001], [SRC-NET-020]
+- **Version Notes:** NetworkPrediction/rollback support is plugin/branch sensitive.
+
+### Question: What is a replay attack and how would you defend a game command?
+
+- **Category:** Network Security / Gameplay Protocol
+- **Priority:** P1
+- **Expected Depth:** D3
+- **Short Answer:** A replay attack resends a previously valid message/action; defend with identity binding, sequence/operation IDs, freshness windows, idempotency and server-state validation.
+- **Strong 3-Year-Engineer Answer:** TLS protects the channel, but it does not make an old valid gameplay or economy command semantically new. For fire, reward, inventory or purchase-style operations I bind the command to player/session, add sequence or operation IDs, reject stale timestamps/ticks, make retries idempotent where needed and validate current server state. A valid Server RPC can still carry duplicated or stale intent, so gameplay protocols need replay rules too.
+- **Common Weak Answer:** “Use HTTPS.”
+- **Follow-up Questions:** Where do nonces help? What is idempotency? What should be logged on duplicate commands?
+- **Hands-on Verification Task:** Add operation IDs to Project 3 rewards and tests for duplicate, stale, out-of-order and wrong-owner commands.
+- **Sources:** [SRC-SEC-003], [SRC-SEC-004], [SRC-NET-001]
+- **Version Notes:** Backend/platform protocol details are project-specific.
+
+### Question: How would you fight Cheat Engine-style health editing?
+
+- **Category:** Defensive Anti-Cheat / Server Authority
+- **Priority:** P1
+- **Expected Depth:** D3
+- **Short Answer:** Make health server-authoritative; treat client values as prediction/presentation caches and validate all state transitions on the server.
+- **Strong 3-Year-Engineer Answer:** A local memory editor can alter a client's displayed health or cached variables. The defence is not hiding that value better; it is ensuring the server owns health and computes damage/healing/resources from validated events. The client can predict or present health, but replicated server state corrects it. I would also log impossible transitions and add operation IDs for effects that can retry or duplicate.
+- **Common Weak Answer:** “Encrypt the health variable.”
+- **Follow-up Questions:** What if the client changes ammo? What should be predicted locally? How do you avoid duplicate reward application?
+- **Hands-on Verification Task:** In Project 3, intentionally alter client-presented health locally and prove the server state and replicated correction still control outcome.
+- **Sources:** [SRC-SEC-007], [SRC-NET-001], [SRC-SEC-004]
+- **Version Notes:** Public anti-cheat details are incomplete; this is design-level defensive guidance.
+
+### Question: How do you fight ESP?
+
+- **Category:** Defensive Anti-Cheat / Information Exposure
+- **Priority:** P2
+- **Expected Depth:** D3
+- **Short Answer:** Reduce unnecessary replicated information, validate consequential actions server-side, and add telemetry/review; do not promise perfect hiding once the client must render data.
+- **Strong 3-Year-Engineer Answer:** ESP uses information already available to the client. I first minimise information through relevancy, interest management, team/visibility rules and precision control. Then I validate actions on the server with line-of-sight, range, target state and weapon rules. Finally I collect evidence for suspicious target acquisition and tracking patterns. If the client must render an enemy, some information exists locally, so the answer is layered risk reduction rather than perfect prevention.
+- **Common Weak Answer:** “Encrypt replicated positions.”
+- **Follow-up Questions:** What should relevancy hide? What still leaks through audio/VFX? What evidence helps review?
+- **Hands-on Verification Task:** Add a relevancy experiment that logs what hidden-target data each client receives before and after culling.
+- **Sources:** [SRC-NET-001], [SRC-NET-015], [SRC-SEC-007]
+- **Version Notes:** Exact relevancy/Replication Graph setup is project and branch specific.
+
+### Question: How do you fight aimbots?
+
+- **Category:** Defensive Anti-Cheat / Gameplay Validation
+- **Priority:** P2
+- **Expected Depth:** D3
+- **Short Answer:** Server-validate hits and use telemetry over time for input/aim plausibility instead of trusting client hit results or one magic threshold.
+- **Strong 3-Year-Engineer Answer:** The server should validate ammo, rate, cooldown, aim evidence, target state, range and line of sight before applying damage. For detection I look at acquisition speed, smoothness, target switches, recoil/spread consistency, visibility timing and repeated near-perfect events over time. False positives are costly, so telemetry should feed review or graduated confidence, not a single brittle ban rule.
+- **Common Weak Answer:** “Check if aim speed is too high.”
+- **Follow-up Questions:** How do accessibility devices affect thresholds? What evidence belongs in replay review? How does lag compensation interact with detection?
+- **Hands-on Verification Task:** Add a hit-validation matrix and suspicious-event packet for one accepted and one rejected shot.
+- **Sources:** [SRC-NET-001], [SRC-SEC-006], [SRC-SEC-007]
+- **Version Notes:** Detection policy is studio/legal/platform sensitive.
+
+### Question: What do HTTPS and TLS solve, and what do they not solve?
+
+- **Category:** Network Security / Backend
+- **Priority:** P1
+- **Expected Depth:** D3
+- **Short Answer:** They protect transport confidentiality, integrity and endpoint authentication when configured correctly; they do not validate gameplay rules or make clients trustworthy.
+- **Strong 3-Year-Engineer Answer:** HTTPS is HTTP over TLS. Correct certificate validation and modern TLS protect against many passive and active network attackers. But after a request reaches the real server, the server still must validate identity, authorisation, operation freshness, idempotency and game/economy rules. A malicious client can send a valid HTTPS request with dishonest data, so transport security and application authority are separate layers.
+- **Common Weak Answer:** “HTTPS prevents cheating.”
+- **Follow-up Questions:** What is MITM? Why is disabling cert validation dangerous? When would backend service calls need signed messages too?
+- **Hands-on Verification Task:** Audit Project 3 backend/mock service calls for certificate bypasses and missing idempotency keys.
+- **Sources:** [SRC-SEC-003], [SRC-SEC-004], [SRC-SEC-005]
+- **Version Notes:** TLS guidance changes; verify current platform/server configuration.

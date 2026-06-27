@@ -1,6 +1,6 @@
 # Unreal Engine Networking and Replication
 
-See also: [[ue_networking_target_branch_proof]], [[ue_network_prediction_rollback_proof]], [[ue_gameplay_ability_system]], [[ue_enhanced_input]], [[ue_hands_on_projects]].
+See also: [[ue_networking_target_branch_proof]], [[ue_network_prediction_rollback_proof]], [[game_security_anticheat]], [[ue_gameplay_ability_system]], [[ue_enhanced_input]], [[ue_hands_on_projects]].
 
 ## Cluster 1 — Authority, Ownership, Properties, RPCs, Relevancy, and Dormancy
 
@@ -22,6 +22,24 @@ Start every networking decision with five questions:
 5. How much bandwidth/CPU does the update consume at expected player and Actor counts?
 
 If these are unanswered, adding `Replicated` or `Server` specifiers is decoration, not design.
+
+### Transport and synchronisation primer
+
+TCP is a reliable, ordered byte-stream transport with congestion control; it is a good default for login, patching, backend APIs, chat and low-frequency reliable service traffic. UDP is a datagram transport with minimal mechanism and no built-in delivery/order/duplicate guarantees, which lets realtime games build priority, partial reliability, sequence handling and "drop old state" policies above it. [SRC-SEC-001] [SRC-SEC-002]
+
+Unreal replication hides much of the socket-level detail, but interviews often ask the design distinction:
+
+| Topic | Meaning | Unreal/game implication |
+|---|---|---|
+| State synchronisation | server sends selected current state/snapshots and clients converge/interpolate/predict | baseline mental model for replicated properties, relevancy and correction |
+| Frame/input synchronisation | peers exchange inputs per tick/frame and simulate deterministically | common in lockstep/rollback designs, not generic UE replication by default |
+| Rollback | restore old simulation state after late input, then resimulate | specialist architecture requiring deterministic state and side-effect control |
+| Reliable event | must arrive eventually and in order within its channel/stream model | use sparingly for durable commands, not per-frame state |
+| Unreliable update | newer data can supersede older data | good for frequent state/presentation where old packets are stale |
+
+Gaffer on Games' state-synchronisation work is a useful practical source for snapshot priorities and bandwidth trade-offs; pair that vocabulary with Unreal's own authority, RPC, property and relevancy rules instead of treating generic netcode patterns as automatic UE implementation. [SRC-SEC-006] [SRC-NET-001]
+
+Security angle: transport reliability or encryption does not make a client authoritative. Consequential gameplay actions still require server validation, sequencing, replay resistance and state reconciliation. See [[game_security_anticheat]]. [SRC-SEC-003] [SRC-SEC-004]
 
 ### Network modes and testing bias
 

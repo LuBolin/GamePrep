@@ -1,7 +1,7 @@
 {
   "schema_version": "0.1.0",
   "target_engine_versions": ["5.3", "5.4", "5.5", "5.6"],
-  "updated": "2026-06-23",
+  "updated": "2026-06-27",
   "nodes": [
     {
       "id": "unreal_header_tool",
@@ -3804,6 +3804,84 @@
       "official_sources":["SRC-PERF-001","SRC-PERF-009","SRC-PERF-011","SRC-PLAT-009"],"practical_sources":[],"source_conflicts":[],"content_flags":["Process-sensitive","Measurement-sensitive"],
       "assessment":{"recognition":true,"working_knowledge":true,"debugging":true,"architecture":true,"implementation":true}
     }
+    ,{
+      "id":"cpp_abi_allocation_families","name":"C++ ABI, References, OOP, and Allocation Families","category":"cpp","priority":"P1","expected_depth":"D3",
+      "summary":"Connect C++ reference/pointer semantics, virtual dispatch, `new`/`delete`, `malloc`/`free`, `static`, inline and macros to generated-program and build behaviour.",
+      "why_it_matters":"Interviews often probe whether candidates can separate language guarantees from ABI/compiler implementation and Unreal object creation rules.",
+      "prerequisites":["cpp_object_lifetime","cpp_layout_cache_allocators","cpp_odr_linking_sanitizers"],"related_topics":["reference_vs_pointer","vtable_abi","placement_new","static_linkage","inline_macro_odr"],
+      "role_relevance":{"gameplay":"high","rendering":"medium","tools":"high","technical_artist":"low","ai":"medium","networking":"high","engine_generalist":"high"},
+      "version_notes":{"label":"Standard C++ / ABI-sensitive","details":"C++ semantics are stable; assembly/layout and build behaviour depend on compiler, ABI, optimisation and UE module settings."},
+      "common_bugs":["Claiming references are simply pointers","Mixing allocation families","Using `new` for UObjects","Macro-dependent ODR mismatch","Treating inline as an optimisation command"],
+      "debugging_tools":["compiler explorer/disassembly","non-unity build","symbol inspection","constructor/destructor counters"],
+      "hands_on_tasks":["Project 7D pointer/reference, allocation-family and translation-unit experiments"],"interview_questions":["Reference versus pointer at assembly level?","new/delete versus malloc/free?","How is C++ OOP implemented?"],
+      "official_sources":["SRC-CPP-033","SRC-CPP-034","SRC-CPP-035","SRC-CPP-036","SRC-CPP-037","SRC-CPP-038","SRC-CPP-039"],"practical_sources":["SRC-EPIC-003","SRC-EPIC-004"],"source_conflicts":[],"content_flags":["ABI-sensitive","Build-sensitive"],
+      "assessment":{"recognition":true,"working_knowledge":true,"debugging":true,"architecture":false,"implementation":false}
+    }
+    ,{
+      "id":"systems_virtual_memory_ipc","name":"OS Virtual Memory, Processes, Threads, IPC, and Shared Memory","category":"systems_programming","priority":"P1","expected_depth":"D3",
+      "summary":"Process/thread/task distinctions, page-level virtual memory APIs, page faults, IPC choices and safe shared-memory layout.",
+      "why_it_matters":"Engine, tools, platform, networking and anti-cheat discussions often cross the boundary between C++ objects and OS resources.",
+      "prerequisites":["cpp_abi_allocation_families","cpp_memory_model_synchronisation","cpp_tasks_parallelism"],"related_topics":["VirtualAlloc","mmap","brk","page_fault","process_thread","shared_memory","ipc"],
+      "role_relevance":{"gameplay":"medium","rendering":"medium","tools":"high","technical_artist":"low","ai":"medium","networking":"high","engine_generalist":"high"},
+      "version_notes":{"label":"OS/platform-sensitive","details":"Windows and POSIX APIs differ; target-platform proof is required for exact behaviour and counters."},
+      "common_bugs":["Blurring virtual memory with C++ object lifetime","Sharing raw pointers across processes","Ignoring shared-memory synchronisation","Calling low-level page APIs as ordinary allocators"],
+      "debugging_tools":["page-fault counters","process/thread logs","shared-memory header validation","wait graphs","target OS profilers"],
+      "hands_on_tasks":["Project 7D virtual-memory, IPC and shared-memory lab"],"interview_questions":["Process versus thread versus task?","How is shared memory achieved?","What is a page fault?"],
+      "official_sources":["SRC-SYS-001","SRC-SYS-002","SRC-SYS-003","SRC-SYS-005","SRC-SYS-006","SRC-SYS-007","SRC-SYS-008"],"practical_sources":[],"source_conflicts":[],"content_flags":["Platform-sensitive","Performance-sensitive"],
+      "assessment":{"recognition":true,"working_knowledge":true,"debugging":true,"architecture":true,"implementation":false}
+    }
+    ,{
+      "id":"network_transport_sync_models","name":"TCP, UDP, State Sync, Frame Sync, and Rollback Models","category":"networking","priority":"P1","expected_depth":"D3",
+      "summary":"Transport semantics and simulation-synchronisation models: TCP byte streams, UDP datagrams, state snapshots, input/frame sync and rollback.",
+      "why_it_matters":"Strong network answers separate transport guarantees from gameplay authority, prediction, rollback, late join and relevance policy.",
+      "prerequisites":["network_authority_ownership","network_prediction_rollback_terms","network_profiling_scalability"],"related_topics":["tcp","udp","state_synchronisation","frame_sync","input_sync","rollback"],
+      "role_relevance":{"gameplay":"high","rendering":"low","tools":"medium","technical_artist":"low","ai":"medium","networking":"high","engine_generalist":"high"},
+      "version_notes":{"label":"Engine-agnostic plus UE-sensitive","details":"Protocol concepts are stable; UE implementation details depend on replication stack, plugins and branch."},
+      "common_bugs":["Saying UDP is always faster","Using TCP/UDP as a substitute for state design","Calling ordinary correction generic rollback","Ignoring head-of-line or stale-state behaviour"],
+      "debugging_tools":["Network Profiler","Unreal Insights","packet lag/loss simulation","state/event classification table"],
+      "hands_on_tasks":["Project 3 transport and sync-model classification"],"interview_questions":["TCP versus UDP?","State sync versus frame sync versus rollback?"],
+      "official_sources":["SRC-SEC-001","SRC-SEC-002","SRC-NET-001"],"practical_sources":["SRC-SEC-006"],"source_conflicts":[],"content_flags":["Networking-sensitive","Architecture-sensitive"],
+      "assessment":{"recognition":true,"working_knowledge":true,"debugging":true,"architecture":true,"implementation":false}
+    }
+    ,{
+      "id":"network_security_replay_tls","name":"TLS, HTTPS, MITM, and Replay-Resistant Gameplay Commands","category":"network_security","priority":"P1","expected_depth":"D3",
+      "summary":"Transport security protects the channel; gameplay/backend operations still need freshness, sequencing, idempotency and server-side state validation.",
+      "why_it_matters":"Many candidates overclaim HTTPS or encryption while missing replay, dishonest clients and application-level command semantics.",
+      "prerequisites":["network_transport_sync_models","network_authority_ownership","gameplay_transactions_persistence"],"related_topics":["tls","https","mitm","nonce","operation_id","idempotency","server_validation"],
+      "role_relevance":{"gameplay":"high","rendering":"low","tools":"medium","technical_artist":"low","ai":"medium","networking":"high","engine_generalist":"high"},
+      "version_notes":{"label":"Security-guidance-sensitive","details":"TLS configuration guidance changes over time; gameplay command design is project-specific."},
+      "common_bugs":["Assuming HTTPS prevents cheating","No operation ID for repeatable rewards","Accepting stale valid commands","Disabling certificate validation in production"],
+      "debugging_tools":["duplicate-command tests","backend request audit","sequence/operation logs","stale-window rejection logs"],
+      "hands_on_tasks":["Project 3 Security and Anti-Cheat Extension replay and HTTPS audit"],"interview_questions":["What is a replay attack?","What does HTTPS not solve?"],
+      "official_sources":["SRC-SEC-003","SRC-SEC-004","SRC-SEC-005"],"practical_sources":["SRC-NET-001"],"source_conflicts":[],"content_flags":["Security-sensitive","Defensive"],
+      "assessment":{"recognition":true,"working_knowledge":true,"debugging":true,"architecture":true,"implementation":false}
+    }
+    ,{
+      "id":"defensive_anticheat_client_trust","name":"Defensive Anti-Cheat and Client Trust Boundaries","category":"network_security","priority":"P2","expected_depth":"D3",
+      "summary":"Treat clients as untrusted for durable outcomes; defend with authority, relevancy minimisation, validation, telemetry and review rather than relying on hidden client state.",
+      "why_it_matters":"Cheat Engine-style tamper, ESP and aimbot questions are common probes of server authority, information exposure and evidence-driven judgement.",
+      "prerequisites":["network_security_replay_tls","network_relevancy_dormancy","systems_virtual_memory_ipc"],"related_topics":["cheat_engine","esp","aimbot","dll_tamper","client_memory","telemetry","privacy"],
+      "role_relevance":{"gameplay":"high","rendering":"low","tools":"medium","technical_artist":"low","ai":"medium","networking":"high","engine_generalist":"high"},
+      "version_notes":{"label":"Defensive/high-level","details":"Commercial anti-cheat and platform-holder specifics require authorised sources; public material is intentionally incomplete."},
+      "common_bugs":["Trusting client health or damage","Replicating hidden information unnecessarily","Promising perfect ESP prevention","Using one brittle aimbot threshold","Ignoring privacy and false positives"],
+      "debugging_tools":["server validation matrix","relevancy exposure logs","suspicious-event telemetry","replay-review packet"],
+      "hands_on_tasks":["Project 3 Security and Anti-Cheat Extension"],"interview_questions":["How fight Cheat Engine health editing?","How fight ESP?","How fight aimbot?"],
+      "official_sources":["SRC-NET-001","SRC-SYS-004"],"practical_sources":["SRC-SEC-007"],"source_conflicts":["Public anti-cheat details are incomplete and must stay defensive."],"content_flags":["Security-sensitive","Defensive","Privacy-sensitive"],
+      "assessment":{"recognition":true,"working_knowledge":true,"debugging":true,"architecture":true,"implementation":false}
+    }
+    ,{
+      "id":"ordered_tree_container_internals","name":"Ordered Trees, Red-Black versus AVL, and STL Ordered Containers","category":"algorithms_data_structures","priority":"P2","expected_depth":"D2",
+      "summary":"Ordered associative containers provide sorted traversal and logarithmic operations; mainstream implementations commonly use red-black trees, but the standard does not mandate the exact tree.",
+      "why_it_matters":"Interviewers often probe whether the candidate can distinguish algorithm trade-offs from STL implementation folklore.",
+      "prerequisites":["algorithm_complexity_selection","ue_containers"],"related_topics":["std_map","std_set","red_black_tree","avl_tree","range_queries","sorted_vector"],
+      "role_relevance":{"gameplay":"medium","rendering":"low","tools":"high","technical_artist":"low","ai":"medium","networking":"medium","engine_generalist":"medium"},
+      "version_notes":{"label":"C++ standard-library implementation-sensitive","details":"Ordered-container semantics and complexity are standardised; tree implementation must be checked in the target STL."},
+      "common_bugs":["Claiming std::map must be a red-black tree","Choosing a tree when a sorted vector is better","Ignoring node allocation and cache locality","Confusing worst-case complexity with measured frame cost"],
+      "debugging_tools":["container benchmark","range-query tests","iterator invalidation checks","target STL/source check"],
+      "hands_on_tasks":["Project 7C ordered-container comparison"],"interview_questions":["Red-black tree versus AVL?","Where is RB tree used in STL?"],
+      "official_sources":["SRC-CPP-041","SRC-CPP-042"],"practical_sources":["SRC-ALG-001","SRC-ALG-002"],"source_conflicts":[],"content_flags":["Implementation-sensitive"],
+      "assessment":{"recognition":true,"working_knowledge":true,"debugging":false,"architecture":true,"implementation":false}
+    }
   ],
   "edges": [
     {"from":"unreal_header_tool","to":"unreal_reflection","type":"prerequisite"},
@@ -4248,5 +4326,21 @@
     ,{"from":"networkprediction_state_model","to":"networkprediction_reconcile_proof","type":"prerequisite"}
     ,{"from":"networkprediction_cues_side_effects","to":"networkprediction_reconcile_proof","type":"prerequisite"}
     ,{"from":"networkprediction_reconcile_proof","to":"network_profiling_scalability","type":"related"}
+    ,{"from":"cpp_object_lifetime","to":"cpp_abi_allocation_families","type":"prerequisite"}
+    ,{"from":"cpp_layout_cache_allocators","to":"cpp_abi_allocation_families","type":"prerequisite"}
+    ,{"from":"cpp_odr_linking_sanitizers","to":"cpp_abi_allocation_families","type":"prerequisite"}
+    ,{"from":"cpp_abi_allocation_families","to":"systems_virtual_memory_ipc","type":"prerequisite"}
+    ,{"from":"cpp_memory_model_synchronisation","to":"systems_virtual_memory_ipc","type":"prerequisite"}
+    ,{"from":"cpp_tasks_parallelism","to":"systems_virtual_memory_ipc","type":"prerequisite"}
+    ,{"from":"network_authority_ownership","to":"network_transport_sync_models","type":"prerequisite"}
+    ,{"from":"network_prediction_rollback_terms","to":"network_transport_sync_models","type":"prerequisite"}
+    ,{"from":"network_transport_sync_models","to":"network_security_replay_tls","type":"prerequisite"}
+    ,{"from":"network_authority_ownership","to":"network_security_replay_tls","type":"prerequisite"}
+    ,{"from":"gameplay_transactions_persistence","to":"network_security_replay_tls","type":"prerequisite"}
+    ,{"from":"network_security_replay_tls","to":"defensive_anticheat_client_trust","type":"prerequisite"}
+    ,{"from":"network_relevancy_dormancy","to":"defensive_anticheat_client_trust","type":"prerequisite"}
+    ,{"from":"systems_virtual_memory_ipc","to":"defensive_anticheat_client_trust","type":"related"}
+    ,{"from":"algorithm_complexity_selection","to":"ordered_tree_container_internals","type":"prerequisite"}
+    ,{"from":"ue_containers","to":"ordered_tree_container_internals","type":"related"}
   ]
 }

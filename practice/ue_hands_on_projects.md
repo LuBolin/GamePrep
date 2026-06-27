@@ -1,6 +1,6 @@
 # Unreal Engine Hands-On Projects
 
-See also: [[ue_interview_question_bank]], [[ue_flashcards]], [[cpp_for_unreal_interviews]], [[ue_networking_and_replication]], [[ue_profiling_optimisation]].
+See also: [[ue_interview_question_bank]], [[ue_flashcards]], [[cpp_for_unreal_interviews]], [[systems_programming_for_game_interviews]], [[ue_networking_and_replication]], [[game_security_anticheat]], [[ue_profiling_optimisation]].
 
 ## Project 7A: UObject Lifetime and Reference Graph Lab
 
@@ -1005,3 +1005,53 @@ On a dedicated server, validate throw/push intent and compare replicated correct
 
 **Interview Questions Unlocked:** "Tell me about a hard Unreal bug", "How do you debug across systems?", "How do you know the fix worked?", "How do you separate editor-only success from packaged proof?", "How do you triage multiplayer versus presentation bugs?", "What evidence belongs in a portfolio packet?"  
 **Version / Plugin Caveats:** Exact tooling varies by UE5.3-UE5.6 branch and platform. The capstone is successful when it records what was available, what was not, and what evidence replaced missing tooling. [SRC-NET-003] [SRC-NET-005] [SRC-UI-003] [SRC-UI-005] [SRC-ANIM-010] [SRC-PHYS-002] [SRC-AUDIO-004] [SRC-FX-003] [SRC-ASSET-006] [SRC-BUILD-017] [SRC-PERF-003] [SRC-PERF-009]
+
+## Project 7D: Systems C++ and OS Memory Lab
+
+**Goal:** Prove the C++/OS boundary concepts behind allocation, virtual memory, threads, IPC, shared memory and deadlock.  
+**Target Roles:** Engine/generalist/tools/networking/performance.  
+**Topics Covered:** pointer/reference ABI awareness, `new`/`delete` versus `malloc`/`free`, placement `new`, alignment, `static`/inline/macro build behaviour, process/thread/task distinction, `VirtualAlloc`/`mmap`/`brk` awareness, page faults, IPC and shared memory.  
+**Minimum Features:** one command-line native test app or Unreal Program target; allocation/lifetime counters; virtual-memory first-touch experiment; two-process IPC sample; shared-memory ring buffer; deadlock reproducer/fix; pointer/reference assembly notes.  
+
+**Implementation Steps:**
+
+1. Build constructor/destructor counter types and compare `new`, `new[]`, `malloc`, placement `new`, arena and pool paths.
+2. Print `sizeof`, `alignof`, member offsets and cache-line-adjacent fields for two hot structs; explain the layout decision.
+3. Create pointer and reference parameter examples, compile with debug and optimised settings, and document observed assembly/IR differences without overclaiming.
+4. Add `static` local, namespace `static`, inline variable and macro examples across multiple translation units; include a non-unity build check.
+5. Reserve/commit/touch a large virtual address range on the current OS and record first-touch timing plus available page-fault counters.
+6. Launch two processes and prove that an ordinary pointer value from one process is meaningless in the other.
+7. Implement one pipe/socket IPC sample for messages and one shared-memory ring buffer for bulk data.
+8. Use offsets/indices in shared memory, add a versioned header, capacity, producer/consumer state, overrun count and explicit synchronisation.
+9. Reproduce a two-lock deadlock, capture the wait graph, then fix with lock ordering or a multi-lock helper.
+10. Deliver a short evidence memo: what is language-level, what is ABI/toolchain-level and what is OS-level.
+
+**Debugging Exercises:** mismatched allocation family, missing destructor after placement `new`, stale pointer after container growth, ODR/macro mismatch across TUs, page-fault hitch during first touch, raw pointer stored in shared memory, deadlock cycle, task capture lifetime bug.  
+**Performance Checks:** allocation counts, first-touch latency, page fault counters where available, shared-memory throughput, lock wait time and false-sharing comparison.  
+**Interview Questions Unlocked:** references versus pointers at ABI level; `new` versus `malloc`; `brk`/`mmap`/`VirtualAlloc`; process versus thread; IPC choices; shared-memory layout; deadlock diagnosis.  
+**Version / Platform Caveats:** OS APIs differ; keep Windows and POSIX experiments separated or mark unsupported cases. [SRC-CPP-033] [SRC-CPP-034] [SRC-CPP-036] [SRC-SYS-001] [SRC-SYS-005] [SRC-SYS-008]
+
+## Project 3 Security and Anti-Cheat Extension
+
+**Goal:** Turn Project 3's networked mini game into a defensive security lab for replay resistance, server authority, information exposure and evidence-driven anti-cheat.  
+**Target Roles:** Gameplay/networking/backend/security-aware generalist.  
+**Topics Covered:** TCP/UDP semantics, state versus input/frame sync, replay attacks, TLS/HTTPS boundaries, Cheat Engine-style memory tamper, ESP/aimbot defences, relevancy, server validation and telemetry.  
+**Minimum Features:** sequence/operation IDs, duplicate/stale command tests, server-side hit validation, relevancy exposure logs, replay-review packet, backend HTTPS audit and anti-cheat design memo.  
+
+**Implementation Steps:**
+
+1. Classify every replicated property/RPC/backend call as durable state, reliable event, unreliable/superseded update or transaction.
+2. Add operation IDs or monotonic sequences to fire, reward and inventory commands.
+3. Inject duplicate, stale, out-of-order and wrong-owner messages and prove the server rejects or idempotently handles them.
+4. Build a hit-validation matrix covering range, line of sight, ammo, fire rate, cooldown, team, target alive/invulnerable and weapon mode.
+5. Add a deliberately client-only health/ammo display mutation and prove authoritative server state corrects or rejects it.
+6. Log what Actor/target data each client receives before and after relevancy/interest-management changes.
+7. Create suspicious-event telemetry for aim acquisition, impossible visibility and repeated near-threshold hits while minimising personal data.
+8. Produce a replay-review packet for one accepted and one rejected shot: inputs, timestamps, server validation results, target state and packet/network conditions.
+9. Audit backend/mock service calls for HTTPS/TLS use, certificate-validation bypasses and missing idempotency keys.
+10. Write a defensive anti-cheat memo: what is prevented, what is only detected, what remains visible to the client and what needs platform/commercial anti-cheat support.
+
+**Debugging Exercises:** trusted client damage, duplicated reward, replayed inventory command, stale fire timestamp, ESP leak through relevancy, false-positive aim threshold, cert validation disabled in a debug helper, telemetry with excessive personal data.  
+**Performance Checks:** bandwidth before/after relevancy, CPU cost of validation, telemetry volume, replay-packet size and storage retention.  
+**Interview Questions Unlocked:** TCP versus UDP; state sync versus rollback; replay attacks; HTTPS/MITM; Cheat Engine-style tamper; ESP and aimbot defences; privacy-aware anti-cheat.  
+**Version / Platform Caveats:** Anti-cheat internals and platform policy require authorised sources. This extension is defensive and does not include exploit or bypass procedures. [SRC-SEC-001] [SRC-SEC-002] [SRC-SEC-003] [SRC-SEC-004] [SRC-SEC-006] [SRC-SEC-007]
